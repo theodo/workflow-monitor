@@ -20,7 +20,7 @@ class TaskPanel extends Component {
   }
   getProblem = () => this.state.problem;
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentTask && nextProps.currentTask.id !== this.props.currentTask.id) {
+    if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
       this.setState({problem: ''})
     }
   }
