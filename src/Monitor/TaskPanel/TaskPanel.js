@@ -26,7 +26,9 @@ class TaskPanel extends Component {
     this.setState({problem: event.target.value});
   }
   handleNewTasksValueChange = (event) => {
-    this.props.handleNewTasksValueChange(formatStringToTasks(event.target.value));
+    this.props.handleNewTasksValueChange(
+      formatStringToTasks(event.target.value).map((task) => ({ ...task, addedOnTheFly: true }))
+    );
   }
   getProblem = () => this.state.problem;
   initAlarm = (timeInSecond) => {

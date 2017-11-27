@@ -13,3 +13,7 @@ td.red {
 td.green {
   background: green;
 }
+
+tr.addedOnTheFly {
+  background: #ffe6e6;
+}

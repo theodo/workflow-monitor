@@ -7,10 +7,15 @@ class ResultRow extends Component {
     this.props.result.estimatedTime ?
       (this.props.result.estimatedTime < this.props.result.realTime ? 'red' : 'green')
       : ''
+    );
+  getRowClass = () => (
+    this.props.result.addedOnTheFly ?
+      'addedOnTheFly'
+      : ''
   );
   render() {
     return (
-      <tr>
+      <tr className={this.getRowClass()}>
         <td>{this.props.result.label}</td>
         <td>{formatSecondToTime(this.props.result.estimatedTime)}</td>
         <td className={this.getRealTimeClass()}>{formatSecondToTime(this.props.result.realTime)}</td>
