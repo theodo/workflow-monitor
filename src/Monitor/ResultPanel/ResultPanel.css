@@ -1,0 +1,15 @@
+table {
+    margin: auto
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+td.red {
+  background: red;
+}
+
+td.green {
+  background: green;
+}
