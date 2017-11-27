@@ -1,0 +1,46 @@
+.Monitor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  text-align: center;
+}
+
+.Monitor-header {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  width: 100%;
+  background-color: #222;
+  color: white;
+}
+
+.Monitor-footer {
+  display: flex;
+  height: 100px;
+  width: 100%;
+  line-height: 100px;
+  background-color: #222;
+  color: white;
+}
+
+.Monitor-content {
+  flex-grow: 1;
+  overflow: scroll;
+}
+
+.Monitor-footer-middle-div {
+  flex-grow: 1;
+}
+
+.Monitor-footer-right-div {
+  margin-right: 20px;
+}
+
+.Monitor-footer-button {
+  font-size: 1.5em;
+}
+
+.Monitor-footer-button:not(:disabled) {
+  cursor: pointer;
+}
