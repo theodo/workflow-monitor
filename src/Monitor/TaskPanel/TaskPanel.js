@@ -11,6 +11,16 @@ class TaskPanel extends Component {
     }
     this.handleProblemValueChange = this.handleProblemValueChange.bind(this);
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
+    this.initAlarm(props.currentTask.estimatedTime);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
+      this.initAlarm(nextProps.currentTask.estimatedTime);
+      this.setState({problem: ''})
+    }
+  }
+  componentWillUnmount(){
+    clearTimeout(this.timeout);
   }
   handleProblemValueChange = (event) => {
     this.setState({problem: event.target.value});
@@ -19,10 +29,11 @@ class TaskPanel extends Component {
     this.props.handleNewTasksValueChange(formatStringToTasks(event.target.value));
   }
   getProblem = () => this.state.problem;
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
-      this.setState({problem: ''})
-    }
+  initAlarm = (timeInSecond) => {
+    if (timeInSecond) this.timeout = setTimeout(() => {
+      var audio = new Audio('alarm.mp3');
+      audio.play();
+    }, timeInSecond * 1000);
   }
   render() {
     return (
