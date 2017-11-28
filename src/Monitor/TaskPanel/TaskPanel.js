@@ -7,6 +7,8 @@ class TaskPanel extends Component {
   constructor(props){
     super(props);
     this.state = {
+      timeoutStartedAt: new Date(),
+      elapsedTime: 0,
       problem: '',
     }
     this.handleProblemValueChange = this.handleProblemValueChange.bind(this);
@@ -14,9 +16,20 @@ class TaskPanel extends Component {
     this.initAlarm(props.currentTask.estimatedTime);
   }
   componentWillReceiveProps(nextProps) {
+    if(nextProps.isPaused && !this.props.isPaused){
+      clearTimeout(this.timeout);
+      const now = new Date();
+      const timeSinceTimeoutStarted = (now.getTime() - this.state.timeoutStartedAt.getTime()) / 1000;
+      this.setState({
+        elapsedTime: this.state.elapsedTime + timeSinceTimeoutStarted,
+      });
+    } else if (!nextProps.isPaused && this.props.isPaused){
+      this.setState({timeoutStartedAt: new Date()});
+      this.initAlarm(this.props.currentTask.estimatedTime);
+    }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
+      this.setState({problem: '', elapsedTime: 0, timeoutStartedAt: new Date()})
       this.initAlarm(nextProps.currentTask.estimatedTime);
-      this.setState({problem: ''})
     }
   }
   componentWillUnmount(){
@@ -32,10 +45,10 @@ class TaskPanel extends Component {
   }
   getProblem = () => this.state.problem;
   initAlarm = (timeInSecond) => {
-    if (timeInSecond) this.timeout = setTimeout(() => {
+    if (timeInSecond && timeInSecond > this.state.elapsedTime) this.timeout = setTimeout(() => {
       var audio = new Audio('alarm.mp3');
       audio.play();
-    }, timeInSecond * 1000);
+    }, (timeInSecond - this.state.elapsedTime) * 1000);
   }
   render() {
     return (

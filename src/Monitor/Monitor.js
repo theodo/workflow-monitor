@@ -151,7 +151,8 @@ class Monitor extends Component {
           ref={ref => this.taskPanel = ref}
           newTasksString={this.state.taskPanel.newTasksString}
           currentTask={this.state.tasks[this.state.currentTaskIndex]}
-          handleNewTasksValueChange={this.handleNewTasksValueChange} />;
+          handleNewTasksValueChange={this.handleNewTasksValueChange}
+          isPaused={this.state.isSprintPaused} />;
       case MONITOR_STEPS.RESULTS:
         return <ResultPanel results={this.state.results} />;
       default:
