@@ -8,7 +8,11 @@ class PlanningPanel extends Component {
     this.handleTasksDefinitionChange = this.handleTasksDefinitionChange.bind(this);
   }
   handleTasksDefinitionChange = (event) => {
-    this.props.handleTasksDefinitionChange(formatStringToTasks(event.target.value));
+    this.props.handlePlanningPanelChange({
+      planningPanelChanges: {
+        tasks: formatStringToTasks(event.target.value),
+      },
+    });
   }
   render() {
     return (

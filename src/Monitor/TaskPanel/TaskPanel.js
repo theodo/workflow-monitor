@@ -9,9 +9,10 @@ class TaskPanel extends Component {
     this.state = {
       timeoutStartedAt: new Date(),
       elapsedTime: 0,
-      problem: '',
+      problems: '',
+      newTasks: '',
     }
-    this.handleProblemValueChange = this.handleProblemValueChange.bind(this);
+    this.handleProblemsValueChange = this.handleProblemsValueChange.bind(this);
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     this.initAlarm(props.currentTask.estimatedTime);
   }
@@ -28,28 +29,47 @@ class TaskPanel extends Component {
       this.initAlarm(this.props.currentTask.estimatedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
-      this.setState({problem: '', elapsedTime: 0, timeoutStartedAt: new Date()})
+      clearTimeout(this.timeout);
       this.initAlarm(nextProps.currentTask.estimatedTime);
+      this.setState({
+        problems: '',
+        newTasks: '',
+        elapsedTime: 0,
+        timeoutStartedAt: new Date()
+      })
     }
   }
   componentWillUnmount(){
     clearTimeout(this.timeout);
   }
-  handleProblemValueChange = (event) => {
-    this.setState({problem: event.target.value});
+
+  getFormattedTasks = (stringTasks) => {
+    const tasks = formatStringToTasks(stringTasks);
+    return tasks ? tasks.map((task) => ({ ...task, addedOnTheFly: true })) : undefined
   }
-  handleNewTasksValueChange = (event) => {
-    this.props.handleNewTasksValueChange(
-      formatStringToTasks(event.target.value).map((task) => ({ ...task, addedOnTheFly: true }))
-    );
-  }
-  getProblem = () => this.state.problem;
+
   initAlarm = (timeInSecond) => {
     if (timeInSecond && timeInSecond > this.state.elapsedTime) this.timeout = setTimeout(() => {
-      var audio = new Audio('alarm.mp3');
+      const audio = new Audio('alarm.mp3');
       audio.play();
     }, (timeInSecond - this.state.elapsedTime) * 1000);
   }
+
+  handleTaskPanelChange = () => {
+    this.props.handleTaskPanelChange({
+      taskPanelChanges : {
+        newTasks: this.getFormattedTasks(this.state.newTasks),
+        problems: this.state.problems,
+      },
+    })
+  }
+  handleProblemsValueChange = (event) => {
+    this.setState({problems: event.target.value}, this.handleTaskPanelChange);
+  }
+  handleNewTasksValueChange = (event) => {
+    this.setState({newTasks: event.target.value}, this.handleTaskPanelChange);
+  }
+
   render() {
     return (
       <div className="TaskPanel">
@@ -60,9 +80,9 @@ class TaskPanel extends Component {
             : null
         }
         <h3>Problems :</h3>
-        <textarea value={this.state.problem} className="TaskPanel-problem-textarea" onChange={this.handleProblemValueChange} />
+        <textarea value={this.state.problems} className="TaskPanel-problem-textarea" onChange={this.handleProblemsValueChange} />
         <h3>Add tasks after this one :</h3>
-        <textarea value={this.props.newTasksString} className="TaskPanel-newtasks-textarea" onChange={this.handleNewTasksValueChange} />
+        <textarea value={this.state.newTasks} className="TaskPanel-newtasks-textarea" onChange={this.handleNewTasksValueChange} />
       </div>
     );
   }
