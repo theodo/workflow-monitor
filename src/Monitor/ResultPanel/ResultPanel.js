@@ -19,7 +19,7 @@ class ResultRow extends Component {
         <td>{this.props.result.label}</td>
         <td>{formatSecondToTime(this.props.result.estimatedTime)}</td>
         <td className={this.getRealTimeClass()}>{formatSecondToTime(this.props.result.realTime)}</td>
-        <td>{this.props.result.problem}</td>
+        <td>{this.props.result.problems}</td>
       </tr>
     );
   }
