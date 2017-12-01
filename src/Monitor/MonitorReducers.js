@@ -7,25 +7,33 @@ const initialMonitorState = {
   results: [],
   tasks: [],
   currentTaskIndex: 0,
-}
+};
 
-const MonitorReducers = (state = initialMonitorState, action) => {
+const oldState = (JSON.parse(localStorage.getItem('monitorState')));
+
+const currentInitialState = localStorage.getItem('monitorState') ? oldState : oldState;
+
+
+const MonitorReducers = (state = currentInitialState, action) => {
+  let newState = {};
   switch (action.type) {
     case INIT_SESSION:
-      return {
+      newState = {
         ...state,
         currentStep: MONITOR_STEPS.PLANNING,
         results: [],
         tasks: [],
         currentTaskIndex: 0,
       }
+      break;
     case START_SESSION:
-      return {
+      newState = {
         ...state,
         currentStep: MONITOR_STEPS.WORKFLOW,
         results: [{ label: 'Planning', realTime: action.planningRealTime }],
         tasks: action.tasks,
       }
+      break;
     case NEXT_TASK:
       const result = {
         ...state.tasks[state.currentTaskIndex],
@@ -33,14 +41,14 @@ const MonitorReducers = (state = initialMonitorState, action) => {
         realTime: action.taskRealTime,
       }
 
-      let newState = {
+      let newStateForNextTask = {
         ...state,
         results: [...state.results, result],
         currentTaskIndex: state.currentTaskIndex + 1,
       }
 
       if (action.newTasks && action.newTasks.length > 0) {
-        newState.tasks = [
+        newStateForNextTask.tasks = [
           ...state.tasks.slice(0,state.currentTaskIndex+1),
           ...action.newTasks,
           ...state.tasks.slice(state.currentTaskIndex+1),
@@ -49,16 +57,21 @@ const MonitorReducers = (state = initialMonitorState, action) => {
 
       if((!action.newTasks || action.newTasks.length === 0)
         && state.currentTaskIndex >= state.tasks.length - 1) {
-        newState.currentStep = MONITOR_STEPS.RESULTS
+        newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS
       }
-      return newState
+      newState = newStateForNextTask
+      break;
     case RESET_MONITOR:
-      return { ...initialMonitorState }
+      newState = { ...initialMonitorState }
+      break;
     case PLAY_OR_PAUSE_SESSION:
-      return { ...state, isSessionPaused: !state.isSessionPaused }
+      newState = { ...state, isSessionPaused: !state.isSessionPaused }
+      break;
     default:
-      return state
-  }
+      newState = state
+    }
+    localStorage.setItem('monitorState', JSON.stringify(newState));
+    return newState;
 }
 
 export default MonitorReducers

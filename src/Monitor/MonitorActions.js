@@ -1,5 +1,3 @@
-
-
 export const INIT_SESSION = 'INIT_SESSION'
 export const START_SESSION = 'START_SESSION'
 export const NEXT_TASK = 'NEXT_TASK'
