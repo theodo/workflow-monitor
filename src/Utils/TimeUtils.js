@@ -1,6 +1,6 @@
-export const formatSecondToTime = (timeInSecond) => {
-    if(isNaN(timeInSecond)) return '';
-    var date = new Date(timeInSecond * 1000);
+export const formatMilliSecondToTime = (timeInMilliSecond) => {
+    if(isNaN(timeInMilliSecond)) return '';
+    var date = new Date(timeInMilliSecond);
     var hh = date.getUTCHours();
     var mm = date.getUTCMinutes();
     var ss = date.getSeconds();

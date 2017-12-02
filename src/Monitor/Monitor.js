@@ -76,11 +76,8 @@ class Monitor extends Component {
   }
   initSession = () => {
     this.props.initSession();
-    this.globalChrono.start();
-    this.taskChrono.start();
   }
   startTask = () => {
-    this.taskChrono.reset();
     this.setState({
       taskPanelChanges : {
         newTasks: [],
@@ -89,21 +86,14 @@ class Monitor extends Component {
     });
   }
   startSession = () => {
-    this.props.startSession(this.state.planningPanelChanges.tasks, this.taskChrono.getTime());
+    this.props.startSession(this.state.planningPanelChanges.tasks);
     this.startTask();
   }
   goToNextTask = () => {
-    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.taskChrono.getTime())
+    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems)
     this.startTask();
-    if((!this.state.taskPanelChanges.newTasks || this.state.taskPanelChanges.newTasks.length === 0)
-      && this.props.currentTaskIndex >= this.props.tasks.length - 1){
-      this.globalChrono.pause();
-      this.taskChrono.pause();
-    }
   }
   reset = () => {
-    this.globalChrono.reset();
-    this.taskChrono.reset();
     this.props.resetMonitor();
   }
   updateMonitorState = (fieldsToUpdate) => {
@@ -111,8 +101,15 @@ class Monitor extends Component {
       ...fieldsToUpdate,
     });
   }
-  isPlanningStepValid = () => {
-    return this.props.step !== MONITOR_STEPS.PLANNING || this.areTasksValid(this.state.planningPanelChanges.tasks)
+  isCenterButtonDisabled = () => {
+    switch (this.props.step) {
+      case MONITOR_STEPS.PLANNING:
+        return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause;
+      case MONITOR_STEPS.WORKFLOW:
+        return this.props.dateLastPause;
+      default:
+        return false;
+    }
   }
   renderPanel = () => {
     switch (this.props.step) {
@@ -123,7 +120,8 @@ class Monitor extends Component {
       case MONITOR_STEPS.WORKFLOW:
         return <TaskPanel
           ref={ref => this.taskPanel = ref}
-          isPaused={this.props.isSessionPaused}
+          isPaused={this.props.dateLastPause}
+          taskChrono={this.props.taskChrono}
           currentTask={this.props.tasks[this.props.currentTaskIndex]}
           handleTaskPanelChange={this.updateMonitorState} />;
       case MONITOR_STEPS.RESULTS:
@@ -135,7 +133,7 @@ class Monitor extends Component {
   renderPlayPauseButton = () => {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
       <button className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
-        {this.props.isSessionPaused ? 'PLAY' : 'PAUSE'}
+        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'}
       </button>
       : null
   }
@@ -143,8 +141,8 @@ class Monitor extends Component {
     return (
       <div className="Monitor">
         <header className="Monitor-header">
-          <Chrono isPaused={this.props.isSessionPaused} ref={ref => this.taskChrono = ref} />
-          <Chrono isPaused={this.props.isSessionPaused} ref={ref => this.globalChrono = ref} />
+          <Chrono chrono={this.props.taskChrono} dateLastPause={this.props.dateLastPause}/>
+          <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause}/>
         </header>
         <div className="Monitor-content">
           { this.renderPanel() }
@@ -152,7 +150,7 @@ class Monitor extends Component {
         <footer className="Monitor-footer">
           <div className="Monitor-footer-middle-div">
             <CenterButton step={this.props.step}
-              disabled={!this.isPlanningStepValid() || this.props.isSessionPaused}
+              disabled={this.isCenterButtonDisabled()}
               onClick={this.handleClickCenterButton}/>
           </div>
           <div className="Monitor-footer-right-div">
@@ -171,6 +169,9 @@ const mapStateToProps = state => {
     tasks: state.MonitorReducers.tasks,
     currentTaskIndex: state.MonitorReducers.currentTaskIndex,
     results: state.MonitorReducers.results,
+    taskChrono: state.MonitorReducers.taskChrono,
+    globalChrono: state.MonitorReducers.globalChrono,
+    dateLastPause: state.MonitorReducers.dateLastPause,
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatSecondToTime } from '../../Utils/TimeUtils'
+import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
 import './Chrono.css';
 
 class Chrono extends Component {
@@ -7,38 +7,25 @@ class Chrono extends Component {
     super(props);
     this.state = {
       time: 0,
+      now: (new Date()).getTime(),
     }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.isPaused && nextProps.isPaused !== this.props.isPaused) {
-      this.pause();
-    }
-    if (!nextProps.isPaused && nextProps.isPaused !== this.props.isPaused) {
-      this.start();
-    }
-  }
-  start = () => {
     this.interval = setInterval(() => {
       this.setState({
         time: this.state.time + 1,
+        now: (new Date()).getTime(),
       })
     }, 1000)
   }
-  pause = () => {
-    clearInterval(this.interval)
-  }
-  reset(){
-    this.setState({
-      time: 0,
-    })
-  }
   getTime(){
-    return this.state.time;
+    if (!this.props.chrono.dateLastStart) return 0;
+    return this.props.dateLastPause ?
+      this.props.chrono.elapsedTime + (this.props.dateLastPause - this.props.chrono.dateLastStart)
+      : this.props.chrono.elapsedTime + (this.state.now - this.props.chrono.dateLastStart)
   }
   render() {
     return (
       <div className="Chrono">
-        {formatSecondToTime(this.state.time)}
+        {formatMilliSecondToTime(this.getTime())}
       </div>
     );
   }

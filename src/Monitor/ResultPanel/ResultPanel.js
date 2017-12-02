@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { formatSecondToTime } from '../../Utils/TimeUtils'
+import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
 import './ResultPanel.css'
 
 class ResultRow extends Component {
@@ -17,8 +17,8 @@ class ResultRow extends Component {
     return (
       <tr className={this.getRowClass()}>
         <td>{this.props.result.label}</td>
-        <td>{formatSecondToTime(this.props.result.estimatedTime)}</td>
-        <td className={this.getRealTimeClass()}>{formatSecondToTime(this.props.result.realTime)}</td>
+        <td>{formatMilliSecondToTime(this.props.result.estimatedTime)}</td>
+        <td className={this.getRealTimeClass()}>{formatMilliSecondToTime(this.props.result.realTime)}</td>
         <td>{this.props.result.problems}</td>
       </tr>
     );
@@ -45,14 +45,12 @@ class ResultPanel extends Component {
       tr.addedOnTheFly {
         background: #ffe6e6;
         -webkit-print-color-adjust: exact;
-      }
-      `;
+      }`;
     mywindow.document.write('<style>' + css +'</style>');
     mywindow.document.write('</head><body>');
     mywindow.document.write('<h1>' + title  + '</h1>');
     mywindow.document.write(document.getElementsByClassName('printArea')[0].innerHTML);
     mywindow.document.write('</body></html>');
-    console.log(document.getElementsByClassName('printArea')[0].innerHTML);
     mywindow.document.close(); // necessary for IE >= 10
     mywindow.focus(); // necessary for IE >= 10*/
 

@@ -8,7 +8,7 @@ export const formatStringToTasks = (taskString) => {
     return {
       id: index,
       label: taskLabel.substr(0, timeIndex),
-      estimatedTime: 60 * parseInt(taskLabel.substring(timeIndex + 1, taskLabel.length - 1 ), 10),
+      estimatedTime: 60 * 1000 * parseInt(taskLabel.substring(timeIndex + 1, taskLabel.length - 1 ), 10),
     };
   });
   return tasks.length > 0 ? tasks : undefined;

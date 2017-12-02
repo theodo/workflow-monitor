@@ -10,20 +10,18 @@ export function initSession() {
   }
 }
 
-export function startSession(tasks, planningRealTime) {
+export function startSession(tasks) {
   return {
     type: START_SESSION,
     tasks,
-    planningRealTime,
   }
 }
 
-export function nextTask(newTasks, taskProblems, taskRealTime) {
+export function nextTask(newTasks, taskProblems) {
   return {
     type: NEXT_TASK,
     newTasks,
     taskProblems,
-    taskRealTime,
   }
 }
 

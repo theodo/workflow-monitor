@@ -1,32 +1,24 @@
 import React, { Component } from 'react'
 import { formatStringToTasks } from '../../Utils/StringUtils'
-import { formatSecondToTime } from '../../Utils/TimeUtils'
+import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
 import './TaskPanel.css'
 
 class TaskPanel extends Component {
   constructor(props){
     super(props);
     this.state = {
-      timeoutStartedAt: new Date(),
-      elapsedTime: 0,
       problems: '',
       newTasks: '',
     }
     this.handleProblemsValueChange = this.handleProblemsValueChange.bind(this);
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
-    this.initAlarm(props.currentTask.estimatedTime);
+    if(!this.props.isPaused) this.initAlarm(props.currentTask.estimatedTime);
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.isPaused && !this.props.isPaused){
       clearTimeout(this.timeout);
-      const now = new Date();
-      const timeSinceTimeoutStarted = (now.getTime() - this.state.timeoutStartedAt.getTime()) / 1000;
-      this.setState({
-        elapsedTime: this.state.elapsedTime + timeSinceTimeoutStarted,
-      });
     } else if (!nextProps.isPaused && this.props.isPaused){
-      this.setState({timeoutStartedAt: new Date()});
-      this.initAlarm(this.props.currentTask.estimatedTime);
+      this.initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
       clearTimeout(this.timeout);
@@ -34,8 +26,6 @@ class TaskPanel extends Component {
       this.setState({
         problems: '',
         newTasks: '',
-        elapsedTime: 0,
-        timeoutStartedAt: new Date()
       })
     }
   }
@@ -48,11 +38,11 @@ class TaskPanel extends Component {
     return tasks ? tasks.map((task) => ({ ...task, addedOnTheFly: true })) : undefined
   }
 
-  initAlarm = (timeInSecond) => {
-    if (timeInSecond && timeInSecond > this.state.elapsedTime) this.timeout = setTimeout(() => {
+  initAlarm = (timeInMilliSecond) => {
+    if (timeInMilliSecond && timeInMilliSecond > 0) this.timeout = setTimeout(() => {
       const audio = new Audio('alarm.mp3');
       audio.play();
-    }, (timeInSecond - this.state.elapsedTime) * 1000);
+    }, (timeInMilliSecond));
   }
 
   handleTaskPanelChange = () => {
@@ -76,7 +66,7 @@ class TaskPanel extends Component {
         <h2>{this.props.currentTask.label}</h2>
         {
           this.props.currentTask.estimatedTime ?
-            <h3>Estimated time : {formatSecondToTime(this.props.currentTask.estimatedTime)}</h3>
+            <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
             : null
         }
         <h3>Problems :</h3>
