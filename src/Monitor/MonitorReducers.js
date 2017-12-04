@@ -15,14 +15,13 @@ const initialMonitorState = {
   results: [],
   tasks: [],
   currentTaskIndex: 0,
+  dateLastPause: undefined,
   taskChrono: {
     dateLastStart: undefined,
-    dateLastPause: undefined,
     elapsedTime: 0,
   },
   globalChrono: {
     dateLastStart: undefined,
-    dateLastPause: undefined,
     elapsedTime: 0,
   }
 };

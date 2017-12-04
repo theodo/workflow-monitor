@@ -1,5 +1,6 @@
 export const formatMilliSecondToTime = (timeInMilliSecond) => {
     if(isNaN(timeInMilliSecond)) return '';
+    if (timeInMilliSecond < 0) return '00:00:00';
     var date = new Date(timeInMilliSecond);
     var hh = date.getUTCHours();
     var mm = date.getUTCMinutes();

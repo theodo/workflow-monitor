@@ -6,12 +6,10 @@ class Chrono extends Component {
   constructor(props){
     super(props);
     this.state = {
-      time: 0,
       now: (new Date()).getTime(),
     }
     this.interval = setInterval(() => {
       this.setState({
-        time: this.state.time + 1,
         now: (new Date()).getTime(),
       })
     }, 1000)
