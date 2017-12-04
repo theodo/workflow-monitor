@@ -120,7 +120,7 @@ class Monitor extends Component {
       case MONITOR_STEPS.WORKFLOW:
         return <TaskPanel
           ref={ref => this.taskPanel = ref}
-          isPaused={this.props.dateLastPause}
+          dateLastPause={this.props.dateLastPause}
           taskChrono={this.props.taskChrono}
           currentTask={this.props.tasks[this.props.currentTaskIndex]}
           handleTaskPanelChange={this.updateMonitorState} />;

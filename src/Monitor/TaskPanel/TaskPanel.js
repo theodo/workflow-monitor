@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReverseChrono from '../ReverseChrono/ReverseChrono'
 import { formatStringToTasks } from '../../Utils/StringUtils'
 import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
 import './TaskPanel.css'
@@ -12,12 +13,12 @@ class TaskPanel extends Component {
     }
     this.handleProblemsValueChange = this.handleProblemsValueChange.bind(this);
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
-    if(!this.props.isPaused) this.initAlarm(props.currentTask.estimatedTime);
+    if(!this.props.dateLastPause) this.initAlarm(props.currentTask.estimatedTime);
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.isPaused && !this.props.isPaused){
+    if(nextProps.dateLastPause && !this.props.dateLastPause){
       clearTimeout(this.timeout);
-    } else if (!nextProps.isPaused && this.props.isPaused){
+    } else if (!nextProps.dateLastPause && this.props.dateLastPause){
       this.initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
@@ -59,14 +60,21 @@ class TaskPanel extends Component {
   handleNewTasksValueChange = (event) => {
     this.setState({newTasks: event.target.value}, this.handleTaskPanelChange);
   }
-
   render() {
     return (
       <div className="TaskPanel">
         <h2>{this.props.currentTask.label}</h2>
         {
           this.props.currentTask.estimatedTime ?
+            <div>
             <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
+            <h3>Remaining time :
+              <ReverseChrono
+                dateLastPause={this.props.dateLastPause}
+                estimatedTaskTime={this.props.currentTask.estimatedTime}
+                taskChrono={this.props.taskChrono} />
+            </h3>
+            </div>
             : null
         }
         <h3>Problems :</h3>

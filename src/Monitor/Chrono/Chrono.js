@@ -14,6 +14,9 @@ class Chrono extends Component {
       })
     }, 1000)
   }
+  componentWillUnmount(){
+    clearInterval(this.interval);
+  }
   getTime(){
     if (!this.props.chrono.dateLastStart) return 0;
     return this.props.dateLastPause ?
