@@ -3,6 +3,9 @@ import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
 import './ResultPanel.css'
 
 class ResultRow extends Component {
+  componentWillMount() {
+    document.title = 'Worklow Monitor'
+  }
   getRealTimeClass = () => (
     this.props.result.estimatedTime ?
       (this.props.result.estimatedTime < this.props.result.realTime ? 'red' : 'green')

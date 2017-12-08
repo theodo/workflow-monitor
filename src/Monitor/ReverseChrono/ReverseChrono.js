@@ -9,6 +9,7 @@ class ReverseChrono extends Component {
       now: (new Date()).getTime(),
     }
     this.interval = setInterval(() => {
+      document.title = this.formatTimeLeft()
       this.setState({
         now: (new Date()).getTime(),
       })
@@ -29,10 +30,14 @@ class ReverseChrono extends Component {
   isTimeOver(){
     return this.getTime() < 0;
   }
+  formatTimeLeft() {
+    const prefix = this.isTimeOver() ? '-' : ' '
+    return `${prefix} ${formatMilliSecondToTime(Math.abs(this.getTime()))}`
+  }
   render() {
     return (
       <span className={'ReverseChrono ' + (this.isTimeOver() ? 'red' : 'green')}>
-        {this.isTimeOver() ? ' -' : ' '}{formatMilliSecondToTime(Math.abs(this.getTime()))}
+        {this.formatTimeLeft()}
       </span>
     );
   }
