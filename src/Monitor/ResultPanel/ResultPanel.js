@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
-import './ResultPanel.css'
+import React, { Component } from 'react';
+import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
+import './ResultPanel.css';
 
 class ResultRow extends Component {
   componentWillMount() {
-    document.title = 'Worklow Monitor'
+    document.title = 'Worklow Monitor';
   }
-  getRealTimeClass = () => (
-    this.props.result.estimatedTime ?
+  getRealTimeClass() {
+    return this.props.result.estimatedTime ?
       (this.props.result.estimatedTime < this.props.result.realTime ? 'red' : 'green')
-      : ''
-    );
-  getRowClass = () => (
-    this.props.result.addedOnTheFly ?
+      : '';
+  }
+  getRowClass() {
+    return this.props.result.addedOnTheFly ?
       'addedOnTheFly'
-      : ''
-  );
+      : '';
+  }
   render() {
     return (
       <tr className={this.getRowClass()}>
@@ -29,7 +29,7 @@ class ResultRow extends Component {
 }
 
 class ResultPanel extends Component {
-  printResults = () => {
+  printResults() {
     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
     const title = 'Récapitulatif de ticket';
     mywindow.document.write('<html><head><title>' + title  + '</title>');
@@ -67,15 +67,15 @@ class ResultPanel extends Component {
           Results :
           <table>
             <thead>
-            <tr>
-              <th>Task</th>
-              <th>Estimated time</th>
-              <th>Real Time</th>
-              <th>Problem</th>
-            </tr>
+              <tr>
+                <th>Task</th>
+                <th>Estimated time</th>
+                <th>Real Time</th>
+                <th>Problem</th>
+              </tr>
             </thead>
             <tbody>
-            {this.props.results.map((result, index) => <ResultRow key={index} result={result} />)}
+              {this.props.results.map((result, index) => <ResultRow key={index} result={result} />)}
             </tbody>
           </table>
         </div>

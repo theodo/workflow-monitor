@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { initSession, nextTask, startSession, playOrPauseSession, resetMonitor } from './MonitorActions'
+import { connect } from 'react-redux';
+import { initSession, nextTask, startSession, playOrPauseSession, resetMonitor } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
@@ -18,12 +18,12 @@ export const MONITOR_STEPS = {
 class CenterButton extends Component {
   getLabel(){
     switch (this.props.step) {
-      case MONITOR_STEPS.WELCOME:
-        return 'START';
-      case MONITOR_STEPS.RESULTS:
-        return 'NEW TICKET';
-      default:
-        return 'NEXT';
+    case MONITOR_STEPS.WELCOME:
+      return 'START';
+    case MONITOR_STEPS.RESULTS:
+      return 'NEW TICKET';
+    default:
+      return 'NEXT';
     }
   }
   render() {
@@ -56,29 +56,31 @@ class Monitor extends Component {
       }
     };
   }
-  areTasksValid = (tasks) => (tasks && tasks.length > 0)
-  handleClickCenterButton = () => {
+  areTasksValid(tasks) {
+    return tasks && tasks.length > 0;
+  }
+  handleClickCenterButton() {
     switch (this.props.step) {
-      case MONITOR_STEPS.WELCOME:
-        this.initSession();
-        break;
-      case MONITOR_STEPS.PLANNING:
-        if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
-        break;
-      case MONITOR_STEPS.WORKFLOW:
-        this.goToNextTask();
-        break;
-      case MONITOR_STEPS.RESULTS:
-        this.reset();
-        break;
-      default:
-        break;
+    case MONITOR_STEPS.WELCOME:
+      this.initSession();
+      break;
+    case MONITOR_STEPS.PLANNING:
+      if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
+      break;
+    case MONITOR_STEPS.WORKFLOW:
+      this.goToNextTask();
+      break;
+    case MONITOR_STEPS.RESULTS:
+      this.reset();
+      break;
+    default:
+      break;
     }
   }
-  initSession = () => {
+  initSession() {
     this.props.initSession();
   }
-  startTask = () => {
+  startTask() {
     this.setState({
       taskPanelChanges : {
         newTasks: [],
@@ -86,63 +88,63 @@ class Monitor extends Component {
       }
     });
   }
-  startSession = () => {
+  startSession() {
     this.props.startSession(this.state.planningPanelChanges.tasks);
     this.startTask();
   }
-  goToNextTask = () => {
-    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems)
+  goToNextTask() {
+    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
     this.startTask();
   }
-  reset = () => {
+  reset() {
     this.props.resetMonitor();
   }
-  updateMonitorState = (fieldsToUpdate) => {
+  updateMonitorState(fieldsToUpdate) {
     this.setState({
       ...fieldsToUpdate,
     });
   }
-  isCenterButtonDisabled = () => {
+  isCenterButtonDisabled() {
     switch (this.props.step) {
-      case MONITOR_STEPS.PLANNING:
-        return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause;
-      case MONITOR_STEPS.WORKFLOW:
-        return this.props.dateLastPause;
-      default:
-        return false;
+    case MONITOR_STEPS.PLANNING:
+      return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause;
+    case MONITOR_STEPS.WORKFLOW:
+      return this.props.dateLastPause;
+    default:
+      return false;
     }
   }
-  renderPanel = () => {
+  renderPanel() {
     switch (this.props.step) {
-      case MONITOR_STEPS.WELCOME:
-        return <WelcomePanel />;
-      case MONITOR_STEPS.PLANNING:
-        return <PlanningPanel handlePlanningPanelChange={this.updateMonitorState} />;
-      case MONITOR_STEPS.WORKFLOW:
-        return (
-          <div className="Monitor-task-container">
-            <TaskPanel
-              dateLastPause={this.props.dateLastPause}
-              taskChrono={this.props.taskChrono}
-              currentTask={this.props.tasks[this.props.currentTaskIndex]}
-              handleTaskPanelChange={this.updateMonitorState} />
-            <TasksLateralPanel
-              tasks={this.props.tasks}
-              results={this.props.results} />
-          </div>
-        );
-      case MONITOR_STEPS.RESULTS:
-        return <ResultPanel results={this.props.results} />;
-      default:
-        break;
+    case MONITOR_STEPS.WELCOME:
+      return <WelcomePanel />;
+    case MONITOR_STEPS.PLANNING:
+      return <PlanningPanel handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
+    case MONITOR_STEPS.WORKFLOW:
+      return (
+        <div className="Monitor-task-container">
+          <TaskPanel
+            dateLastPause={this.props.dateLastPause}
+            taskChrono={this.props.taskChrono}
+            currentTask={this.props.tasks[this.props.currentTaskIndex]}
+            handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
+          <TasksLateralPanel
+            tasks={this.props.tasks}
+            results={this.props.results} />
+        </div>
+      );
+    case MONITOR_STEPS.RESULTS:
+      return <ResultPanel results={this.props.results} />;
+    default:
+      break;
     }
   }
-  renderPlayPauseButton = () => {
+  renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
       <button className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
         {this.props.dateLastPause ? 'PLAY' : 'PAUSE'}
       </button>
-      : null
+      : null;
   }
   render() {
     return (
@@ -158,7 +160,7 @@ class Monitor extends Component {
           <div className="Monitor-footer-middle-div">
             <CenterButton step={this.props.step}
               disabled={this.isCenterButtonDisabled()}
-              onClick={this.handleClickCenterButton}/>
+              onClick={() => this.handleClickCenterButton()}/>
           </div>
           <div className="Monitor-footer-right-div">
             {this.renderPlayPauseButton()}
@@ -179,27 +181,27 @@ const mapStateToProps = state => {
     taskChrono: state.MonitorReducers.taskChrono,
     globalChrono: state.MonitorReducers.globalChrono,
     dateLastPause: state.MonitorReducers.dateLastPause,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
     playOrPauseSession: () => {
-      dispatch(playOrPauseSession())
+      dispatch(playOrPauseSession());
     },
     initSession: () => {
-      dispatch(initSession())
+      dispatch(initSession());
     },
     startSession: (tasks, planningRealTime) => {
-      dispatch(startSession(tasks, planningRealTime))
+      dispatch(startSession(tasks, planningRealTime));
     },
     nextTask: (newTasks, taskProblem, taskRealTime) => {
-      dispatch(nextTask(newTasks, taskProblem, taskRealTime))
+      dispatch(nextTask(newTasks, taskProblem, taskRealTime));
     },
     resetMonitor: () => {
-      dispatch(resetMonitor())
+      dispatch(resetMonitor());
     },
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Monitor);
