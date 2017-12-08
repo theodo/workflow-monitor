@@ -1,6 +1,6 @@
 .TaskPanel {
-  width: 60%;
-  margin: auto;
+  width: 75%;
+  margin: 0 10%;
 }
 
 .TaskPanel-problem-textarea {

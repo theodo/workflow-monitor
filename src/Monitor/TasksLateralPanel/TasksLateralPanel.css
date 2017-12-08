@@ -1,0 +1,20 @@
+.TasksLateralPanel {
+  overflow: auto;
+  min-height: 100%;
+  width: 25%;
+  text-align: left;
+  border-left: 1px solid black;
+}
+
+.TasksLateralPanel li {
+  color: #969696;
+  text-decoration: none;
+}
+
+.TasksLateralPanel li.done {
+  text-decoration: line-through;
+}
+
+.TasksLateralPanel li.current {
+  color: black;
+}

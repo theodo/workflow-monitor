@@ -5,6 +5,7 @@ import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
+import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
 import './Monitor.css';
 
 export const MONITOR_STEPS = {
@@ -118,12 +119,18 @@ class Monitor extends Component {
       case MONITOR_STEPS.PLANNING:
         return <PlanningPanel handlePlanningPanelChange={this.updateMonitorState} />;
       case MONITOR_STEPS.WORKFLOW:
-        return <TaskPanel
-          ref={ref => this.taskPanel = ref}
-          dateLastPause={this.props.dateLastPause}
-          taskChrono={this.props.taskChrono}
-          currentTask={this.props.tasks[this.props.currentTaskIndex]}
-          handleTaskPanelChange={this.updateMonitorState} />;
+        return (
+          <div className="Monitor-task-container">
+            <TaskPanel
+              dateLastPause={this.props.dateLastPause}
+              taskChrono={this.props.taskChrono}
+              currentTask={this.props.tasks[this.props.currentTaskIndex]}
+              handleTaskPanelChange={this.updateMonitorState} />
+            <TasksLateralPanel
+              tasks={this.props.tasks}
+              results={this.props.results} />
+          </div>
+        );
       case MONITOR_STEPS.RESULTS:
         return <ResultPanel results={this.props.results} />;
       default:

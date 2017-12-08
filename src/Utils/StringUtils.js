@@ -3,7 +3,7 @@ export const formatStringToTasks = (taskString) => {
     .split(/\n/)
     .filter((line) => line.length > 0)
     .map((taskLabel, index) => {
-    if (!taskLabel.match(/\([0-9]+\)$/)) return { id: index, label: taskLabel };
+    if (!taskLabel.match(/\([0-9]+\)$/)) return { id: index + 1, label: taskLabel };
     const timeIndex = taskLabel.lastIndexOf('(');
     return {
       id: index,
