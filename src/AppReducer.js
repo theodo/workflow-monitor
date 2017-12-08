@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux'
-import MonitorReducers from './Monitor/MonitorReducers'
+import { combineReducers } from 'redux';
+import MonitorReducers from './Monitor/MonitorReducers';
 
 const AppReducers = combineReducers({
   MonitorReducers,
-})
+});
 
-export default AppReducers
+export default AppReducers;

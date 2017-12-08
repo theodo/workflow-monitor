@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatMilliSecondToTime } from '../../Utils/TimeUtils'
+import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
 import './ReverseChrono.css';
 
 class ReverseChrono extends Component {
@@ -7,13 +7,13 @@ class ReverseChrono extends Component {
     super(props);
     this.state = {
       now: (new Date()).getTime(),
-    }
+    };
     this.interval = setInterval(() => {
-      document.title = this.formatTimeLeft()
+      document.title = this.formatTimeLeft();
       this.setState({
         now: (new Date()).getTime(),
-      })
-    }, 1000)
+      });
+    }, 1000);
   }
   componentWillUnmount(){
     clearInterval(this.interval);
@@ -22,8 +22,8 @@ class ReverseChrono extends Component {
     if (!this.props.taskChrono.dateLastStart) return 0;
     return this.props.dateLastPause ?
       this.props.taskChrono.elapsedTime + (this.props.dateLastPause - this.props.taskChrono.dateLastStart)
-      : this.props.taskChrono.elapsedTime + (this.state.now - this.props.taskChrono.dateLastStart)
-    }
+      : this.props.taskChrono.elapsedTime + (this.state.now - this.props.taskChrono.dateLastStart);
+  }
   getTime(){
     return this.props.estimatedTaskTime - this.getRealElapsedTime();
   }
@@ -31,8 +31,8 @@ class ReverseChrono extends Component {
     return this.getTime() < 0;
   }
   formatTimeLeft() {
-    const prefix = this.isTimeOver() ? '-' : ' '
-    return `${prefix} ${formatMilliSecondToTime(Math.abs(this.getTime()))}`
+    const prefix = this.isTimeOver() ? '-' : ' ';
+    return `${prefix} ${formatMilliSecondToTime(Math.abs(this.getTime()))}`;
   }
   render() {
     return (
