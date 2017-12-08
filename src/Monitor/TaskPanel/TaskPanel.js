@@ -65,17 +65,16 @@ class TaskPanel extends Component {
       <div className="TaskPanel">
         <h2>{this.props.currentTask.label}</h2>
         {
-          this.props.currentTask.estimatedTime ?
+          this.props.currentTask.estimatedTime &&
             <div>
             <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
-            <h3>Remaining time :
+            <h3>Remaining time :&nbsp;
               <ReverseChrono
                 dateLastPause={this.props.dateLastPause}
                 estimatedTaskTime={this.props.currentTask.estimatedTime}
                 taskChrono={this.props.taskChrono} />
             </h3>
             </div>
-            : null
         }
         <h3>Problems :</h3>
         <textarea value={this.state.problems} className="TaskPanel-problem-textarea" onChange={this.handleProblemsValueChange} />
