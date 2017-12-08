@@ -87,6 +87,8 @@ const MonitorReducers = (state = currentInitialState, action) => {
           ...action.newTasks,
           ...state.tasks.slice(state.currentTaskIndex+1),
         ]
+        // We re-assign ids
+        newStateForNextTask.tasks = newStateForNextTask.tasks.map((task, index) => ({ ...task, id: index + 1}));
       }
 
       if((!action.newTasks || action.newTasks.length === 0)
