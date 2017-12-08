@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Button from 'material-ui/Button';
 import { initSession, nextTask, startSession, playOrPauseSession, resetMonitor } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
@@ -28,9 +29,9 @@ class CenterButton extends Component {
   }
   render() {
     return (
-      <button className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.props.onClick}>
+      <Button raised className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.props.onClick}>
         {this.getLabel()}
-      </button>
+      </Button>
     );
   }
 }
@@ -141,9 +142,9 @@ class Monitor extends Component {
   }
   renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
-      <button className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
+      <Button raised className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
         {this.props.dateLastPause ? 'PLAY' : 'PAUSE'}
-      </button>
+      </Button>
       : null;
   }
   render() {

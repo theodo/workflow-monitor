@@ -5,9 +5,6 @@ import './PlanningPanel.css';
 const tasksPlaceholder = 'Task description (time in minutes)\nExample :\nSet up environment (2)\nCreate branch (1)\n...\nCreate Pull Request (1)';
 
 class PlanningPanel extends Component {
-  constructor(props){
-    super(props);
-  }
   handleTasksDefinitionChange(event) {
     this.props.handlePlanningPanelChange({
       planningPanelChanges: {

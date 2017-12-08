@@ -46,6 +46,10 @@
   cursor: pointer;
 }
 
+.Monitor-footer-button:disabled {
+  background-color: #e0e0e0 !important;
+}
+
 .Monitor-task-container {
   position: absolute;
   display: flex;

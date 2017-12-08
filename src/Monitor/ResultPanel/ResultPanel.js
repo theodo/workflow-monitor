@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from 'material-ui/Button';
 import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
 import { setFavicon } from '../../Utils/FaviconUtils';
 import './ResultPanel.css';
@@ -106,7 +107,8 @@ class ResultPanel extends Component {
             </tbody>
           </table>
         </div>
-        <button onClick={this.printResults}>Print résults</button>
+        <br />
+        <Button raised onClick={this.printResults}>Print results</Button>
       </div>
     );
   }
