@@ -8,23 +8,26 @@ class ResultRow extends Component {
     document.title = 'Worklow Monitor';
     setFavicon('favicon');
   }
-  getRealTimeClass() {
-    return this.props.result.estimatedTime ?
-      (this.props.result.estimatedTime < this.props.result.realTime ? 'red' : 'green')
+  getRealTimeClass(estimatedTime, realTime) {
+    return estimatedTime ?
+      (estimatedTime < realTime ? 'red' : 'green')
       : '';
   }
-  getRowClass() {
-    return this.props.result.addedOnTheFly ?
+  getRowClass(addedOnTheFly) {
+    return addedOnTheFly ?
       'addedOnTheFly'
       : '';
   }
   render() {
+    const { addedOnTheFly, label, estimatedTime, realTime, problems} = this.props;
     return (
-      <tr className={this.getRowClass()}>
-        <td>{this.props.result.label}</td>
-        <td>{formatMilliSecondToTime(this.props.result.estimatedTime)}</td>
-        <td className={this.getRealTimeClass()}>{formatMilliSecondToTime(this.props.result.realTime)}</td>
-        <td>{this.props.result.problems}</td>
+      <tr className={this.getRowClass(addedOnTheFly)}>
+        <td>{label}</td>
+        <td>{formatMilliSecondToTime(estimatedTime)}</td>
+        <td className={this.getRealTimeClass(estimatedTime, realTime)}>
+          {formatMilliSecondToTime(realTime)}
+        </td>
+        <td>{problems}</td>
       </tr>
     );
   }
@@ -62,6 +65,12 @@ class ResultPanel extends Component {
     mywindow.print();
     mywindow.close();
   }
+  getTotalTime(results, timeType) {
+    return results
+      .filter(({ label }) => label !== 'Planning')
+      .map((result) => result[timeType])
+      .reduce((totalTime, time) => totalTime + time, 0);
+  }
   render() {
     return (
       <div className="ResultPanel">
@@ -77,7 +86,23 @@ class ResultPanel extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.results.map((result, index) => <ResultRow key={index} result={result} />)}
+              {this.props.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems}, index) =>
+                <ResultRow
+                  key={index}
+                  addedOnTheFly={addedOnTheFly}
+                  label={label}
+                  estimatedTime={estimatedTime}
+                  realTime={realTime}
+                  problems={problems}
+                />)
+              }
+              <ResultRow
+                addedOnTheFly={false}
+                label="Total"
+                estimatedTime={this.getTotalTime(this.props.results, 'estimatedTime')}
+                realTime={this.getTotalTime(this.props.results, 'realTime')}
+                problems=""
+              />
             </tbody>
           </table>
         </div>
