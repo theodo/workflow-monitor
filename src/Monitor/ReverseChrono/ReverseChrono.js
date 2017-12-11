@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
+import { setFavicon } from '../../Utils/FaviconUtils';
 import './ReverseChrono.css';
 
 class ReverseChrono extends Component {
@@ -10,6 +11,7 @@ class ReverseChrono extends Component {
     };
     this.interval = setInterval(() => {
       document.title = this.formatTimeLeft();
+      setFavicon(this.isTimeOver() ? 'red' : 'green');
       this.setState({
         now: (new Date()).getTime(),
       });

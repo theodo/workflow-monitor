@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
+import { setFavicon } from '../../Utils/FaviconUtils';
 import './ResultPanel.css';
 
 class ResultRow extends Component {
   componentWillMount() {
     document.title = 'Worklow Monitor';
+    setFavicon('favicon');
   }
   getRealTimeClass() {
     return this.props.result.estimatedTime ?
