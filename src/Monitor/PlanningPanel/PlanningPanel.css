@@ -10,3 +10,9 @@
   height: 300px;
   line-height: 20px;
 }
+
+.PlanningPanel-save-button-container {
+  width: 100%;
+  text-align: right;
+  margin-bottom: 5px;
+}
