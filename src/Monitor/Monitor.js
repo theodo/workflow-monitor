@@ -62,20 +62,20 @@ class Monitor extends Component {
   }
   handleClickCenterButton() {
     switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      this.initSession();
-      break;
-    case MONITOR_STEPS.PLANNING:
-      if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
-      break;
-    case MONITOR_STEPS.WORKFLOW:
-      this.goToNextTask();
-      break;
-    case MONITOR_STEPS.RESULTS:
-      this.reset();
-      break;
-    default:
-      break;
+      case MONITOR_STEPS.WELCOME:
+        this.initSession();
+        break;
+      case MONITOR_STEPS.PLANNING:
+        if (this.areTasksValid(this.props.tasks)) this.startSession();
+        break;
+      case MONITOR_STEPS.WORKFLOW:
+        this.goToNextTask();
+        break;
+      case MONITOR_STEPS.RESULTS:
+        this.reset();
+        break;
+      default:
+        break;
     }
   }
   initSession() {
@@ -89,8 +89,8 @@ class Monitor extends Component {
       }
     });
   }
-  startSession() {
-    this.props.startSession(this.state.planningPanelChanges.tasks);
+  startSession = () => {
+    this.props.startSession(this.state.planningPanelChanges.tasks, this.state.planningPanelChanges.title);
     this.startTask();
   }
   goToNextTask() {
@@ -107,12 +107,12 @@ class Monitor extends Component {
   }
   isCenterButtonDisabled() {
     switch (this.props.step) {
-    case MONITOR_STEPS.PLANNING:
-      return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause;
-    case MONITOR_STEPS.WORKFLOW:
-      return this.props.dateLastPause;
-    default:
-      return false;
+      case MONITOR_STEPS.PLANNING:
+        return !this.areTasksValid(this.props.tasks) || this.props.dateLastPause;
+      case MONITOR_STEPS.WORKFLOW:
+        return this.props.dateLastPause;
+      default:
+        return false;
     }
   }
   renderPanel() {
@@ -176,7 +176,7 @@ const mapStateToProps = state => {
   return {
     isSessionPaused: state.MonitorReducers.isSessionPaused,
     step: state.MonitorReducers.currentStep,
-    tasks: state.MonitorReducers.tasks,
+    tasks: state.PlanningPanelReducers.tasks,
     currentTaskIndex: state.MonitorReducers.currentTaskIndex,
     results: state.MonitorReducers.results,
     taskChrono: state.MonitorReducers.taskChrono,

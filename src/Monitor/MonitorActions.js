@@ -10,10 +10,11 @@ export function initSession() {
   };
 }
 
-export function startSession(tasks) {
+export function startSession(tasks, title) {
   return {
     type: START_SESSION,
     tasks,
+    title,
   };
 }
 
