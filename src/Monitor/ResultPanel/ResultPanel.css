@@ -17,3 +17,8 @@ td.green {
 tr.addedOnTheFly {
   background: #ffe6e6;
 }
+
+td.results__problems-row {
+  white-space: pre-wrap;
+  padding: 5px 10px;
+}

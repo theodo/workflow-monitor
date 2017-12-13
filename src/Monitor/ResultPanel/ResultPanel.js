@@ -28,7 +28,7 @@ class ResultRow extends Component {
         <td className={this.getRealTimeClass(estimatedTime, realTime)}>
           {formatMilliSecondToTime(realTime)}
         </td>
-        <td>{problems}</td>
+        <td className="results__problems-row">{problems}</td>
       </tr>
     );
   }
