@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import AppReducer from './AppReducer';
 import Monitor from './Monitor/Monitor';
 import './App.css';
 
-let store = createStore(AppReducer);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const middlewares = [];
+const enhancer = composeEnhancers(
+  applyMiddleware(...middlewares),
+);
+const store = createStore(AppReducer, enhancer);
 
 class App extends Component {
   render() {
