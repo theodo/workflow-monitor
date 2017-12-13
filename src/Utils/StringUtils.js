@@ -1,3 +1,5 @@
+import uuid from 'uuid';
+
 export const formatStringToTasks = (taskString) => {
   const tasks = taskString
     .split(/\n/)
@@ -6,7 +8,7 @@ export const formatStringToTasks = (taskString) => {
       if (!taskLabel.match(/\([0-9]+\)$/)) return { id: index + 1, label: taskLabel };
       const timeIndex = taskLabel.lastIndexOf('(');
       return {
-        id: index,
+        id: uuid(),
         label: taskLabel.substr(0, timeIndex),
         estimatedTime: 60 * 1000 * parseInt(taskLabel.substring(timeIndex + 1, taskLabel.length - 1 ), 10),
       };

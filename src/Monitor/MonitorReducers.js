@@ -1,5 +1,6 @@
 import { INIT_SESSION, NEXT_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
+import uuid from 'uuid';
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
@@ -82,13 +83,12 @@ const MonitorReducers = (state = currentInitialState, action) => {
     };
 
     if (action.newTasks && action.newTasks.length > 0) {
+      let newTasksWithIds = action.newTasks.map(task => ({ ...task, id: uuid() }));
       newStateForNextTask.tasks = [
         ...state.tasks.slice(0,state.currentTaskIndex+1),
-        ...action.newTasks,
+        ...newTasksWithIds,
         ...state.tasks.slice(state.currentTaskIndex+1),
       ];
-      // We re-assign ids
-      newStateForNextTask.tasks = newStateForNextTask.tasks.map((task, index) => ({ ...task, id: index + 1}));
     }
 
     if((!action.newTasks || action.newTasks.length === 0)
