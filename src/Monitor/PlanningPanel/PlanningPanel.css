@@ -16,3 +16,8 @@
   text-align: right;
   margin-bottom: 5px;
 }
+
+.PlanningPanel-title-input {
+  width: 100%;
+  font-size: 20px;
+}
