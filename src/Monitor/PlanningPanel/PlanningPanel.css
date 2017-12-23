@@ -8,11 +8,27 @@
 .PlanningPanel-tasks-textarea {
   width: 100%;
   height: 300px;
-  line-height: 20px;
+  line-height: 22px;
+  font-weight: 500;
+  border-radius: 2px;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.2) 5px 5px 10px;
+  margin-top: 8px;
+  padding: 10px 0px 5px 10px;
+  font-family: "Avenir Next",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 13px;
 }
 
 .PlanningPanel-save-button-container {
   width: 100%;
   text-align: right;
   margin-bottom: 5px;
+}
+
+.PlanningPanel-save-button-container > button,
+.PlanningPanel-save-button-container > button:hover {
+  color: white;
+  border: 2px solid white;
+  border-radius: 3px;
+  background-color: transparent;
 }
