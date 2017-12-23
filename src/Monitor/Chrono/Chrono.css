@@ -4,5 +4,6 @@
   text-align: center;
   line-height: 50px;
   color: white;
-  border: 1px solid white;
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
 }
