@@ -3,15 +3,13 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
 import createHistory from 'history/createBrowserHistory';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 
 import { ConnectedRouter, routerMiddleware, push } from 'react-router-redux';
 import AppReducer from './AppReducer';
-import Monitor from './Monitor/Monitor';
 import Login from './Login/Login';
-import Home from './Home/Home';
+import Main from './Main/Main';
 import './App.css';
-
 
 const history = createHistory();
 const middleware = routerMiddleware(history);
@@ -30,9 +28,10 @@ class App extends Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <div className="App">
-            <Route exact path="/" component={Home}/>
-            <Route path="/monitor" component={Monitor}/>
-            <Route path="/login" component={Login}/>
+            <Switch>
+              <Route path="/login" component={Login}/>
+              <Route component={Main}/>
+            </Switch>
           </div>
         </ConnectedRouter>
       </Provider>

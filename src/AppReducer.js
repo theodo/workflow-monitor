@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
-import MonitorReducers from './Monitor/MonitorReducers';
+import MonitorReducers from './Main/Monitor/MonitorReducers';
 
 const AppReducers = combineReducers({
   MonitorReducers,
