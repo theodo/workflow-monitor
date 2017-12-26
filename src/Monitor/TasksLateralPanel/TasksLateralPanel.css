@@ -3,8 +3,9 @@
   min-height: 100%;
   width: 25%;
   text-align: left;
-  border-left: 1px solid white;
+  border-left: 1px solid black;
   font-family: "Avenir Next",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  background-color: white;
 }
 
 .TasksLateralPanel li {
@@ -17,5 +18,6 @@
 }
 
 .TasksLateralPanel li.current {
-  color: white;
+  color: black;
+  font-weight: bold;
 }
