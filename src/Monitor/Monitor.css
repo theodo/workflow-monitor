@@ -28,6 +28,7 @@
   position: relative;
   flex-grow: 1;
   overflow: scroll;
+  background-color: #fafafa;
 }
 
 .Monitor-footer-middle-div {
@@ -63,12 +64,10 @@
 }
 
 .Monitor-footer-right-div > .Monitor-footer-button {
-  color: #2B5BA0;
-  background-color: transparent;
+  color: white;
+  background-color: #2B5BA0;
   border-radius: 3px;
-  border: 2px solid #2B5BA0;
 }
-
 .Monitor-footer-right-div > .Monitor-footer-button:hover {
-  background-color: transparent;
+  background-color: #72C2B7;
 }
