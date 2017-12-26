@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../Utils/TimeUtils';
-import { setFavicon } from '../../Utils/FaviconUtils';
+import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
+import { setFavicon } from '../../../Utils/FaviconUtils';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {

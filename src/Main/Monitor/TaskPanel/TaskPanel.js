@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
-import { formatStringToTasks } from '../../Utils/StringUtils';
-import { formatMilliSecondToTime } from '../../Utils/TimeUtils';
+import { formatStringToTasks } from '../../../Utils/StringUtils';
+import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
 import './TaskPanel.css';
 
 class TaskPanel extends Component {
