@@ -150,7 +150,7 @@ export class Main extends Component {
                     <ListItemIcon>
                       <HomeIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Homepage" />
+                    <ListItemText primary="Home page" />
                   </ListItem>
                 </Link>
                 <Link to="/monitor">
