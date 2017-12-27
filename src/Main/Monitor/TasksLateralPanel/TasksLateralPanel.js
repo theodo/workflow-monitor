@@ -19,7 +19,6 @@ class TasksLateralPanel extends Component {
     return this.props.results.find(arrayTask => arrayTask.id === task.id) === undefined;
   }
   render() {
-    console.log(this.props.results, 'result');
     return (
       <div className="TasksLateralPanel">
         <ul>
