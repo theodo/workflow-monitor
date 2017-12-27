@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import Button from 'material-ui/Button';
-import { initSession, nextTask, startSession, playOrPauseSession, resetMonitor } from './MonitorActions';
+import { initSession, nextTask, startSession, playOrPauseSession } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
@@ -72,7 +73,7 @@ class Monitor extends Component {
       this.goToNextTask();
       break;
     case MONITOR_STEPS.RESULTS:
-      this.reset();
+      this.goToHome();
       break;
     default:
       break;
@@ -97,8 +98,8 @@ class Monitor extends Component {
     this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
     this.startTask();
   }
-  reset() {
-    this.props.resetMonitor();
+  goToHome() {
+    this.props.goToHome();
   }
   updateMonitorState(fieldsToUpdate) {
     this.setState({
@@ -135,7 +136,7 @@ class Monitor extends Component {
         </div>
       );
     case MONITOR_STEPS.RESULTS:
-      return <ResultPanel results={this.props.results} />;
+      return <ResultPanel results={this.props.results} currentTrelloCard={this.props.currentTrelloCard}/>;
     default:
       break;
     }
@@ -152,6 +153,11 @@ class Monitor extends Component {
       <div className="Monitor">
         <header className="Monitor-header">
           <Chrono chrono={this.props.taskChrono} dateLastPause={this.props.dateLastPause}/>
+          {
+            this.props.currentTrelloCard ?
+              <p>#{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}</p>
+              : ''
+          }
           <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause}/>
         </header>
         <div className="Monitor-content">
@@ -182,6 +188,7 @@ const mapStateToProps = state => {
     taskChrono: state.MonitorReducers.taskChrono,
     globalChrono: state.MonitorReducers.globalChrono,
     dateLastPause: state.MonitorReducers.dateLastPause,
+    currentTrelloCard: state.MonitorReducers.currentTrelloCard,
   };
 };
 
@@ -199,8 +206,8 @@ const mapDispatchToProps = dispatch => {
     nextTask: (newTasks, taskProblem, taskRealTime) => {
       dispatch(nextTask(newTasks, taskProblem, taskRealTime));
     },
-    resetMonitor: () => {
-      dispatch(resetMonitor());
+    goToHome: () => {
+      dispatch(push('/'));
     },
   };
 };

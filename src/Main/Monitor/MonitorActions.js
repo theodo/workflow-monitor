@@ -3,6 +3,7 @@ export const START_SESSION = 'START_SESSION';
 export const NEXT_TASK = 'NEXT_TASK';
 export const RESET_MONITOR = 'RESET_MONITOR';
 export const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
+export const SET_CURRENT_TRELLO_CARD = 'SET_CURRENT_TRELLO_CARD';
 
 export function initSession() {
   return {
@@ -31,8 +32,9 @@ export function playOrPauseSession() {
   };
 }
 
-export function resetMonitor() {
+export function resetMonitor(card) {
   return {
     type: RESET_MONITOR,
+    card
   };
 }

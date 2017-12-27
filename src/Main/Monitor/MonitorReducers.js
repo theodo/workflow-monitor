@@ -23,7 +23,8 @@ const initialMonitorState = {
   globalChrono: {
     dateLastStart: undefined,
     elapsedTime: 0,
-  }
+  },
+  currentTrelloCard: undefined,
 };
 
 const oldState = (JSON.parse(localStorage.getItem('monitorState')));
@@ -97,7 +98,10 @@ const MonitorReducers = (state = currentInitialState, action) => {
     newState = newStateForNextTask;
     break;
   case RESET_MONITOR:
-    newState = { ...initialMonitorState };
+    newState = {
+      ...initialMonitorState,
+      currentTrelloCard: action.card,
+    };
     break;
   case PLAY_OR_PAUSE_SESSION:
     if (state.dateLastPause) {

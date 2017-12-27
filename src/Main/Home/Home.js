@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
@@ -7,6 +8,7 @@ import Select from 'material-ui/Select';
 import './Home.css';
 import SimpleCard from './SimpleCard/SimpleCard';
 import { saveSettings } from '../Settings/SettingsActions';
+import { resetMonitor } from '../Monitor/MonitorActions';
 
 class Home extends Component {
   constructor(props){
@@ -95,7 +97,7 @@ class Home extends Component {
             this.state.cards.length === 0 ?
               'Select your project and the current backlog'
               : this.state.cards.map((card, index) =>
-                <SimpleCard key={index} idShort={card.idShort} userStory={card.name}></SimpleCard>)
+                <SimpleCard key={index} card={card} handleCardStartClick={this.props.handleCardStartClick}></SimpleCard>)
           }
         </div>
       </div>
@@ -114,6 +116,10 @@ const mapDispatchToProps = dispatch => {
   return {
     saveSettings: (settings) => {
       dispatch(saveSettings(settings));
+    },
+    handleCardStartClick: (card) => {
+      dispatch(resetMonitor(card));
+      dispatch(push('/monitor'));
     },
   };
 };

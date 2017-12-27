@@ -24,14 +24,14 @@ function SimpleCard(props) {
     <Card className={classes.card}>
       <CardContent>
         <Typography type="headline" component="h2">
-          #{props.idShort}
+          #{props.card.idShort}
         </Typography>
         <Typography component="p">
-          {bull} {props.userStory}
+          {bull} {props.card.name}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button dense>Start</Button>
+        <Button dense onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
       </CardActions>
     </Card>
   );

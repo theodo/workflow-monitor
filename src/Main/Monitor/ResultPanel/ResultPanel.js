@@ -68,7 +68,7 @@ class ResultPanel extends Component {
 
   printResults() {
     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-    const title = 'Récapitulatif de ticket';
+    const title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
     mywindow.document.write('<html><head><title>' + title  + '</title>');
     const css =`
       table, th, td {
@@ -88,7 +88,7 @@ class ResultPanel extends Component {
       }`;
     mywindow.document.write('<style>' + css +'</style>');
     mywindow.document.write('</head><body>');
-    mywindow.document.write('<h1>' + title  + '</h1>');
+    mywindow.document.write('<h4>' + title  + '</h4>');
     mywindow.document.write(document.getElementsByClassName('printArea')[0].innerHTML);
     mywindow.document.write('</body></html>');
     mywindow.document.close(); // necessary for IE >= 10
@@ -154,7 +154,7 @@ class ResultPanel extends Component {
           </table>
         </div>
         <br />
-        <Button raised onClick={this.printResults}>Print results</Button>
+        <Button raised onClick={() => this.printResults()}>Print results</Button>
       </div>
     );
   }
