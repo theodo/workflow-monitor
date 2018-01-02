@@ -4,8 +4,8 @@ export const formatStringToTasks = (taskString) => {
   const tasks = taskString
     .split(/\n/)
     .filter((line) => line.length > 0)
-    .map((taskLabel, index) => {
-      if (!taskLabel.match(/\([0-9]+\)$/)) return { id: index + 1, label: taskLabel };
+    .map((taskLabel) => {
+      if (!taskLabel.match(/\([0-9]+\)$/)) return { id: uuid(), label: taskLabel };
       const timeIndex = taskLabel.lastIndexOf('(');
       return {
         id: uuid(),
