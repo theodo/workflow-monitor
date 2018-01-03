@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
@@ -119,7 +118,7 @@ const mapDispatchToProps = dispatch => {
     },
     handleCardStartClick: (card) => {
       dispatch(resetMonitor(card));
-      dispatch(push('/monitor'));
+      window.location.hash = '#/monitor';
     },
   };
 };

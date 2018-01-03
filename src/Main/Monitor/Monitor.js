@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import Button from 'material-ui/Button';
 import { initSession, nextTask, startSession, playOrPauseSession } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
@@ -207,7 +206,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(nextTask(newTasks, taskProblem, taskRealTime));
     },
     goToHome: () => {
-      dispatch(push('/'));
+      window.location.hash = '#/';
     },
   };
 };
