@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
-import { push } from 'react-router-redux';
 
 const trelloAuthParams = {
   type: 'popup',
@@ -47,7 +46,7 @@ const mapStateToProps = () => ({});
 const mapDispatchToProps = dispatch => {
   return {
     login: () => {
-      dispatch(push('/'));
+      window.location.hash = '#/';
     },
   };
 };

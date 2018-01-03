@@ -1,39 +1,34 @@
 import React, { Component } from 'react';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import createHistory from 'history/createBrowserHistory';
 import { Route, Switch } from 'react-router';
 
-import { ConnectedRouter, routerMiddleware, push } from 'react-router-redux';
+import { HashRouter } from 'react-router-dom';
 import AppReducer from './AppReducer';
 import Login from './Login/Login';
 import Main from './Main/Main';
 import './App.css';
 
-const history = createHistory();
-const middleware = routerMiddleware(history);
-
 let store = createStore(
   AppReducer, /* preloadedState, */
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(middleware)
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-store.dispatch(push('/login'));
+window.location.hash = '#/login';
 
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <ConnectedRouter history={history}>
+        <HashRouter>
           <div className="App">
             <Switch>
-              <Route path="/login" component={Login}/>
-              <Route component={Main}/>
+              <Route exact path="/login" component={Login}/>
+              <Route path="/" component={Main}/>
             </Switch>
           </div>
-        </ConnectedRouter>
+        </HashRouter>
       </Provider>
     );
   }
