@@ -14,12 +14,14 @@ const trelloAuthParams = {
 class Login extends Component {
   constructor(props) {
     super(props);
-    window.Trello.authorize({
-      ...trelloAuthParams,
-      interactive: false,
-      success: () => this.authenticationSuccess(),
-      error: this.authenticationFailure
-    });
+    if(localStorage.getItem('trello_token')){
+      window.Trello.authorize({
+        ...trelloAuthParams,
+        interactive: false,
+        success: () => this.authenticationSuccess(),
+        error: this.authenticationFailure
+      });
+    }
   }
   authenticationSuccess(){
     this.props.login();
