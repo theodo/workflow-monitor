@@ -24,7 +24,12 @@ class Login extends Component {
     }
   }
   authenticationSuccess(){
-    this.props.login();
+    window.Trello.get(
+      '/member/me/boards',
+      () => this.props.login() ,
+      () => {
+        localStorage.removeItem('trello_token');
+      });
   }
   authenticationFailure(){}
   handleLoginButtonClick(){

@@ -68,7 +68,8 @@ class ResultPanel extends Component {
 
   printResults() {
     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-    const title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
+    let title = '';
+    if(this.props.currentTrelloCard) title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
     mywindow.document.write('<html><head><title>' + title  + '</title>');
     const css =`
       table, th, td {
