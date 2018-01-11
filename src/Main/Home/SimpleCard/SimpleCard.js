@@ -19,7 +19,6 @@ const styles = () => ({
 function SimpleCard(props) {
   const { classes } = props;
   const bull = <span className={classes.bullet}>•</span>;
-
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -31,7 +30,11 @@ function SimpleCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button dense onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
+        {
+          props.isCurrentTicket
+            ? <Button dense onClick={()=> props.handleCardContinueClick(props.card)}>Continue</Button>
+            : <Button dense onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
+        }
       </CardActions>
     </Card>
   );
