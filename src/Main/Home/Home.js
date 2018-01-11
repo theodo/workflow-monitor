@@ -96,7 +96,13 @@ class Home extends Component {
             this.state.cards.length === 0 ?
               'Select your project and the current backlog'
               : this.state.cards.map((card, index) =>
-                <SimpleCard key={index} card={card} handleCardStartClick={this.props.handleCardStartClick}></SimpleCard>)
+                <SimpleCard
+                  key={index}
+                  card={card}
+                  isCurrentTicket={this.props.currentTicket && this.props.currentTicket.id === card.id}
+                  handleCardStartClick={this.props.handleCardStartClick}
+                  handleCardContinueClick={this.props.handleCardContinueClick}
+                ></SimpleCard>)
           }
         </div>
       </div>
@@ -108,6 +114,7 @@ const mapStateToProps = state => {
   return {
     project: state.SettingsReducers.selectedProjectId ? state.SettingsReducers.selectedProjectId : '',
     backlog: state.SettingsReducers.selectedBacklogId ? state.SettingsReducers.selectedBacklogId : '',
+    currentTicket: state.MonitorReducers.currentTrelloCard,
   };
 };
 
@@ -118,6 +125,9 @@ const mapDispatchToProps = dispatch => {
     },
     handleCardStartClick: (card) => {
       dispatch(resetMonitor(card));
+      window.location.hash = '#/monitor';
+    },
+    handleCardContinueClick: () => {
       window.location.hash = '#/monitor';
     },
   };
