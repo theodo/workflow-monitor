@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { sendColor } from '../../../Utils/AndonLightServer';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import { formatStringToTasks } from '../../../Utils/StringUtils';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
@@ -12,6 +13,7 @@ class TaskPanel extends Component {
       newTasks: '',
     };
     if(!this.props.dateLastPause) this.initAlarm(props.currentTask.estimatedTime);
+    sendColor('green');
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.dateLastPause && !this.props.dateLastPause){
@@ -21,6 +23,7 @@ class TaskPanel extends Component {
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
       clearTimeout(this.timeout);
+      sendColor('green');
       this.initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         problems: '',
@@ -40,6 +43,7 @@ class TaskPanel extends Component {
   initAlarm(timeInMilliSecond) {
     if (timeInMilliSecond && timeInMilliSecond > 0) this.timeout = setTimeout(() => {
       const audio = new Audio('alarm.mp3');
+      sendColor('red');
       audio.play();
     }, (timeInMilliSecond));
   }
