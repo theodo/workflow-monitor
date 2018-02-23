@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
-import { formatStringToTasks } from '../../../Utils/StringUtils';
+import { formatStringToTasks } from '../../../Utils/TaskUtils';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
 import './TaskPanel.css';
 

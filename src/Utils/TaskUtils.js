@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import { formatMilliSecondToTime } from './TimeUtils';
 
 export const formatStringToTasks = (taskString) => {
   const tasks = taskString
@@ -14,4 +15,12 @@ export const formatStringToTasks = (taskString) => {
       };
     });
   return tasks.length > 0 ? tasks : undefined;
+};
+
+export const getTotalTime = (results, timeType) => {
+  return formatMilliSecondToTime(results
+    .filter(({ label }) => label !== 'Planning')
+    .map((result) => result[timeType])
+    .reduce((totalTime, time) => totalTime + time, 0)
+  );
 };

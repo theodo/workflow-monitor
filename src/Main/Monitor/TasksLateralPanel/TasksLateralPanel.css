@@ -1,7 +1,8 @@
 .TasksLateralPanel {
   overflow: auto;
   min-height: 100%;
-  width: 25%;
+  min-width: 300px;
+  width: 300px;
   text-align: left;
   border-left: 1px solid black;
   font-family: "Avenir Next",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
@@ -13,11 +14,70 @@
   text-decoration: none;
 }
 
-.TasksLateralPanel li.done {
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.TaskRow {
+  border-bottom: 1px solid grey;
+  list-style-type: none;
+  word-wrap: break-word;
+}
+
+.TaskRow-bottom {
+  display: flex;
+}
+
+.TaskRow.done .TaskRow-label {
   text-decoration: line-through;
 }
 
-.TasksLateralPanel li.current {
+.TaskRow.current {
   color: black;
   font-weight: bold;
+}
+
+.TaskRow-label {
+  padding: 2px 4px;
+}
+
+.TaskRow-empty {
+  flex-grow: 1;
+}
+
+.TaskRow-time {
+  min-width: 80px;
+  font-size: 10px;
+  color: grey;
+  text-align: right;
+  background-color: #fafafa;
+  min-height: 40px;
+  border-top-left-radius: 5px;
+  border-top: 1px solid lightgrey;
+  border-left: 1px solid lightgrey;
+}
+
+.TaskRow-real-time {
+  font-size: 18px;
+}
+
+.TaskRow-real-time.red {
+  color: red;
+}
+
+.TaskRow-real-time.green {
+  color: green;
+}
+
+.TotalRow-time {
+  min-height: 40px;
+  min-width: 80px;
+  color: grey;
+  text-align: right;
+}
+
+
+.TotalRow-estimated-time {
+  font-size: 14px;
 }

@@ -1,6 +1,9 @@
 .TaskPanel {
-  width: 75%;
+  flex-grow: 1;
+
   margin: 0 10%;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .TaskPanel-problem-textarea {
