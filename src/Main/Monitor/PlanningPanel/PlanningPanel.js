@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { formatStringToTasks } from '../../../Utils/StringUtils';
+import { initAlarm } from '../../../Utils/AlarmUtils';
 import Button from 'material-ui/Button';
 import './PlanningPanel.css';
 
 const tasksPlaceholder = 'Task description (time in minutes)\nExample :\nSet up environment (2)\nCreate branch (1)\n...\nCreate Pull Request (1)';
+
+const planningMaxTime = 600000;
 
 class PlanningPanel extends Component {
   constructor(props){
@@ -11,6 +14,14 @@ class PlanningPanel extends Component {
     this.state = {
       tasks: localStorage.getItem('defaultTasks') ? localStorage.getItem('defaultTasks') : '',
     };
+    if(!this.props.dateLastPause) this.timeout = initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
+  }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.dateLastPause && !this.props.dateLastPause){
+      clearTimeout(this.timeout);
+    } else if (!nextProps.dateLastPause && this.props.dateLastPause){
+      this.timeout = initAlarm(planningMaxTime - nextProps.taskChrono.elapsedTime, false);
+    }
   }
   handleTasksDefinitionChange(event) {
     this.setState({ tasks: event.target.value });
@@ -22,6 +33,9 @@ class PlanningPanel extends Component {
   }
   saveDefaultTasks(){
     localStorage.setItem('defaultTasks',this.state.tasks);
+  }
+  componentWillUnmount(){
+    clearTimeout(this.timeout);
   }
   render() {
     return (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { sendColor } from '../../../Utils/AndonLightServer';
+import { initAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import { formatStringToTasks } from '../../../Utils/StringUtils';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
@@ -12,19 +12,17 @@ class TaskPanel extends Component {
       problems: '',
       newTasks: '',
     };
-    if(!this.props.dateLastPause) this.initAlarm(props.currentTask.estimatedTime);
-    sendColor('green');
+    if(!this.props.dateLastPause) this.timeout = initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.dateLastPause && !this.props.dateLastPause){
       clearTimeout(this.timeout);
     } else if (!nextProps.dateLastPause && this.props.dateLastPause){
-      this.initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
+      this.timeout = initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
       clearTimeout(this.timeout);
-      sendColor('green');
-      this.initAlarm(nextProps.currentTask.estimatedTime);
+      this.timeout = initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         problems: '',
         newTasks: '',
@@ -38,14 +36,6 @@ class TaskPanel extends Component {
   getFormattedTasks(stringTasks) {
     const tasks = formatStringToTasks(stringTasks);
     return tasks ? tasks.map((task) => ({ ...task, addedOnTheFly: true })) : undefined;
-  }
-
-  initAlarm(timeInMilliSecond) {
-    if (timeInMilliSecond && timeInMilliSecond > 0) this.timeout = setTimeout(() => {
-      const audio = new Audio('alarm.mp3');
-      sendColor('red');
-      audio.play();
-    }, (timeInMilliSecond));
   }
 
   handleTaskPanelChange() {

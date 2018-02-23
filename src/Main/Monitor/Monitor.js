@@ -108,9 +108,9 @@ class Monitor extends Component {
   isCenterButtonDisabled() {
     switch (this.props.step) {
     case MONITOR_STEPS.PLANNING:
-      return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause;
+      return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause !== undefined;
     case MONITOR_STEPS.WORKFLOW:
-      return this.props.dateLastPause;
+      return this.props.dateLastPause !== undefined;
     default:
       return false;
     }
@@ -120,7 +120,10 @@ class Monitor extends Component {
     case MONITOR_STEPS.WELCOME:
       return <WelcomePanel />;
     case MONITOR_STEPS.PLANNING:
-      return <PlanningPanel handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
+      return <PlanningPanel
+        dateLastPause={this.props.dateLastPause}
+        taskChrono={this.props.taskChrono}
+        handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
     case MONITOR_STEPS.WORKFLOW:
       return (
         <div className="Monitor-task-container">
