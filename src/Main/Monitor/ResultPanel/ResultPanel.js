@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
+import { getTotalTime } from '../../../Utils/TaskUtils';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
@@ -99,14 +100,6 @@ class ResultPanel extends Component {
     mywindow.close();
   }
 
-  getTotalTime(results, timeType) {
-    return formatMilliSecondToTime(results
-      .filter(({ label }) => label !== 'Planning')
-      .map((result) => result[timeType])
-      .reduce((totalTime, time) => totalTime + time, 0)
-    );
-  }
-
   render() {
     return (
       <div className="ResultPanel">
@@ -141,14 +134,14 @@ class ResultPanel extends Component {
               }
               <tr className='total-row'>
                 <td>Total</td>
-                <td>{this.getTotalTime(this.state.results, 'estimatedTime')}</td>
+                <td>{getTotalTime(this.state.results, 'estimatedTime')}</td>
                 <td
                   className={getRealTimeClass(
-                    this.getTotalTime(this.state.results, 'estimatedTime'),
-                    this.getTotalTime(this.state.results, 'realTime')
+                    getTotalTime(this.state.results, 'estimatedTime'),
+                    getTotalTime(this.state.results, 'realTime')
                   )}
                 >
-                  {this.getTotalTime(this.state.results, 'realTime')}</td>
+                  {getTotalTime(this.state.results, 'realTime')}</td>
                 <td />
               </tr>
             </tbody>

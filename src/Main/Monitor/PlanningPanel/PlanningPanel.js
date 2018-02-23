@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatStringToTasks } from '../../../Utils/StringUtils';
+import { formatStringToTasks } from '../../../Utils/TaskUtils';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import Button from 'material-ui/Button';
 import './PlanningPanel.css';
