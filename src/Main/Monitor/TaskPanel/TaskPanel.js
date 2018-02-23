@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { initAlarm } from '../../../Utils/AlarmUtils';
+import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import { formatStringToTasks } from '../../../Utils/StringUtils';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
@@ -12,17 +12,17 @@ class TaskPanel extends Component {
       problems: '',
       newTasks: '',
     };
-    if(!this.props.dateLastPause) this.timeout = initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
+    if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.dateLastPause && !this.props.dateLastPause){
-      clearTimeout(this.timeout);
+      cancelAlarm();
     } else if (!nextProps.dateLastPause && this.props.dateLastPause){
-      this.timeout = initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
+      initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
-      clearTimeout(this.timeout);
-      this.timeout = initAlarm(nextProps.currentTask.estimatedTime);
+      cancelAlarm();
+      initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         problems: '',
         newTasks: '',
@@ -30,7 +30,7 @@ class TaskPanel extends Component {
     }
   }
   componentWillUnmount(){
-    clearTimeout(this.timeout);
+    cancelAlarm();
   }
 
   getFormattedTasks(stringTasks) {

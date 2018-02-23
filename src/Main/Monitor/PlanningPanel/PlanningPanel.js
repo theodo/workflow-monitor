@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatStringToTasks } from '../../../Utils/StringUtils';
-import { initAlarm } from '../../../Utils/AlarmUtils';
+import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import Button from 'material-ui/Button';
 import './PlanningPanel.css';
 
@@ -14,13 +14,13 @@ class PlanningPanel extends Component {
     this.state = {
       tasks: localStorage.getItem('defaultTasks') ? localStorage.getItem('defaultTasks') : '',
     };
-    if(!this.props.dateLastPause) this.timeout = initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
+    if(!this.props.dateLastPause) initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
   }
   componentWillReceiveProps(nextProps) {
     if(nextProps.dateLastPause && !this.props.dateLastPause){
-      clearTimeout(this.timeout);
+      cancelAlarm();
     } else if (!nextProps.dateLastPause && this.props.dateLastPause){
-      this.timeout = initAlarm(planningMaxTime - nextProps.taskChrono.elapsedTime, false);
+      initAlarm(planningMaxTime - nextProps.taskChrono.elapsedTime, false);
     }
   }
   handleTasksDefinitionChange(event) {
@@ -35,7 +35,7 @@ class PlanningPanel extends Component {
     localStorage.setItem('defaultTasks',this.state.tasks);
   }
   componentWillUnmount(){
-    clearTimeout(this.timeout);
+    cancelAlarm();
   }
   render() {
     return (
