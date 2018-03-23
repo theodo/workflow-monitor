@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { formatStringToTasks } from '../../../Utils/TaskUtils';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
+import { getTotalTime } from '../../../Utils/TaskUtils';
 import Button from 'material-ui/Button';
 import './PlanningPanel.css';
 
@@ -51,6 +52,7 @@ class PlanningPanel extends Component {
             className="PlanningPanel-tasks-textarea"
             onChange={(event) => this.handleTasksDefinitionChange(event)}
           />
+          <p>Total estimated time : { formatStringToTasks(this.state.tasks) ? getTotalTime(formatStringToTasks(this.state.tasks), 'estimatedTime') : '' }</p>
         </div>
       </div>
     );
