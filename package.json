@@ -4,18 +4,20 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "gh-pages": "^1.1.0",
-    "history": "^4.7.2",
-    "material-ui": "^1.0.0-beta.25",
-    "material-ui-icons": "^1.0.0-beta.17",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
-    "react-redux": "^5.0.6",
-    "react-router-dom": "^4.2.2",
-    "react-router-redux": "^5.0.0-alpha.9",
+    "gh-pages": "1.1.0",
+    "history": "4.7.2",
+    "material-ui": "1.0.0-beta.25",
+    "material-ui-icons": "1.0.0-beta.17",
+    "react": "16.1.1",
+    "react-dnd": "2.6.0",
+    "react-dnd-html5-backend": "2.6.0",
+    "react-dom": "16.1.1",
+    "react-redux": "5.0.6",
+    "react-router-dom": "4.2.2",
+    "react-router-redux": "5.0.0-alpha.9",
     "react-scripts": "1.0.17",
-    "redux": "^3.7.2",
-    "uuid": "^3.1.0"
+    "redux": "3.7.2",
+    "uuid": "3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,7 +28,7 @@
     "lint": "eslint ./src"
   },
   "devDependencies": {
-    "eslint": "^4.12.1",
-    "eslint-plugin-react": "^7.5.1"
+    "eslint": "4.12.1",
+    "eslint-plugin-react": "7.5.1"
   }
 }
