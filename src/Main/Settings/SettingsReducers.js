@@ -14,6 +14,7 @@ const SettingsReducers = (state = currentInitialState, action) => {
   switch (action.type) {
   case SAVE_SETTINGS:
     newState = {
+      ...state,
       ...action.settings,
     };
     break;
