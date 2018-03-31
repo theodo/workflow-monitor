@@ -1,7 +1,4 @@
 .PlanningPanel-content {
-  width: 80%;
-  height: 300px;
-  margin: auto;
   text-align: left;
 }
 
@@ -31,4 +28,12 @@
 }
 .PlanningPanel-save-button-container > button:hover {
   background-color: #72C2B7;
+}
+
+h4 {
+  margin: 10px 0;
+}
+
+.TaskList {
+  padding-left: 20px;
 }

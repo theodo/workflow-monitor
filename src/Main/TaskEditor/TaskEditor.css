@@ -1,0 +1,72 @@
+.TaskField_input {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.TaskField_description {
+  border: 1px solid #CACFD2;
+  border-top: 0;
+  border-bottom: 0;
+  flex-grow: 5;
+  padding-left: 10px;
+}
+.TaskField_estimatedTime {
+  text-align: center;
+  border: 1px solid #CACFD2;
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 0;
+  flex-grow: 1;
+  width:100px;
+}
+
+.TaskField_mainContainer {
+  display: inline-block;
+  width: 100%;
+}
+
+.TaskField_mainContainer_top {
+  display: flex;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.TaskField_mainContainer_bottom {
+  display: flex;
+  border-top: 1px solid #CACFD2;
+}
+
+.TaskField_dragPoint {
+  box-sizing: border-box;
+  cursor: move;
+  display: inline-block;
+  height: 36px;
+  padding: 0 10px;
+}
+
+.TaskEditor {
+  margin: 10px 0;
+}
+
+.TaskField_check {
+  flex-grow: 1;
+  max-width: 500px;
+  height: 24px;
+  padding-left: 10px;
+}
+
+.TaskField_buttonsBloc {
+  display: flex;
+  justify-content: flex-end;
+  width: 175px;
+}
+
+.TaskField_addCheckIcon {
+  height: 20px;
+  color: #228B22;
+}
+
+.TaskField_deleteIcon {
+  height: 20px;
+  color: #8B0000;
+}

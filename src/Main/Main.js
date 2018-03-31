@@ -9,6 +9,7 @@ import MenuIcon from 'material-ui-icons/Menu';
 import Drawer from 'material-ui/Drawer';
 import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
+import Settings from './Settings/Settings';
 
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -19,6 +20,7 @@ import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 import HomeIcon from 'material-ui-icons/Home';
 import TrackChangesIcon from 'material-ui-icons/TrackChanges';
+import SettingsIcon from 'material-ui-icons/Settings';
 
 // The code of this component come from https://material-ui-next.com/demos/drawers/
 
@@ -161,6 +163,14 @@ export class Main extends Component {
                     <ListItemText primary="Session monitor" />
                   </ListItem>
                 </Link>
+                <Link to="/settings">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Settings" />
+                  </ListItem>
+                </Link>
               </div>
               <Divider />
             </div>
@@ -168,6 +178,7 @@ export class Main extends Component {
           <main className={classes.content}>
             <Route exact path="/" component={Home}/>
             <Route path="/monitor" component={Monitor}/>
+            <Route path="/settings" component={Settings}/>
           </main>
         </div>
       </div>
