@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
+import TextField from 'material-ui/TextField';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
 import { filterEmptyTasks } from '../../../Utils/TaskUtils';
 import './TaskPanel.css';
+
+const TEXT_AREA_BORDER = '1px solid #CACFD2';
+
+const problemsTextFieldStyle = {
+  borderLeft: TEXT_AREA_BORDER,
+  borderTop: TEXT_AREA_BORDER,
+  borderRight: TEXT_AREA_BORDER,
+  borderRadius: '4px 4px 0 0',
+  backgroundColor: 'white',
+};
 
 class TaskPanel extends Component {
   constructor(props){
@@ -72,10 +83,17 @@ class TaskPanel extends Component {
             </div>
         }
         <h3>Problems :</h3>
-        <textarea
+        <TextField
+          style={{ ...problemsTextFieldStyle }}
+          id="multiline-flexible"
+          label="Problems"
+          multiline
+          rowsMax="4"
           value={this.state.problems}
+          onChange={(event) => this.handleProblemsValueChange(event)}
           className="TaskPanel-problem-textarea"
-          onChange={(event) => this.handleProblemsValueChange(event)} />
+          margin="normal"
+        />
         <h3>Add tasks after this one :</h3>
         <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
       </div>
