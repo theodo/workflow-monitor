@@ -4,6 +4,7 @@ import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import { saveSettings } from './SettingsActions';
 import TaskEditor from '../TaskEditor/TaskEditor';
+import { filterEmptyTasks } from '../../Utils/TaskUtils';
 import './Settings.css';
 
 class Settings extends Component {
@@ -20,7 +21,10 @@ class Settings extends Component {
     this.setState({ [taskCategory]: tasks });
   }
   saveSettings() {
-    this.props.saveSettings(this.state);
+    this.props.saveSettings({
+      beginTasks: filterEmptyTasks(this.state.beginTasks),
+      endTasks: filterEmptyTasks(this.state.endTasks),
+    });
   }
   render() {
     return (

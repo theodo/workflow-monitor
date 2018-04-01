@@ -207,9 +207,6 @@ const TaskFieldWrapper = DropTarget('card', cardTarget, connect => ({connectDrop
 class TaskEditor extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      tasks: this.props.tasks
-    };
     this.updateTasks = this.updateTasks.bind(this);
     this.moveCard = this.moveCard.bind(this);
     this.addTask = this.addTask.bind(this);
@@ -217,11 +214,10 @@ class TaskEditor extends Component {
     this.removeTask = this.removeTask.bind(this);
   }
   updateTasks(tasks){
-    this.setState({tasks});
-    this.props.updateTasks(tasks.filter(task => task.label && task.label.length > 0));
+    this.props.updateTasks(tasks);
   }
   moveCard(dragIndex, hoverIndex) {
-    const { tasks } = this.state;
+    const { tasks } = this.props;
     const dragCard = tasks[dragIndex];
     const newTasks = [...tasks];
     newTasks.splice(dragIndex, 1);
@@ -229,17 +225,17 @@ class TaskEditor extends Component {
     this.updateTasks(newTasks);
   }
   addTask() {
-    this.updateTasks([...this.state.tasks, {id:uuid(), label:'', estimatedTimeText: '', checks:['mon check']}]);
+    this.updateTasks([...this.props.tasks, {id:uuid(), label:'', estimatedTimeText: '', checks:['mon check']}]);
   }
   removeTask(taskId) {
-    this.updateTasks([...this.state.tasks.filter((task) => taskId !== task.id)]);
+    this.updateTasks([...this.props.tasks.filter((task) => taskId !== task.id)]);
   }
   updateTask(taskId, fieldName, value) {
     const fieldsToAdd = {[fieldName]: value };
     if(fieldName === 'estimatedTimeText')
       fieldsToAdd.estimatedTime = value && value.length > 0 ? value * 60 * 1000 : undefined;
 
-    this.updateTasks([...this.state.tasks.map((task)=> {
+    this.updateTasks([...this.props.tasks.map((task)=> {
       if (task.id===taskId) return { ...task, ...fieldsToAdd };
       return task;
     })]);
@@ -248,7 +244,7 @@ class TaskEditor extends Component {
     return (
       <div className="TaskEditor">
         <div className="DropZone">
-          {this.state.tasks.map((task, i) => (
+          {this.props.tasks.map((task, i) => (
             <TaskFieldWrapper
               key={task.id}
               index={i}

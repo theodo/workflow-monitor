@@ -6,6 +6,7 @@ import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import Button from 'material-ui/Button';
 import TaskEditor from '../../TaskEditor/TaskEditor';
+import { filterEmptyTasks } from '../../../Utils/TaskUtils';
 import './PlanningPanel.css';
 
 const planningMaxTime = 600000;
@@ -43,7 +44,7 @@ class PlanningPanel extends Component {
     });
   }
   buildAllTasks(tasks){
-    return [...this.props.beginTasks, ...tasks, ...this.props.endTasks];
+    return [...this.props.beginTasks, ...filterEmptyTasks(tasks), ...this.props.endTasks];
   }
   componentWillUnmount(){
     cancelAlarm();

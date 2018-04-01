@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
-import { formatStringToTasks } from '../../../Utils/TaskUtils';
+import TaskEditor from '../../TaskEditor/TaskEditor';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
+import { filterEmptyTasks } from '../../../Utils/TaskUtils';
 import './TaskPanel.css';
 
 class TaskPanel extends Component {
@@ -10,8 +11,9 @@ class TaskPanel extends Component {
     super(props);
     this.state = {
       problems: '',
-      newTasks: '',
+      newTasks: [],
     };
+    this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
@@ -25,7 +27,7 @@ class TaskPanel extends Component {
       initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         problems: '',
-        newTasks: '',
+        newTasks: [],
       });
     }
   }
@@ -33,9 +35,10 @@ class TaskPanel extends Component {
     cancelAlarm();
   }
 
-  getFormattedTasks(stringTasks) {
-    const tasks = formatStringToTasks(stringTasks);
-    return tasks ? tasks.map((task) => ({ ...task, addedOnTheFly: true })) : undefined;
+  getFormattedTasks(tasks) {
+    return tasks ?
+      filterEmptyTasks(tasks).map((task) => ({ ...task, addedOnTheFly: true }))
+      : undefined;
   }
 
   handleTaskPanelChange() {
@@ -49,8 +52,8 @@ class TaskPanel extends Component {
   handleProblemsValueChange(event) {
     this.setState({problems: event.target.value}, this.handleTaskPanelChange);
   }
-  handleNewTasksValueChange(event) {
-    this.setState({newTasks: event.target.value}, this.handleTaskPanelChange);
+  handleNewTasksValueChange(tasks) {
+    this.setState({newTasks: tasks}, this.handleTaskPanelChange);
   }
   render() {
     return (
@@ -74,10 +77,7 @@ class TaskPanel extends Component {
           className="TaskPanel-problem-textarea"
           onChange={(event) => this.handleProblemsValueChange(event)} />
         <h3>Add tasks after this one :</h3>
-        <textarea
-          value={this.state.newTasks}
-          className="TaskPanel-newtasks-textarea"
-          onChange={(event) => this.handleNewTasksValueChange(event)} />
+        <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
       </div>
     );
   }

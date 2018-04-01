@@ -24,3 +24,5 @@ export const getTotalTime = (results, timeType) => {
     .reduce((totalTime, time) => totalTime + time, 0)
   );
 };
+
+export const filterEmptyTasks = (tasks) => tasks.filter(task => task.label && task.label.length > 0);
