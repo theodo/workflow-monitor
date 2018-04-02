@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
+import Grid from 'material-ui/Grid';
 import { FormControlLabel } from 'material-ui/Form';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
@@ -70,51 +71,57 @@ class TaskPanel extends Component {
   }
   render() {
     return (
-      <div className="TaskPanel">
-        <h2>{this.props.currentTask.label}</h2>
-        {
-          this.props.currentTask.estimatedTime &&
-            <div>
-              <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
-              <h3>Remaining time :&nbsp;
-                <ReverseChrono
-                  dateLastPause={this.props.dateLastPause}
-                  estimatedTaskTime={this.props.currentTask.estimatedTime}
-                  taskChrono={this.props.taskChrono} />
-              </h3>
-            </div>
-        }
-        {
-          this.props.currentTask.check && this.props.currentTask.check.length > 0 &&
-            <div>
-              <h3>Checks :</h3>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.checkOK}
-                    onChange={(event => this.props.handleCheckChange(event.target.checked))}
-                    value="check"
-                  />
-                }
-                label={this.props.currentTask.check}
-              />
-            </div>
-        }
-        <h3>Problems :</h3>
-        <TextField
-          style={{ ...problemsTextFieldStyle }}
-          id="multiline-flexible"
-          label="Problems"
-          multiline
-          rowsMax="4"
-          value={this.state.problems}
-          onChange={(event) => this.handleProblemsValueChange(event)}
-          className="TaskPanel-problem-textarea"
-          margin="normal"
-        />
-        <h3>Add tasks after this one :</h3>
-        <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
-      </div>
+      <Grid className="TaskPanel" container spacing={24}>
+        <Grid item xs={1} >
+        </Grid>
+        <Grid item xs={10}>
+          <h2>{this.props.currentTask.label}</h2>
+          {
+            this.props.currentTask.estimatedTime &&
+              <div>
+                <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
+                <h3>Remaining time :&nbsp;
+                  <ReverseChrono
+                    dateLastPause={this.props.dateLastPause}
+                    estimatedTaskTime={this.props.currentTask.estimatedTime}
+                    taskChrono={this.props.taskChrono} />
+                </h3>
+              </div>
+          }
+          {
+            this.props.currentTask.check && this.props.currentTask.check.length > 0 &&
+              <div>
+                <h3>Checks :</h3>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.checkOK}
+                      onChange={(event => this.props.handleCheckChange(event.target.checked))}
+                      value="check"
+                    />
+                  }
+                  label={this.props.currentTask.check}
+                />
+              </div>
+          }
+          <h3>Problems :</h3>
+          <TextField
+            style={{ ...problemsTextFieldStyle }}
+            id="multiline-flexible"
+            label="Problems"
+            multiline
+            rowsMax="4"
+            value={this.state.problems}
+            onChange={(event) => this.handleProblemsValueChange(event)}
+            className="TaskPanel-problem-textarea"
+            margin="normal"
+          />
+          <h3>Add tasks after this one :</h3>
+          <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
+        </Grid>
+        <Grid item xs={1} >
+        </Grid>
+      </Grid>
     );
   }
 }

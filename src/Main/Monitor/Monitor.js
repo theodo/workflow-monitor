@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
 import { initSession, nextTask, startSession, playOrPauseSession } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
@@ -135,17 +136,21 @@ class Monitor extends Component {
         handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
     case MONITOR_STEPS.WORKFLOW:
       return (
-        <div className="Monitor-task-container">
-          <TaskPanel
-            dateLastPause={this.props.dateLastPause}
-            taskChrono={this.props.taskChrono}
-            currentTask={this.props.tasks[this.props.currentTaskIndex]}
-            handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)}
-            handleCheckChange={this.handleCurrentTaskCheckOKChange} />
-          <TasksLateralPanel
-            tasks={this.props.tasks}
-            results={this.props.results} />
-        </div>
+        <Grid className="Monitor-task-container" container spacing={0}>
+          <Grid item xs={8} lg={9} className="Monitor-FullHeightPanel">
+            <TaskPanel
+              dateLastPause={this.props.dateLastPause}
+              taskChrono={this.props.taskChrono}
+              currentTask={this.props.tasks[this.props.currentTaskIndex]}
+              handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)}
+              handleCheckChange={this.handleCurrentTaskCheckOKChange} />
+          </Grid>
+          <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel">
+            <TasksLateralPanel
+              tasks={this.props.tasks}
+              results={this.props.results} />
+          </Grid>
+        </Grid>
       );
     case MONITOR_STEPS.RESULTS:
       return <ResultPanel results={this.props.results} currentTrelloCard={this.props.currentTrelloCard}/>;
