@@ -18,11 +18,12 @@ export function startSession(tasks) {
   };
 }
 
-export function nextTask(newTasks, taskProblems) {
+export function nextTask(newTasks, taskProblems, projectId) {
   return {
     type: NEXT_TASK,
     newTasks,
     taskProblems,
+    projectId,
   };
 }
 

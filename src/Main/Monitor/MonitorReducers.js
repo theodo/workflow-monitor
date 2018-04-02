@@ -1,5 +1,6 @@
 import { INIT_SESSION, NEXT_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
+import { sendEvent } from '../../Utils/AnalyticsUtils';
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
@@ -7,6 +8,20 @@ const calculateElapsedTime = (chrono, dateLastPause) => {
 
 const calculateCurrentTaskTime = (taskChrono, now) => {
   return taskChrono.elapsedTime + (now - taskChrono.dateLastStart);
+};
+
+const saveAnalytics = (tasks, projectId) => {
+  sendEvent('Ticket','finish',`${projectId}`);
+
+  const allTasks = tasks ? tasks : [];
+  const problemCounter = allTasks.filter(task => task.problems && task.problems.length > 0 ).length;
+  if(problemCounter > 0) sendEvent('Problems','detect',`${projectId}`, problemCounter);
+
+  const planningErrorCounter = allTasks.filter(task => task.addedOnTheFly ).length;
+  if(planningErrorCounter > 0) sendEvent('Planning','error',`${projectId}`, planningErrorCounter);
+
+  const checkCounter = allTasks.filter(task => task.check && task.check.length > 0 ).length;
+  if(checkCounter > 0) sendEvent('Check','add',`${projectId}`, checkCounter);
 };
 
 const initialMonitorState = {
@@ -65,7 +80,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       },
     };
     break;
-  case NEXT_TASK:
+  case NEXT_TASK: {
     const result = {
       ...state.tasks[state.currentTaskIndex],
       problems: action.taskProblems,
@@ -89,14 +104,15 @@ const MonitorReducers = (state = currentInitialState, action) => {
         ...state.tasks.slice(state.currentTaskIndex+1),
       ];
     }
-
     if((!action.newTasks || action.newTasks.length === 0)
         && state.currentTaskIndex >= state.tasks.length - 1) {
+      saveAnalytics(newStateForNextTask.results, action.projectId);
       newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
       newStateForNextTask.dateLastPause = now;
     }
     newState = newStateForNextTask;
     break;
+  }
   case RESET_MONITOR:
     newState = {
       ...initialMonitorState,

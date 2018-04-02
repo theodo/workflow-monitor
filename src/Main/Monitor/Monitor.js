@@ -97,7 +97,7 @@ class Monitor extends Component {
     this.startTask();
   }
   goToNextTask() {
-    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
+    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.props.projectId);
     this.startTask();
   }
   goToHome() {
@@ -206,6 +206,7 @@ const mapStateToProps = state => {
     globalChrono: state.MonitorReducers.globalChrono,
     dateLastPause: state.MonitorReducers.dateLastPause,
     currentTrelloCard: state.MonitorReducers.currentTrelloCard,
+    projectId: state.SettingsReducers.selectedProjectId ? state.SettingsReducers.selectedProjectId : '',
   };
 };
 
