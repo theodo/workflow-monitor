@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
+import { FormControlLabel } from 'material-ui/Form';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
@@ -80,6 +82,22 @@ class TaskPanel extends Component {
                   estimatedTaskTime={this.props.currentTask.estimatedTime}
                   taskChrono={this.props.taskChrono} />
               </h3>
+            </div>
+        }
+        {
+          this.props.currentTask.check && this.props.currentTask.check.length > 0 &&
+            <div>
+              <h3>Checks :</h3>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkOK}
+                    onChange={(event => this.props.handleCheckChange(event.target.checked))}
+                    value="check"
+                  />
+                }
+                label={this.props.currentTask.check}
+              />
             </div>
         }
         <h3>Problems :</h3>
