@@ -26,8 +26,10 @@ class TaskPanel extends Component {
     this.state = {
       problems: '',
       newTasks: [],
+      currentTaskCheckOK: false,
     };
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
+    this.handleCheckChange = this.handleCheckChange.bind(this);
     if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
@@ -42,6 +44,7 @@ class TaskPanel extends Component {
       this.setState({
         problems: '',
         newTasks: [],
+        currentTaskCheckOK: false,
       });
     }
   }
@@ -60,6 +63,7 @@ class TaskPanel extends Component {
       taskPanelChanges : {
         newTasks: this.getFormattedTasks(this.state.newTasks),
         problems: this.state.problems,
+        currentTaskCheckOK: this.state.currentTaskCheckOK,
       },
     });
   }
@@ -68,6 +72,9 @@ class TaskPanel extends Component {
   }
   handleNewTasksValueChange(tasks) {
     this.setState({newTasks: tasks}, this.handleTaskPanelChange);
+  }
+  handleCheckChange(event) {
+    this.setState({currentTaskCheckOK: event.target.checked}, this.handleTaskPanelChange);
   }
   render() {
     return (
@@ -95,8 +102,8 @@ class TaskPanel extends Component {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={this.state.checkOK}
-                      onChange={(event => this.props.handleCheckChange(event.target.checked))}
+                      checked={this.state.currentTaskCheckOK}
+                      onChange={(this.handleCheckChange)}
                       value="check"
                     />
                   }

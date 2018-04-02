@@ -48,7 +48,6 @@ class WelcomePanel extends Component {
 class Monitor extends Component {
   constructor(props){
     super(props);
-    this.handleCurrentTaskCheckOKChange = this.handleCurrentTaskCheckOKChange.bind(this);
     this.state = {
       planningPanelChanges: {
         tasks: [],
@@ -56,6 +55,7 @@ class Monitor extends Component {
       taskPanelChanges: {
         newTasks: [],
         problems: '',
+        currentTaskCheckOK: false,
       }
     };
   }
@@ -116,14 +116,11 @@ class Monitor extends Component {
       const currentTask = this.props.tasks[this.props.currentTaskIndex];
 
       return this.props.dateLastPause !== undefined ||
-        (currentTask.check && currentTask.check.length > 0 && !this.state.currentTaskCheckOK);
+        (currentTask.check && currentTask.check.length > 0 && !this.state.taskPanelChanges.currentTaskCheckOK);
     }
     default:
       return false;
     }
-  }
-  handleCurrentTaskCheckOKChange(currentTaskCheckOK) {
-    this.setState({currentTaskCheckOK});
   }
   renderPanel() {
     switch (this.props.step) {
@@ -142,8 +139,7 @@ class Monitor extends Component {
               dateLastPause={this.props.dateLastPause}
               taskChrono={this.props.taskChrono}
               currentTask={this.props.tasks[this.props.currentTaskIndex]}
-              handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)}
-              handleCheckChange={this.handleCurrentTaskCheckOKChange} />
+              handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
           </Grid>
           <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel">
             <TasksLateralPanel
