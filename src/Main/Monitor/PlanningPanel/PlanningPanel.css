@@ -16,9 +16,8 @@
 }
 
 .PlanningPanel-save-button-container {
-  width: 100%;
+  padding-top: 8px;
   text-align: right;
-  margin-bottom: 5px;
 }
 
 .PlanningPanel-save-button-container > button {

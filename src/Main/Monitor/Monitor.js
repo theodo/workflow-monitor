@@ -130,6 +130,7 @@ class Monitor extends Component {
       return <PlanningPanel
         dateLastPause={this.props.dateLastPause}
         taskChrono={this.props.taskChrono}
+        currentTrelloCard={this.props.currentTrelloCard}
         handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
     case MONITOR_STEPS.WORKFLOW:
       return (
