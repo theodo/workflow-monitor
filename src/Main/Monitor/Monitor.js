@@ -31,7 +31,7 @@ class CenterButton extends Component {
   render() {
     return (
       <Button raised className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.props.onClick}>
-        {this.getLabel()}
+        {this.getLabel()} (N)
       </Button>
     );
   }
@@ -48,6 +48,8 @@ class WelcomePanel extends Component {
 class Monitor extends Component {
   constructor(props){
     super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    document.onkeypress = this.handleKeyPress;
     this.state = {
       planningPanelChanges: {
         tasks: [],
@@ -62,7 +64,19 @@ class Monitor extends Component {
   areTasksValid(tasks) {
     return tasks && tasks.length > 0;
   }
+  handleKeyPress(event) {
+    const targetTagName = event.target.tagName;
+    if (targetTagName === 'TEXTAREA' || targetTagName === 'INPUT' || targetTagName === 'TD') return;
+
+    if (event.which === 110) {
+      this.handleClickCenterButton();
+    } else if (event.which === 112) {
+      this.props.playOrPauseSession();
+    }
+  }
   handleClickCenterButton() {
+    if(this.isCenterButtonDisabled()) return;
+
     switch (this.props.step) {
     case MONITOR_STEPS.WELCOME:
       this.initSession();
@@ -158,7 +172,7 @@ class Monitor extends Component {
   renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
       <Button raised className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
-        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'}
+        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (P)
       </Button>
       : null;
   }
