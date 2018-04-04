@@ -17,7 +17,7 @@ export const formatStringToTasks = (taskString) => {
         estimatedTimeText,
       };
     });
-  return tasks.length > 0 ? tasks : undefined;
+  return tasks.length > 0 ? tasks : [];
 };
 
 export const getTotalTime = (results, timeType) => {
