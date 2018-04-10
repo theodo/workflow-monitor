@@ -18,6 +18,10 @@ export const MONITOR_STEPS = {
 };
 
 class CenterButton extends Component {
+  constructor(props){
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
   getLabel(){
     switch (this.props.step) {
     case MONITOR_STEPS.WELCOME:
@@ -28,10 +32,14 @@ class CenterButton extends Component {
       return 'NEXT';
     }
   }
+  handleClick(event) {
+    event.target.blur();
+    this.props.onClick();
+  }
   render() {
     return (
-      <Button raised className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.props.onClick}>
-        {this.getLabel()} (N)
+      <Button raised className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.handleClick} tabIndex="-1">
+        {this.getLabel()} (n)
       </Button>
     );
   }
@@ -70,7 +78,7 @@ class Monitor extends Component {
 
     if (event.which === 110) {
       this.handleClickCenterButton();
-    } else if (event.which === 112) {
+    } else if (event.which === 32) {
       this.props.playOrPauseSession();
     }
   }
@@ -172,7 +180,7 @@ class Monitor extends Component {
   renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
       <Button raised className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
-        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (P)
+        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (spacebar)
       </Button>
       : null;
   }
