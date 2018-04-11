@@ -55,11 +55,13 @@ class PlanningPanel extends Component {
   }
   handleTrelloChecklistSelection(event) {
     this.setState({ selectedChecklist: event.target.value });
-    window.Trello.get(`/checklists/${event.target.value}`).then((checklist) => {
+    window.Trello.get(`/checklists/${event.target.value}/checkItems`).then((checklist) => {
       let tasksAsString = '';
-      checklist.checkItems.forEach((task) => {
-        tasksAsString += `${task.name}\n`;
-      });
+      checklist
+        .sort((a, b)=> a.pos < b.pos ? -1 : 1)
+        .forEach((task) => {
+          tasksAsString += `${task.name}\n`;
+        });
       this.handleTasksDefinitionChange(formatStringToTasks(tasksAsString));
     });
   }
