@@ -38,12 +38,17 @@ class TasksLateralPanel extends Component {
     return (
       <div className="TasksLateralPanel">
         <ul>
-          {this.props.results.map((task, index) => <TaskRow key={index} task={task} isDone={true} />)}
-          <TaskRow
-            task={this.props.tasks.filter((task) => this.isNotTaskInResults(task))[0]}
-            isCurrent={true}
-          />
-          {this.props.tasks.filter((task) => this.isNotTaskInResults(task)).slice(1).map((task, index) => <TaskRow key={index} task={task} />)}
+          {
+            this.props.tasks.map(
+              (task, index) =>
+                <TaskRow
+                  key={index}
+                  task={task}
+                  isDone={index < this.props.currentTaskIndex}
+                  isCurrent={index === this.props.currentTaskIndex}
+                />
+            )
+          }
         </ul>
         <div>
           <div className="TotalRow-label">Total :</div>

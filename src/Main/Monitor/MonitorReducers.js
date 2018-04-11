@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import { INIT_SESSION, NEXT_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
@@ -27,7 +28,6 @@ const saveAnalytics = (tasks, projectId) => {
 const initialMonitorState = {
   isSessionPaused: false,
   currentStep: MONITOR_STEPS.WELCOME,
-  results: [],
   tasks: [],
   currentTaskIndex: 0,
   dateLastPause: undefined,
@@ -54,7 +54,6 @@ const MonitorReducers = (state = currentInitialState, action) => {
     newState = {
       ...state,
       currentStep: MONITOR_STEPS.PLANNING,
-      results: [],
       tasks: [],
       currentTaskIndex: 0,
       dateLastPause: undefined,
@@ -72,8 +71,8 @@ const MonitorReducers = (state = currentInitialState, action) => {
     newState = {
       ...state,
       currentStep: MONITOR_STEPS.WORKFLOW,
-      results: [{ label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }],
-      tasks: action.tasks,
+      tasks: [{id: uuid(), label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
+      currentTaskIndex: 1,
       taskChrono: {
         dateLastStart: now,
         elapsedTime: 0,
@@ -87,9 +86,12 @@ const MonitorReducers = (state = currentInitialState, action) => {
       realTime: calculateCurrentTaskTime(state.taskChrono, now),
     };
 
+    const tasks = state.tasks;
+    tasks[state.currentTaskIndex] = result;
+
     let newStateForNextTask = {
       ...state,
-      results: [...state.results, result],
+      tasks,
       currentTaskIndex: state.currentTaskIndex + 1,
       taskChrono: {
         dateLastStart: now,
@@ -106,7 +108,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
     }
     if((!action.newTasks || action.newTasks.length === 0)
         && state.currentTaskIndex >= state.tasks.length - 1) {
-      saveAnalytics(newStateForNextTask.results, action.projectId);
+      saveAnalytics(newStateForNextTask.tasks, action.projectId);
       newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
       newStateForNextTask.dateLastPause = now;
     }

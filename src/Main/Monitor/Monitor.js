@@ -167,12 +167,12 @@ class Monitor extends Component {
           <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel">
             <TasksLateralPanel
               tasks={this.props.tasks}
-              results={this.props.results} />
+              currentTaskIndex={this.props.currentTaskIndex} />
           </Grid>
         </Grid>
       );
     case MONITOR_STEPS.RESULTS:
-      return <ResultPanel results={this.props.results} currentTrelloCard={this.props.currentTrelloCard}/>;
+      return <ResultPanel results={this.props.tasks} currentTrelloCard={this.props.currentTrelloCard}/>;
     default:
       break;
     }
