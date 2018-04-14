@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
+import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
 
@@ -111,6 +111,39 @@ const MonitorReducers = (state = currentInitialState, action) => {
       saveAnalytics(newStateForNextTask.tasks, action.projectId);
       newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
       newStateForNextTask.dateLastPause = now;
+    } else {
+      const nextStepRealTime = newStateForNextTask.tasks[state.currentTaskIndex + 1].realTime;
+      newStateForNextTask.taskChrono.elapsedTime =  nextStepRealTime || 0;
+    }
+    newState = newStateForNextTask;
+    break;
+  }
+  case PREVIOUS_TASK: {
+    const result = {
+      ...state.tasks[state.currentTaskIndex],
+      problems: action.taskProblems,
+      realTime: calculateCurrentTaskTime(state.taskChrono, now),
+    };
+
+    const tasks = state.tasks;
+    tasks[state.currentTaskIndex] = result;
+
+    let newStateForNextTask = {
+      ...state,
+      tasks,
+      currentTaskIndex: state.currentTaskIndex - 1,
+      taskChrono: {
+        dateLastStart: now,
+        elapsedTime: tasks[state.currentTaskIndex - 1].realTime,
+      },
+    };
+
+    if (action.newTasks && action.newTasks.length > 0) {
+      newStateForNextTask.tasks = [
+        ...state.tasks.slice(0,state.currentTaskIndex+1),
+        ...action.newTasks,
+        ...state.tasks.slice(state.currentTaskIndex+1),
+      ];
     }
     newState = newStateForNextTask;
     break;
