@@ -16,15 +16,6 @@
   color: white;
 }
 
-.Monitor-footer {
-  display: flex;
-  height: 100px;
-  width: 100%;
-  line-height: 100px;
-  background-color: #222;
-  color: white;
-}
-
 .Monitor-content {
   position: relative;
   flex-grow: 1;
@@ -32,12 +23,26 @@
   background-color: #fafafa;
 }
 
-.Monitor-footer-middle-div {
-  flex-grow: 1;
+.Monitor-task-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
-.Monitor-footer-right-div {
-  margin-right: 20px;
+.Monitor-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  line-height: 100px;
+  background-color: #222;
+  color: white;
+}
+
+.Monitor-footer-bloc {
+  margin: 28px;
 }
 
 .Monitor-footer-button {
@@ -48,27 +53,12 @@
   cursor: pointer;
 }
 
-.Monitor-task-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.Monitor-footer-middle-div > .Monitor-footer-button {
+.Monitor-footer-bloc > .Monitor-footer-button {
   color: white;
   background-color: #2B5BA0;
   border-radius: 3px;
 }
-.Monitor-footer-middle-div > .Monitor-footer-button:hover {
-  background-color: #72C2B7;
-}
-
-.Monitor-footer-right-div > .Monitor-footer-button {
-  color: white;
-  background-color: #2B5BA0;
-  border-radius: 3px;
-}
-.Monitor-footer-right-div > .Monitor-footer-button:hover {
+.Monitor-footer-bloc > .Monitor-footer-button:hover {
   background-color: #72C2B7;
 }
 

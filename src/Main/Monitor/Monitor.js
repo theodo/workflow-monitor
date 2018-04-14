@@ -17,12 +17,13 @@ export const MONITOR_STEPS = {
   RESULTS: 'RESULTS',
 };
 
-class CenterButton extends Component {
+class Footer extends Component {
   constructor(props){
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.handlePauseClick = this.handlePauseClick.bind(this);
+    this.handleNextClick = this.handleNextClick.bind(this);
   }
-  getLabel(){
+  getNextButtonLabel(){
     switch (this.props.step) {
     case MONITOR_STEPS.WELCOME:
       return 'START';
@@ -32,15 +33,38 @@ class CenterButton extends Component {
       return 'NEXT';
     }
   }
-  handleClick(event) {
+  handlePauseClick(event) {
     event.target.blur();
-    this.props.onClick();
+    this.props.onPauseClick();
+  }
+  handleNextClick(event) {
+    event.target.blur();
+    this.props.onNextClick();
+  }
+  renderPlayPauseButton() {
+    return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
+      <Button raised className="Monitor-footer-button" onClick={this.handlePauseClick} tabIndex="-1">
+        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (spacebar)
+      </Button>
+      : null;
   }
   render() {
     return (
-      <Button raised className="Monitor-footer-button" disabled={this.props.disabled} onClick={this.handleClick} tabIndex="-1">
-        {this.getLabel()} (n)
-      </Button>
+      <footer className="Monitor-footer">
+        <div className="Monitor-footer-bloc">
+          <Button raised className="Monitor-footer-button" tabIndex="-1">
+            Previous (p)
+          </Button>
+        </div>
+        <div className="Monitor-footer-bloc">
+          {this.renderPlayPauseButton()}
+        </div>
+        <div className="Monitor-footer-bloc">
+          <Button raised className="Monitor-footer-button" disabled={this.props.isNextDisabled} onClick={this.handleNextClick} tabIndex="-1">
+            {this.getNextButtonLabel()} (n)
+          </Button>
+        </div>
+      </footer>
     );
   }
 }
@@ -77,13 +101,13 @@ class Monitor extends Component {
     if (targetTagName === 'TEXTAREA' || targetTagName === 'INPUT' || targetTagName === 'TD') return;
 
     if (event.which === 110) {
-      this.handleClickCenterButton();
+      this.handleClickNextButton();
     } else if (event.which === 32) {
       this.props.playOrPauseSession();
     }
   }
-  handleClickCenterButton() {
-    if(this.isCenterButtonDisabled()) return;
+  handleClickNextButton() {
+    if(this.isNextButtonDisabled()) return;
 
     switch (this.props.step) {
     case MONITOR_STEPS.WELCOME:
@@ -130,7 +154,7 @@ class Monitor extends Component {
       ...fieldsToUpdate,
     });
   }
-  isCenterButtonDisabled() {
+  isNextButtonDisabled() {
     switch (this.props.step) {
     case MONITOR_STEPS.PLANNING:
       return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause !== undefined;
@@ -177,13 +201,6 @@ class Monitor extends Component {
       break;
     }
   }
-  renderPlayPauseButton() {
-    return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
-      <Button raised className="Monitor-footer-button" onClick={this.props.playOrPauseSession} >
-        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (spacebar)
-      </Button>
-      : null;
-  }
   render() {
     return (
       <div className="Monitor">
@@ -199,16 +216,12 @@ class Monitor extends Component {
         <div className="Monitor-content">
           { this.renderPanel() }
         </div>
-        <footer className="Monitor-footer">
-          <div className="Monitor-footer-middle-div">
-            <CenterButton step={this.props.step}
-              disabled={this.isCenterButtonDisabled()}
-              onClick={() => this.handleClickCenterButton()}/>
-          </div>
-          <div className="Monitor-footer-right-div">
-            {this.renderPlayPauseButton()}
-          </div>
-        </footer>
+        <Footer
+          step={this.props.step}
+          isNextDisabled={this.isNextButtonDisabled()}
+          onPauseClick={() => this.props.playOrPauseSession()}
+          onNextClick={() => this.handleClickNextButton()}
+        />
       </div>
     );
   }
