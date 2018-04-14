@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import { initSession, nextTask, startSession, playOrPauseSession } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
@@ -22,6 +22,7 @@ class Footer extends Component {
     super(props);
     this.handlePauseClick = this.handlePauseClick.bind(this);
     this.handleNextClick = this.handleNextClick.bind(this);
+    this.handlePreviousClick = this.handlePreviousClick.bind(this);
   }
   getNextButtonLabel(){
     switch (this.props.step) {
@@ -41,6 +42,10 @@ class Footer extends Component {
     event.target.blur();
     this.props.onNextClick();
   }
+  handlePreviousClick(event) {
+    event.target.blur();
+    this.props.onPreviousClick();
+  }
   renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
       <Button raised className="Monitor-footer-button" onClick={this.handlePauseClick} tabIndex="-1">
@@ -52,7 +57,7 @@ class Footer extends Component {
     return (
       <footer className="Monitor-footer">
         <div className="Monitor-footer-bloc">
-          <Button raised className="Monitor-footer-button" tabIndex="-1">
+          <Button raised className="Monitor-footer-button" disabled={this.props.isPreviousDisabled} tabIndex="-1" onClick={this.handlePreviousClick}>
             Previous (p)
           </Button>
         </div>
@@ -102,6 +107,8 @@ class Monitor extends Component {
 
     if (event.which === 110) {
       this.handleClickNextButton();
+    } else if (event.which === 112) {
+      this.handleClickPreviousButton();
     } else if (event.which === 32) {
       this.props.playOrPauseSession();
     }
@@ -126,6 +133,11 @@ class Monitor extends Component {
       break;
     }
   }
+  handleClickPreviousButton() {
+    if(this.isPreviousButtonDisabled()) return;
+
+    this.goToPreviousTask();
+  }
   initSession() {
     this.props.initSession();
   }
@@ -144,6 +156,10 @@ class Monitor extends Component {
   }
   goToNextTask() {
     this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.props.projectId);
+    this.startTask();
+  }
+  goToPreviousTask() {
+    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
     this.startTask();
   }
   goToHome() {
@@ -167,6 +183,9 @@ class Monitor extends Component {
     default:
       return false;
     }
+  }
+  isPreviousButtonDisabled() {
+    return this.props.step !== MONITOR_STEPS.WORKFLOW || this.props.dateLastPause !== undefined || this.props.currentTaskIndex < 2;
   }
   renderPanel() {
     switch (this.props.step) {
@@ -219,8 +238,10 @@ class Monitor extends Component {
         <Footer
           step={this.props.step}
           isNextDisabled={this.isNextButtonDisabled()}
+          isPreviousDisabled={this.isPreviousButtonDisabled()}
           onPauseClick={() => this.props.playOrPauseSession()}
           onNextClick={() => this.handleClickNextButton()}
+          onPreviousClick={() => this.handleClickPreviousButton()}
         />
       </div>
     );
@@ -253,8 +274,11 @@ const mapDispatchToProps = dispatch => {
     startSession: (tasks, planningRealTime) => {
       dispatch(startSession(tasks, planningRealTime));
     },
-    nextTask: (newTasks, taskProblem, taskRealTime) => {
-      dispatch(nextTask(newTasks, taskProblem, taskRealTime));
+    nextTask: (newTasks, taskProblem, projectId) => {
+      dispatch(nextTask(newTasks, taskProblem, projectId));
+    },
+    previousTask: (newTasks, taskProblem) => {
+      dispatch(previousTask(newTasks, taskProblem));
     },
     goToHome: () => {
       window.location.hash = '#/';
