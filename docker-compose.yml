@@ -1,0 +1,39 @@
+version: '3.2'
+
+services:
+  postgresql:
+    image: 'postgres:9.6.6'
+    environment:
+      - POSTGRES_USER=digitalprodsystem
+      - POSTGRES_PASSWORD=digitalprodsystem
+      - POSTGRES_DB=digitalprodsystem
+    ports:
+      - '5432:5432'
+  backend:
+    build: ./backend
+    command: yarn start
+    volumes:
+      - ./backend:/app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgresql
+  react:
+    build: ./client
+    command: yarn start
+    volumes:
+      - ./client:/frontend
+    ports:
+      - "3000:3000"
+  nginx:
+    image: nginx
+    volumes:
+      - './devops/dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+      - react
+    links:
+      - backend
+      - react
