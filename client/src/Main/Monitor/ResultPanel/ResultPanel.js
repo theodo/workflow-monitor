@@ -3,6 +3,7 @@ import Button from 'material-ui/Button';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
+import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
@@ -100,6 +101,10 @@ class ResultPanel extends Component {
     mywindow.close();
   }
 
+  saveResultsInTrello(){
+    saveResultsInTrello(this.props.currentTrelloCard.id, this.state.results);
+  }
+
   render() {
     return (
       <div className="ResultPanel">
@@ -149,6 +154,8 @@ class ResultPanel extends Component {
         </div>
         <br />
         <Button raised onClick={() => this.printResults()}>Print results</Button>
+
+        <Button raised onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
       </div>
     );
   }
