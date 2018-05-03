@@ -23,13 +23,21 @@ export const getOrCreateResultsChecklist = (cardId) => {
 
 export const saveResultsInTrello = (cardId, results) => {
   getOrCreateResultsChecklist(cardId).then(function(checklist) {
-    results.forEach((task) => {
-      var realTime = task.realTime ? ' (' + formatMilliSecondToTime(task.realTime) + ')' : '';
-      var problems = task.problems && task.problems.length > 0 ? ' pb : ' + task.problems: '';
-      var checkItem = {
-        'name': task.label + realTime + problems,
-      };
+
+    const myPromise = (checklistId, checkItem) =>
       window.Trello.post('/checklists/' + checklist.id + '/checkItems', checkItem);
-    });
+
+    results.reduce(
+      (p, task) => {
+        var realTime = task.realTime ? ' (' + formatMilliSecondToTime(task.realTime) + ')' : '';
+        var problems = task.problems && task.problems.length > 0 ? ' pb : ' + task.problems: '';
+        var checkItem = {
+          'name': task.label + realTime + problems,
+        };
+        return p.then(() => myPromise(checklist.id, checkItem));
+      },
+      Promise.resolve()
+    );
+
   });
 };
