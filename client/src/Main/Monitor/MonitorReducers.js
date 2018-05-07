@@ -51,6 +51,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
   const now = (new Date()).getTime();
   switch (action.type) {
   case INIT_SESSION:
+    localStorage.removeItem('planningTasks');
     newState = {
       ...state,
       currentStep: MONITOR_STEPS.PLANNING,

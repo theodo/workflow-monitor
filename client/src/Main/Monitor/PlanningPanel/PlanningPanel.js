@@ -11,6 +11,7 @@ import { getTotalTime } from '../../../Utils/TaskUtils';
 import Button from 'material-ui/Button';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import { filterEmptyTasks, formatStringToTasks } from '../../../Utils/TaskUtils';
+import { debounce } from 'throttle-debounce';
 import './PlanningPanel.css';
 
 const planningMaxTime = 600000;
@@ -28,8 +29,11 @@ class PlanningPanel extends Component {
     this.handleTasksDefinitionChange = this.handleTasksDefinitionChange.bind(this);
     this.handleTrelloChecklistSelection = this.handleTrelloChecklistSelection.bind(this);
     this.buildAllTasks = this.buildAllTasks.bind(this);
+    this.savePlanningTask = this.savePlanningTask.bind(this);
+    this.savePlanningTask = debounce(1000, this.savePlanningTask);
+    const tasks = localStorage.getItem('planningTasks') ? JSON.parse(localStorage.getItem('planningTasks')) : [];
     this.state = {
-      tasks: [],
+      tasks,
       checklists: [],
       selectedChecklist: '',
     };
@@ -46,7 +50,7 @@ class PlanningPanel extends Component {
     }
   }
   handleTasksDefinitionChange(tasks) {
-    this.setState({ tasks });
+    this.setState({ tasks }, this.savePlanningTask);
     this.props.handlePlanningPanelChange({
       planningPanelChanges: {
         tasks: this.buildAllTasks(tasks),
@@ -70,6 +74,9 @@ class PlanningPanel extends Component {
   }
   componentWillUnmount(){
     cancelAlarm();
+  }
+  savePlanningTask(){
+    localStorage.setItem('planningTasks', JSON.stringify(this.state.tasks));
   }
   render() {
     return (

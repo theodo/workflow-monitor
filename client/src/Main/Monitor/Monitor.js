@@ -227,7 +227,9 @@ class Monitor extends Component {
           <Chrono chrono={this.props.taskChrono} dateLastPause={this.props.dateLastPause}/>
           {
             this.props.currentTrelloCard ?
-              <p>#{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}</p>
+              <a href={this.props.currentTrelloCard.url} target="_blank" className="Monitor-header-link">
+                #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
+              </a>
               : ''
           }
           <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause}/>
