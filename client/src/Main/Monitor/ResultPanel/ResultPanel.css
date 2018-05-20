@@ -32,3 +32,15 @@ td.problems-cell {
   text-align: left;
   white-space: pre-wrap;
 }
+
+.ResultPanel {
+  text-align: left;
+}
+
+.ResultPanel-button {
+  margin: 5px;
+}
+
+.printArea {
+  text-align: center;
+}

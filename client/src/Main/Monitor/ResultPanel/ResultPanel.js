@@ -4,6 +4,7 @@ import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../.
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
+import Grid from 'material-ui/Grid';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
@@ -108,54 +109,66 @@ class ResultPanel extends Component {
   render() {
     return (
       <div className="ResultPanel">
-        <div className="printArea">
-          Results :
-          <table>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Estimated time</th>
-                <th>Real Time</th>
-                <th>Problem</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems}, index) =>
-                <ResultRow
-                  key={index}
-                  index={index}
-                  addedOnTheFly={addedOnTheFly}
-                  label={label}
-                  estimatedTime={estimatedTime}
-                  realTime={realTime}
-                  problems={problems}
-                  handleEditTime={(index, timeType, newTime) => this.setState({
-                    results: Object.assign(
-                      this.state.results,
-                      { [index]: { ...this.state.results[index], [timeType]: newTime } }
-                    )
-                  })}
-                />)
-              }
-              <tr className='total-row'>
-                <td>Total</td>
-                <td>{getTotalTime(this.state.results, 'estimatedTime')}</td>
-                <td
-                  className={getRealTimeClass(
-                    getTotalTime(this.state.results, 'estimatedTime'),
-                    getTotalTime(this.state.results, 'realTime')
-                  )}
-                >
-                  {getTotalTime(this.state.results, 'realTime')}</td>
-                <td />
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <br />
-        <Button raised onClick={() => this.printResults()}>Print results</Button>
-
-        <Button raised onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+        <Grid container spacing={24}>
+          <Grid item xs={1}>
+          </Grid>
+          <Grid item xs={10}>
+            <Grid container spacing={0}>
+              <Grid item xs={8}>
+                <h2>Results :</h2>
+              </Grid>
+              <Grid item xs={4} className="PlanningPanel-save-button-container">
+                <Button raised className="ResultPanel-button" onClick={() => this.printResults()}>Print results</Button>
+                <Button raised className="ResultPanel-button" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+              </Grid>
+            </Grid>
+            <div className="printArea">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Task</th>
+                    <th>Estimated time</th>
+                    <th>Real Time</th>
+                    <th>Problem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems}, index) =>
+                    <ResultRow
+                      key={index}
+                      index={index}
+                      addedOnTheFly={addedOnTheFly}
+                      label={label}
+                      estimatedTime={estimatedTime}
+                      realTime={realTime}
+                      problems={problems}
+                      handleEditTime={(index, timeType, newTime) => this.setState({
+                        results: Object.assign(
+                          this.state.results,
+                          { [index]: { ...this.state.results[index], [timeType]: newTime } }
+                        )
+                      })}
+                    />)
+                  }
+                  <tr className='total-row'>
+                    <td>Total</td>
+                    <td>{getTotalTime(this.state.results, 'estimatedTime')}</td>
+                    <td
+                      className={getRealTimeClass(
+                        getTotalTime(this.state.results, 'estimatedTime'),
+                        getTotalTime(this.state.results, 'realTime')
+                      )}
+                    >
+                      {getTotalTime(this.state.results, 'realTime')}</td>
+                    <td />
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Grid>
+          <Grid item xs={1}>
+          </Grid>
+        </Grid>
       </div>
     );
   }
