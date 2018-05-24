@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
-import { getTotalTime } from '../../../Utils/TaskUtils';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
+import Chrono from '../Chrono/Chrono';
 import './TasksLateralPanel.css';
 
 class TaskRow extends PureComponent {
@@ -8,9 +8,9 @@ class TaskRow extends PureComponent {
     return (this.props.isDone ? 'done' : '') + ' ' + ( this.props.isCurrent ? 'current' : '' );
   }
   getRealTimeClass() {
-    return this.props.isDone ?
-      (this.props.task.realTime > this.props.task.estimatedTime ? 'red' : 'green')
-      : '';
+    if (this.props.isDone)
+      return (this.props.task.realTime > this.props.task.estimatedTime ? 'red' : 'green');
+    return '';
   }
   render() {
     return (
@@ -21,8 +21,12 @@ class TaskRow extends PureComponent {
         <div className="TaskRow-bottom">
           <div className="TaskRow-empty"></div>
           <div className="TaskRow-time">
-            <div className={'TaskRow-real-time ' + this.getRealTimeClass()}>{ this.props.isDone && formatMilliSecondToTime(this.props.task.realTime) }</div>
-            <div className="TaskRow-estimated-time">{ formatMilliSecondToTime(this.props.task.estimatedTime) }</div>
+            <div className={'TaskRow-real-time ' + this.getRealTimeClass()}>
+              { this.props.isDone && formatMilliSecondToTime(this.props.task.realTime) }
+              { this.props.isCurrent &&
+                <Chrono chrono={this.props.taskChrono} dateLastPause={this.props.dateLastPause} threshold={this.props.task.estimatedTime} /> }
+            </div>
+            { this.props.isCurrent && <div className="TaskRow-estimated-time">{ formatMilliSecondToTime(this.props.task.estimatedTime) }</div> }
           </div>
         </div>
       </li>
@@ -46,16 +50,12 @@ class TasksLateralPanel extends Component {
                   task={task}
                   isDone={index < this.props.currentTaskIndex}
                   isCurrent={index === this.props.currentTaskIndex}
+                  taskChrono={this.props.taskChrono}
+                  dateLastPause={this.props.dateLastPause}
                 />
             )
           }
         </ul>
-        <div>
-          <div className="TotalRow-label">Total :</div>
-          <div className="TotalRow-time">
-            { getTotalTime(this.props.tasks, 'estimatedTime') }
-          </div>
-        </div>
       </div>
     );
   }

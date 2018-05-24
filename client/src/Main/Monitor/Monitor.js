@@ -207,10 +207,12 @@ class Monitor extends Component {
               currentTask={this.props.tasks[this.props.currentTaskIndex]}
               handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
           </Grid>
-          <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel">
+          <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
             <TasksLateralPanel
               tasks={this.props.tasks}
-              currentTaskIndex={this.props.currentTaskIndex} />
+              currentTaskIndex={this.props.currentTaskIndex}
+              taskChrono={this.props.taskChrono}
+              dateLastPause={this.props.dateLastPause} />
           </Grid>
         </Grid>
       );
@@ -224,15 +226,20 @@ class Monitor extends Component {
     return (
       <div className="Monitor">
         <header className="Monitor-header">
-          <Chrono chrono={this.props.taskChrono} dateLastPause={this.props.dateLastPause}/>
-          {
-            this.props.currentTrelloCard ?
-              <a href={this.props.currentTrelloCard.url} target="_blank" className="Monitor-header-link">
-                #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
-              </a>
-              : ''
-          }
-          <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause}/>
+          <Grid container spacing={0}>
+            <Grid item xs={8} lg={9} className="Monitor-header-centered-text">
+              {
+                this.props.currentTrelloCard ?
+                  <a href={this.props.currentTrelloCard.url} target="_blank" className="Monitor-header-link">
+                    #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
+                  </a>
+                  : ''
+              }
+            </Grid>
+            <Grid item xs={4} lg={3} className="Monitor-header-centered-text">
+              <span>{'TOTAL '}<Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause}/>"</span>
+            </Grid>
+          </Grid>
         </header>
         <div className="Monitor-content">
           { this.renderPanel() }

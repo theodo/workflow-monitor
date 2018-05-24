@@ -23,11 +23,16 @@ class Chrono extends Component {
       this.props.chrono.elapsedTime + (this.props.dateLastPause - this.props.chrono.dateLastStart)
       : this.props.chrono.elapsedTime + (this.state.now - this.props.chrono.dateLastStart);
   }
+  getColorClass(time){
+    if (!this.props.threshold) return '';
+    return time < this.props.threshold ? 'green' : 'red';
+  }
   render() {
+    const time = this.getTime();
     return (
-      <div className="Chrono">
-        {formatMilliSecondToTime(this.getTime())}
-      </div>
+      <span className={'Chrono ' + this.getColorClass(time)}>
+        {formatMilliSecondToTime(time)}
+      </span>
     );
   }
 }

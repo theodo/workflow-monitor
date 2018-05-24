@@ -1,9 +1,7 @@
-.Chrono {
-  height: 100%;
-  width: 100px;
-  text-align: center;
-  line-height: 50px;
-  color: white;
-  border-right: 1px solid rgba(255, 255, 255, 0.6);
-  border-left: 1px solid rgba(255, 255, 255, 0.6);
+.Chrono.green{
+  color: #1A9A58;
+}
+
+.Chrono.red{
+  color: #BF0712;
 }

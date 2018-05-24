@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
+import { formatMilliSecondToSentence } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import './ReverseChrono.css';
 
@@ -10,7 +10,7 @@ class ReverseChrono extends Component {
       now: (new Date()).getTime(),
     };
     this.interval = setInterval(() => {
-      document.title = this.formatTimeLeft();
+      document.title = formatMilliSecondToSentence(this.getTime());
       setFavicon(this.isTimeOver() ? 'red' : 'green');
       this.setState({
         now: (new Date()).getTime(),
@@ -32,14 +32,10 @@ class ReverseChrono extends Component {
   isTimeOver(){
     return this.getTime() < 0;
   }
-  formatTimeLeft() {
-    const prefix = this.isTimeOver() ? '-' : ' ';
-    return `${prefix} ${formatMilliSecondToTime(Math.abs(this.getTime()))}`;
-  }
   render() {
     return (
       <span className={'ReverseChrono ' + (this.isTimeOver() ? 'red' : 'green')}>
-        {this.formatTimeLeft()}
+        {formatMilliSecondToSentence(this.getTime())}
       </span>
     );
   }

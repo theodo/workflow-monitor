@@ -87,7 +87,7 @@ class TaskPanel extends Component {
             this.props.currentTask.estimatedTime &&
               <div>
                 <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
-                <h3>Remaining time :&nbsp;
+                <h3>
                   <ReverseChrono
                     dateLastPause={this.props.dateLastPause}
                     estimatedTaskTime={this.props.currentTask.estimatedTime}
