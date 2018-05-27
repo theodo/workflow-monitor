@@ -1,14 +1,19 @@
 .TaskField_input {
-  height: 100%;
   box-sizing: border-box;
 }
 
 .TaskField_description {
-  border: 1px solid #CACFD2;
-  border-top: 0;
-  border-bottom: 0;
-  flex-grow: 5;
-  padding-left: 10px;
+    border: 1px solid #CACFD2;
+    border-top: 0;
+    border-bottom: 0;
+    -ms-flex-positive: 5;
+    padding: 10px;
+    line-height: 20px;
+    flex-grow: 5;
+    min-height: 40px;
+    height: 40px;
+    resize: none;
+    box-sizing: border-box;
 }
 .TaskField_estimatedTime {
   text-align: center;
@@ -28,7 +33,7 @@
 .TaskField_mainContainer_top {
   display: flex;
   justify-content: space-between;
-  height: 36px;
+  min-height: 36px;
 }
 
 .TaskField_mainContainer_bottom {

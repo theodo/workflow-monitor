@@ -90,6 +90,7 @@ class TaskField extends Component {
     this.state= {check: props.task.check !== undefined};
     this.toggleCheck = this.toggleCheck.bind(this);
     this.handleInputKeyPress = this.handleInputKeyPress.bind(this);
+    this.resizeDescriptionField = this.resizeDescriptionField.bind(this);
   }
   toggleCheck() {
     const {
@@ -109,6 +110,25 @@ class TaskField extends Component {
       if (addNewTask) this.props.addNewTask();
       else this.estimatedTimeRef.focus();
     }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.task && this.props.task.label !== prevProps.task.label) {
+      this.resizeDescriptionField();
+    }
+  }
+  componentDidMount(){
+    this.resizeDescriptionField();
+  }
+  shouldComponentUpdate(nextProps, prevState) {
+    if (nextProps.task.label === this.props.task.label
+        && nextProps.task.estimatedTimeText === this.props.task.estimatedTimeText
+        && prevState.check === this.state.check)
+      return false;
+    return true;
+  }
+  resizeDescriptionField(){
+    this.descriptionField.style.height = '5px';
+    this.descriptionField.style.height = (this.descriptionField.scrollHeight)+'px';
   }
   render() {
     const {
@@ -133,7 +153,8 @@ class TaskField extends Component {
         )}
         <div className="TaskField_mainContainer">
           <div className="TaskField_mainContainer_top">
-            <input
+            <textarea
+              ref={(ref) => this.descriptionField = ref}
               autoFocus={!task.label}
               className="TaskField_input TaskField_description"
               type="text"
