@@ -57,7 +57,7 @@ const styles = theme => ({
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 36,
+    marginRight: 12,
   },
   hide: {
     display: 'none',
@@ -101,6 +101,9 @@ const styles = theme => ({
       marginTop: 64,
     },
   },
+  title: {
+    marginLeft: 20,
+  },
 });
 
 
@@ -127,8 +130,9 @@ export class Main extends Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography type="title" color="inherit" noWrap>
-                Workflow monitor
+              <img src="./casper.png" height="50px" alt="logo"/>
+              <Typography type="title" color="inherit" className={classes.title} noWrap>
+                Caspr - The Ghost Programming Companion
               </Typography>
             </Toolbar>
           </AppBar>
