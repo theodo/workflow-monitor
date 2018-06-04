@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
@@ -10,6 +11,7 @@ import Drawer from 'material-ui/Drawer';
 import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
 import Settings from './Settings/Settings';
+import Project from './Project/Project';
 
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -19,6 +21,7 @@ import Divider from 'material-ui/Divider';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 import HomeIcon from 'material-ui-icons/Home';
+import ListIcon from 'material-ui-icons/List';
 import TrackChangesIcon from 'material-ui-icons/TrackChanges';
 import SettingsIcon from 'material-ui-icons/Settings';
 
@@ -110,10 +113,14 @@ const styles = theme => ({
 export class Main extends Component {
   constructor(props){
     super(props);
+    this.checkPrevent = this.checkPrevent.bind(this);
     this.state = { isDrawerOpen: false };
   }
   toggleDrawer(isDrawerOpen){
     this.setState({ isDrawerOpen });
+  }
+  checkPrevent(e){
+    if(!this.props.isProjectSelected) e.preventDefault();
   }
   render() {
     const { classes, theme } = this.props;
@@ -151,28 +158,36 @@ export class Main extends Component {
               </div>
               <Divider />
               <div>
-                <Link to="/">
-                  <ListItem button>
+                <Link to="/" onClick={this.checkPrevent} >
+                  <ListItem disabled={!this.props.isProjectSelected} button>
                     <ListItemIcon>
                       <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Home page" />
                   </ListItem>
                 </Link>
-                <Link to="/monitor">
-                  <ListItem button>
+                <Link to="/monitor" onClick={this.checkPrevent} >
+                  <ListItem disabled={!this.props.isProjectSelected} button>
                     <ListItemIcon>
                       <TrackChangesIcon />
                     </ListItemIcon>
                     <ListItemText primary="Session monitor" />
                   </ListItem>
                 </Link>
-                <Link to="/settings">
-                  <ListItem button>
+                <Link to="/settings" onClick={this.checkPrevent} >
+                  <ListItem disabled={!this.props.isProjectSelected} button>
                     <ListItemIcon>
                       <SettingsIcon />
                     </ListItemIcon>
                     <ListItemText primary="Settings" />
+                  </ListItem>
+                </Link>
+                <Link to="/project">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Projects" />
                   </ListItem>
                 </Link>
               </div>
@@ -183,6 +198,7 @@ export class Main extends Component {
             <Route exact path="/" component={Home}/>
             <Route path="/monitor" component={Monitor}/>
             <Route path="/settings" component={Settings}/>
+            <Route path="/project" component={Project}/>
           </main>
         </div>
       </div>
@@ -195,4 +211,9 @@ Main.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(Main);
+
+const mapStateToProps = state => ({
+  isProjectSelected: state.LoginReducers.currentProject !== undefined,
+});
+
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Main));

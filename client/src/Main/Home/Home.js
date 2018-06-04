@@ -13,17 +13,13 @@ class Home extends Component {
   constructor(props){
     super(props);
     this.state = {
-      boards: [],
       project: this.props.project,
       lists: [],
       backlog: this.props.backlog,
       cards: [],
     };
-    window.Trello.get('/member/me/boards').then((boards) => {
-      this.setState({ boards });
-    });
-    if (this.props.project !== '') {
-      window.Trello.get(`/boards/${this.props.project}/lists`).then((lists) => {
+    if (this.props.project) {
+      window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists`).then((lists) => {
         this.setState({ lists });
       });
     }
@@ -36,16 +32,9 @@ class Home extends Component {
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value }, () => {
       this.props.saveSettings({
-        selectedProjectId: this.state.project,
         selectedBacklogId: this.state.backlog,
       });
     });
-    if (event.target.name === 'project') {
-      this.setState({ lists: [], cards: [] });
-      window.Trello.get(`/boards/${event.target.value}/lists`).then((lists) => {
-        this.setState({ lists });
-      });
-    }
     if (event.target.name === 'backlog') {
       this.setState({ cards: [] });
       window.Trello.get(`/lists/${event.target.value}/cards`).then((cards) => {
@@ -58,21 +47,7 @@ class Home extends Component {
       <div className="Home">
         <div className="Home-left-panel">
           <form autoComplete="on">
-            <FormControl>
-              <InputLabel htmlFor="project">Project</InputLabel>
-              <Select
-                className="select"
-                autoWidth={true}
-                value={this.state.project}
-                onChange={(event) => this.handleChange(event)}
-                input={<Input name="project" id="project" />}
-              >
-                {
-                  this.state.boards.map((board) =>
-                    <MenuItem value={board.id} key={ board.id }>{ board.name }</MenuItem>)
-                }
-              </Select>
-            </FormControl>
+            Project : { this.state.project.name }
             <br />
             <FormControl>
               <InputLabel htmlFor="backlog">Backlog</InputLabel>
@@ -112,7 +87,7 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   return {
-    project: state.SettingsReducers.selectedProjectId ? state.SettingsReducers.selectedProjectId : '',
+    project: state.LoginReducers.currentProject,
     backlog: state.SettingsReducers.selectedBacklogId ? state.SettingsReducers.selectedBacklogId : '',
     currentTicket: state.MonitorReducers.currentTrelloCard,
   };

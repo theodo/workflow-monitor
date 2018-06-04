@@ -12,7 +12,10 @@ const authenticationMiddleware = (req, res, next) => {
         console.error(result);
         res.status(405).send('{"error": "Not authorized!"}')
       } else {
-        sequelize.models.user.find({ where: {trelloId: result.trelloId}})
+        sequelize.models.user.find({
+          where: {trelloId: result.trelloId},
+          include: [{ model:  sequelize.models.project, as: 'currentProject' }]
+        })
           .then((user) => {
             if(user) {
               req.user = user
@@ -39,7 +42,10 @@ const loginRoute = (req, res) => {
 
       resp.on('end', () => {
         const dataJson = JSON.parse(data)
-        sequelize.models.user.findOrCreate({ where: {trelloId: dataJson.id}, defaults: {fullName: dataJson.fullName}})
+        sequelize.models.user.findOrCreate({
+          where: {trelloId: dataJson.id}, defaults: {fullName: dataJson.fullName},
+          include: [{ model:  sequelize.models.project, as: 'currentProject' }],
+        })
           .spread((user, created) => {
             const loginView = {
               user,

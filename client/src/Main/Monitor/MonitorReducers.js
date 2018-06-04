@@ -1,7 +1,8 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
+import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
+import axios from 'axios';
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
@@ -184,10 +185,27 @@ const MonitorReducers = (state = currentInitialState, action) => {
       };
     }
     break;
+  case UPDATE:
+    newState = action.state;
+    break;
   default:
     newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
+  if (action.type !== UPDATE) {
+    const query = `
+        mutation {
+          updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
+        }
+      `;
+    axios.post('/api/', {
+      query
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch(() => {});
+  }
   return newState;
 };
 
