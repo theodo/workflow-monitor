@@ -104,6 +104,11 @@ const styles = theme => ({
   title: {
     marginLeft: 20,
   },
+  feedbackButton: {
+    position: 'absolute',
+    color: 'white',
+    right: 24,
+  }
 });
 
 
@@ -134,6 +139,7 @@ export class Main extends Component {
               <Typography type="title" color="inherit" className={classes.title} noWrap>
                 Caspr - The Ghost Programming Companion
               </Typography>
+              <a href="https://goo.gl/forms/QEUYWJFubYwcYPrf1" target="_blank" className={classes.feedbackButton} rel="noopener noreferrer">Give feedback</a>
             </Toolbar>
           </AppBar>
           <Drawer
