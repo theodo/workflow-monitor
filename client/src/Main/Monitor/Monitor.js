@@ -155,9 +155,11 @@ class Monitor extends Component {
     }
   }
   handleClickPreviousButton() {
-    if(this.isPreviousButtonDisabled()) return;
-
-    this.goToPreviousTask();
+    if (this.isPreviousButtonDisabled()) return;
+    if (this.props.currentTaskIndex === 1){
+      if (window.confirm('Are you sure you want to go back to planning ? Your current session will be deleted.')) this.props.backToPlanning();
+    }
+    else this.goToPreviousTask();
   }
   initSession() {
     this.props.initSession();
@@ -206,7 +208,7 @@ class Monitor extends Component {
     }
   }
   isPreviousButtonDisabled() {
-    return this.props.step !== MONITOR_STEPS.WORKFLOW || this.props.dateLastPause !== undefined || this.props.currentTaskIndex < 2;
+    return this.props.step !== MONITOR_STEPS.WORKFLOW || this.props.dateLastPause !== undefined;
   }
   renderPanel() {
     switch (this.props.step) {
@@ -302,6 +304,9 @@ const mapDispatchToProps = dispatch => {
     },
     initSession: () => {
       dispatch(initSession());
+    },
+    backToPlanning: () => {
+      dispatch(backToPlanning());
     },
     startSession: (tasks, planningRealTime) => {
       dispatch(startSession(tasks, planningRealTime));

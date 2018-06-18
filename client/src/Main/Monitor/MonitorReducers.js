@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR } from './MonitorActions';
+import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, BACK_TO_PLANNING } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
 
@@ -78,6 +78,14 @@ const MonitorReducers = (state = currentInitialState, action) => {
         dateLastStart: now,
         elapsedTime: 0,
       },
+    };
+    break;
+  case BACK_TO_PLANNING:
+    newState = {
+      ...state,
+      currentStep: MONITOR_STEPS.PLANNING,
+      tasks: state.tasks.map((task) => task),
+      currentTaskIndex: 0,
     };
     break;
   case NEXT_TASK: {
