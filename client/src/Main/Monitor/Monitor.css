@@ -36,9 +36,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 50px;
   width: 100%;
-  line-height: 100px;
   background-color: #222;
   color: white;
 }
@@ -47,21 +46,8 @@
   margin: 28px;
 }
 
-.Monitor-footer-button {
-  font-size: 1.5em;
-}
-
-.Monitor-footer-button:not(:disabled) {
-  cursor: pointer;
-}
-
-.Monitor-footer-bloc > .Monitor-footer-button {
+.Monitor-footer-bloc > .Monitor-footer-button:not(:disabled) {
   color: white;
-  background-color: #2B5BA0;
-  border-radius: 3px;
-}
-.Monitor-footer-bloc > .Monitor-footer-button:hover {
-  background-color: #72C2B7;
 }
 
 .Monitor-FullHeightPanel {

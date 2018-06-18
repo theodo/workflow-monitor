@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from 'material-ui/Button';
+import IconButton from 'material-ui/Button';
+import SkipPreviousIcon from 'material-ui-icons/SkipPrevious';
+import SkipNextIcon from 'material-ui-icons/SkipNext';
+import PlayArrowIcon from 'material-ui-icons/PlayArrow';
+import PauseIcon from 'material-ui-icons/Pause';
 import Grid from 'material-ui/Grid';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession } from './MonitorActions';
+import { LinearProgress } from 'material-ui/Progress';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, backToPlanning } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
@@ -17,6 +22,11 @@ export const MONITOR_STEPS = {
   RESULTS: 'RESULTS',
 };
 
+function findAncestorWithClass (el, cls) {
+  while (!el.classList.contains(cls) && (el = el.parentElement));
+  return el;
+}
+
 class Footer extends Component {
   constructor(props){
     super(props);
@@ -24,52 +34,48 @@ class Footer extends Component {
     this.handleNextClick = this.handleNextClick.bind(this);
     this.handlePreviousClick = this.handlePreviousClick.bind(this);
   }
-  getNextButtonLabel(){
-    switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      return 'START';
-    case MONITOR_STEPS.RESULTS:
-      return 'NEW TICKET';
-    default:
-      return 'NEXT';
-    }
-  }
   handlePauseClick(event) {
-    event.target.blur();
+    const button = findAncestorWithClass(event.target,'Monitor-footer-button');
+    button.blur();
     this.props.onPauseClick();
   }
   handleNextClick(event) {
-    event.target.blur();
+    const button = findAncestorWithClass(event.target,'Monitor-footer-button');
+    button.blur();
     this.props.onNextClick();
   }
   handlePreviousClick(event) {
-    event.target.blur();
+    const button = findAncestorWithClass(event.target,'Monitor-footer-button');
+    button.blur();
     this.props.onPreviousClick();
   }
   renderPlayPauseButton() {
     return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ?
-      <Button raised className="Monitor-footer-button" onClick={this.handlePauseClick} tabIndex="-1">
-        {this.props.dateLastPause ? 'PLAY' : 'PAUSE'} (spacebar)
-      </Button>
+      <IconButton className="Monitor-footer-button" aria-label="play/pause" color="primary" tabIndex="-1" onClick={this.handlePauseClick}>
+        {this.props.dateLastPause ? <PlayArrowIcon /> : <PauseIcon/>}
+      </IconButton>
       : null;
   }
   render() {
     return (
-      <footer className="Monitor-footer">
-        <div className="Monitor-footer-bloc">
-          <Button raised className="Monitor-footer-button" disabled={this.props.isPreviousDisabled} tabIndex="-1" onClick={this.handlePreviousClick}>
-            Previous (p)
-          </Button>
-        </div>
-        <div className="Monitor-footer-bloc">
-          {this.renderPlayPauseButton()}
-        </div>
-        <div className="Monitor-footer-bloc">
-          <Button raised className="Monitor-footer-button" disabled={this.props.isNextDisabled} onClick={this.handleNextClick} tabIndex="-1">
-            {this.getNextButtonLabel()} (n)
-          </Button>
-        </div>
-      </footer>
+      <div>
+        <LinearProgress mode="determinate" value={this.props.progressPercentage}></LinearProgress>
+        <footer className="Monitor-footer">
+          <div className="Monitor-footer-bloc">
+            <IconButton aria-label="Previous" className="Monitor-footer-button" color="primary" disabled={this.props.isPreviousDisabled} tabIndex="-1" onClick={this.handlePreviousClick}>
+              <SkipPreviousIcon />
+            </IconButton>
+          </div>
+          <div className="Monitor-footer-bloc">
+            {this.renderPlayPauseButton()}
+          </div>
+          <div className="Monitor-footer-bloc">
+            <IconButton aria-label="Next" className="Monitor-footer-button" color="primary" disabled={this.props.isNextDisabled} tabIndex="-1" onClick={this.handleNextClick}>
+              <SkipNextIcon />
+            </IconButton>
+          </div>
+        </footer>
+      </div>
     );
   }
 }
@@ -86,6 +92,7 @@ class Monitor extends Component {
   constructor(props){
     super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.getProgressPercentage = this.getProgressPercentage.bind(this);
     document.onkeypress = this.handleKeyPress;
     this.state = {
       planningPanelChanges: {
@@ -97,6 +104,20 @@ class Monitor extends Component {
         currentTaskCheckOK: false,
       }
     };
+  }
+  getProgressPercentage() {
+    switch (this.props.step) {
+    case MONITOR_STEPS.WELCOME:
+      return 0;
+    case MONITOR_STEPS.PLANNING:
+      return 0;
+    case MONITOR_STEPS.WORKFLOW:
+      return this.props.currentTaskIndex * 100 / this.props.tasks.length;
+    case MONITOR_STEPS.RESULTS:
+      return 100;
+    default:
+      break;
+    }
   }
   areTasksValid(tasks) {
     return tasks && tasks.length > 0;
@@ -251,6 +272,8 @@ class Monitor extends Component {
           onPauseClick={() => this.props.playOrPauseSession()}
           onNextClick={() => this.handleClickNextButton()}
           onPreviousClick={() => this.handleClickPreviousButton()}
+          progressPercentage={this.getProgressPercentage()}
+          dateLastPause={this.props.dateLastPause}
         />
       </div>
     );
