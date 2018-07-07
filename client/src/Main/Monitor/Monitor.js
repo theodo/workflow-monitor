@@ -210,6 +210,7 @@ class Monitor extends Component {
     }
   }
   isPreviousButtonDisabled() {
+    if (this.props.step === MONITOR_STEPS.RESULTS) return false;
     return this.props.step !== MONITOR_STEPS.WORKFLOW || this.props.dateLastPause !== undefined;
   }
   renderPanel() {

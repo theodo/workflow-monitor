@@ -128,33 +128,50 @@ const MonitorReducers = (state = currentInitialState, action) => {
     break;
   }
   case PREVIOUS_TASK: {
-    const result = {
-      ...state.tasks[state.currentTaskIndex],
-      problems: action.taskProblems,
-      realTime: calculateCurrentTaskTime(state.taskChrono, now),
-    };
-
-    const tasks = state.tasks;
-    tasks[state.currentTaskIndex] = result;
-
-    let newStateForNextTask = {
+    let newStateForPreviousTask = {
       ...state,
-      tasks,
       currentTaskIndex: state.currentTaskIndex - 1,
       taskChrono: {
         dateLastStart: now,
-        elapsedTime: tasks[state.currentTaskIndex - 1].realTime,
+        elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
       },
     };
 
-    if (action.newTasks && action.newTasks.length > 0) {
-      newStateForNextTask.tasks = [
-        ...state.tasks.slice(0,state.currentTaskIndex+1),
-        ...action.newTasks,
-        ...state.tasks.slice(state.currentTaskIndex+1),
-      ];
+    if (state.currentStep === MONITOR_STEPS.WORKFLOW){
+      const result = {
+        ...state.tasks[state.currentTaskIndex],
+        problems: action.taskProblems,
+        realTime: calculateCurrentTaskTime(state.taskChrono, now),
+      };
+
+      const tasks = state.tasks;
+      tasks[state.currentTaskIndex] = result;
+
+      newStateForPreviousTask = {
+        ...newStateForPreviousTask,
+        tasks,
+      };
+
+      if (action.newTasks && action.newTasks.length > 0) {
+        newStateForPreviousTask.tasks = [
+          ...state.tasks.slice(0,state.currentTaskIndex+1),
+          ...action.newTasks,
+          ...state.tasks.slice(state.currentTaskIndex+1),
+        ];
+      }
     }
-    newState = newStateForNextTask;
+    if (state.currentStep === MONITOR_STEPS.RESULTS){
+      newStateForPreviousTask = {
+        ...newStateForPreviousTask,
+        currentStep: MONITOR_STEPS.WORKFLOW,
+        dateLastPause: undefined,
+        globalChrono: {
+          dateLastStart: now,
+          elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
+        },
+      };
+    }
+    newState = newStateForPreviousTask;
     break;
   }
   case RESET_MONITOR:
