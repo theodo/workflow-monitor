@@ -13,6 +13,7 @@ import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
+import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';
 import './Monitor.css';
 
 export const MONITOR_STEPS = {
@@ -65,6 +66,7 @@ class Footer extends Component {
             <IconButton aria-label="Previous" className="Monitor-footer-button" color="primary" disabled={this.props.isPreviousDisabled} tabIndex="-1" onClick={this.handlePreviousClick}>
               <SkipPreviousIcon />
             </IconButton>
+            <MuteAlarmButton />
           </div>
           <div className="Monitor-footer-bloc">
             {this.renderPlayPauseButton()}
