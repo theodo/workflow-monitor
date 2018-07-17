@@ -21,6 +21,7 @@ ul {
 
 .TaskRow {
   list-style-type: none;
+  word-break: break-word;
   word-wrap: break-word;
   margin: 16px 10px;
   background-color: white;
