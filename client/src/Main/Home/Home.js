@@ -4,6 +4,7 @@ import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
+import Button from 'material-ui/Button';
 import './Home.css';
 import SimpleCard from './SimpleCard/SimpleCard';
 import { saveSettings } from '../Settings/SettingsActions';
@@ -12,6 +13,8 @@ import { resetMonitor } from '../Monitor/MonitorActions';
 class Home extends Component {
   constructor(props){
     super(props);
+    this.isRefreshButtonDisabled = this.isRefreshButtonDisabled.bind(this);
+    this.loadCardsFromTrello = this.loadCardsFromTrello.bind(this);
     this.state = {
       boards: [],
       project: this.props.project,
@@ -47,11 +50,18 @@ class Home extends Component {
       });
     }
     if (event.target.name === 'backlog') {
-      this.setState({ cards: [] });
-      window.Trello.get(`/lists/${event.target.value}/cards`).then((cards) => {
-        this.setState({ cards });
-      });
+      this.loadCardsFromTrello(event.target.value);
     }
+  }
+  loadCardsFromTrello(backlogId) {
+    this.setState({ cards: [] });
+    window.Trello.get(`/lists/${backlogId}/cards`).then((cards) => {
+      this.setState({ cards });
+    });
+  }
+  isRefreshButtonDisabled() {
+    const isRefreshButtonDisabled = !this.state.lists || this.state.lists.length === 0 || !this.state.backlog || this.state.lists.map(list => list.id).indexOf(this.state.backlog) === -1;
+    return !!isRefreshButtonDisabled;
   }
   render() {
     return (
@@ -89,6 +99,11 @@ class Home extends Component {
                 }
               </Select>
             </FormControl>
+            <br />
+            <br />
+            <Button onClick={() => this.loadCardsFromTrello(this.state.backlog)} disabled={this.isRefreshButtonDisabled()}>
+              Refresh cards
+            </Button>
           </form>
         </div>
         <div className="Home-right-panel">
