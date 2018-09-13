@@ -1,9 +1,13 @@
-import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE } from './MonitorActions';
-import { MONITOR_STEPS } from './Monitor';
-import { sendEvent } from '../../Utils/AnalyticsUtils';
-import { gqlClient } from '../../Utils/Graphql';
-import gql from 'graphql-tag';
+const uuid = require('uuid');
+const { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE } = require('./MonitorActions');
+const axios = require('axios');
+
+const MONITOR_STEPS = {
+  WELCOME: 'WELCOME',
+  PLANNING: 'PLANNING',
+  WORKFLOW: 'WORKFLOW',
+  RESULTS: 'RESULTS',
+};
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
@@ -11,20 +15,6 @@ const calculateElapsedTime = (chrono, dateLastPause) => {
 
 const calculateCurrentTaskTime = (taskChrono, now) => {
   return taskChrono.elapsedTime + (now - taskChrono.dateLastStart);
-};
-
-const saveAnalytics = (tasks, projectId) => {
-  sendEvent('Ticket','finish',`${projectId}`);
-
-  const allTasks = tasks ? tasks : [];
-  const problemCounter = allTasks.filter(task => task.problems && task.problems.length > 0 ).length;
-  if(problemCounter > 0) sendEvent('Problems','detect',`${projectId}`, problemCounter);
-
-  const planningErrorCounter = allTasks.filter(task => task.addedOnTheFly ).length;
-  if(planningErrorCounter > 0) sendEvent('Planning','error',`${projectId}`, planningErrorCounter);
-
-  const checkCounter = allTasks.filter(task => task.check && task.check.length > 0 ).length;
-  if(checkCounter > 0) sendEvent('Check','add',`${projectId}`, checkCounter);
 };
 
 const initialMonitorState = {
@@ -44,16 +34,12 @@ const initialMonitorState = {
   currentTrelloCard: undefined,
 };
 
-const oldState = (JSON.parse(localStorage.getItem('monitorState')));
-
-const currentInitialState = localStorage.getItem('monitorState') ? oldState : initialMonitorState;
-
-const MonitorReducers = (state = currentInitialState, action) => {
+const MonitorReducers = (state = initialMonitorState, action) => {
+  if(!action) return state;
   let newState = {};
   const now = (new Date()).getTime();
   switch (action.type) {
   case INIT_SESSION:
-    localStorage.removeItem('planningTasks');
     newState = {
       ...state,
       currentStep: MONITOR_STEPS.PLANNING,
@@ -111,7 +97,6 @@ const MonitorReducers = (state = currentInitialState, action) => {
     }
     if((!action.newTasks || action.newTasks.length === 0)
         && state.currentTaskIndex >= state.tasks.length - 1) {
-      saveAnalytics(newStateForNextTask.tasks, action.projectId);
       newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
       newStateForNextTask.dateLastPause = now;
     } else {
@@ -192,19 +177,21 @@ const MonitorReducers = (state = currentInitialState, action) => {
   default:
     newState = state;
   }
-  localStorage.setItem('monitorState', JSON.stringify(newState));
   if (action.type !== UPDATE) {
-    gqlClient
-      .mutate({
-        mutation: gql`
-          mutation {
-            updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
-          }
-        `,
+    const query = `
+        mutation {
+          updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
+        }
+      `;
+    axios.post('/api/', {
+      query
+    })
+      .then((response) => {
+        //console.log(response);
       })
-      .then(() => {});
+      .catch(() => {});
   }
   return newState;
 };
 
-export default MonitorReducers;
+module.exports = MonitorReducers

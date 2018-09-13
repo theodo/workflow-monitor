@@ -1,0 +1,45 @@
+{
+  "name": "codai",
+  "version": "0.0.1",
+  "description": "Bot that code for you",
+  "main": "cli.js",
+  "scripts": {
+    "start": "node cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loic-carbonne/codai.git"
+  },
+  "keywords": [
+    "codai",
+    "bot",
+    "ai"
+  ],
+  "author": "Loïc Carbonne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loic-carbonne/codai/issues"
+  },
+  "homepage": "https://github.com/loic-carbonne/codai#readme",
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.0.0",
+    "apollo-client": "^2.0.1",
+    "apollo-link": "^1.0.0",
+    "apollo-link-error": "^1.0.0",
+    "apollo-link-http": "^1.0.0",
+    "graphql": "^0.11.7",
+    "graphql-tag": "^2.5.0",
+    "react-apollo": "^2.0.0",
+    "apollo-link-context": "^1.0.8",
+    "apollo-link-ws": "^1.0.8",
+    "axios": "^0.18.0",
+    "dialogflow": "^0.6.0",
+    "prompt": "^1.0.0",
+    "react-generator-templates": "^1.0.6",
+    "readline": "^1.3.0",
+    "subscriptions-transport-ws": "^0.9.14",
+    "uuid": "^3.3.2",
+    "ws": "^6.0.0"
+  }
+}

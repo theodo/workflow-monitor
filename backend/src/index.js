@@ -67,7 +67,7 @@ const resolvers = {
 
 const pubsub = new PubSub()
 const context = async ({ request }) => ({
-  user: request.user,
+  user: request ? request.user : undefined,
   pubsub,
 })
 const server = new GraphQLServer({ typeDefs, resolvers, context })
