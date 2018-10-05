@@ -190,7 +190,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
         //console.log(response);
       })
       .catch(() => {});
-  }
+    }
   return newState;
 };
 
