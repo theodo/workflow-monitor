@@ -1,7 +1,7 @@
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
-const { authenticationMiddleware, websocketAuthenticationMiddleware, loginRoute } = require('./auth')
+const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const typeDefs = `
   type Query {
@@ -58,7 +58,7 @@ const resolvers = {
   },
   Subscription: {
     state: {
-      subscribe: (_, args, { pubsub, user }) => {
+      subscribe: (_, args, { user }) => {
         const channel = 'user#' + user.id;
         return pubsub.asyncIterator(channel)
       },
@@ -67,13 +67,12 @@ const resolvers = {
 }
 
 const pubsub = new PubSub()
-const context = async ({ request }) => ({
-  user: request ? request.user : undefined,
+const context = async ({ request, connection }) => ({
+  user: request ? request.user : connection ? connection.context.user : undefined,
   pubsub,
-})
+});
 const server = new GraphQLServer({ typeDefs, resolvers, context })
 server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware)
 
 server.express.post(`/login`, bodyParser.json(), loginRoute)
-server.start(() => console.log('Server is running on localhost:4000'))
-server.subscriptionServer.onConnect = websocketAuthenticationMiddleware;
+server.start({subscriptions : {onConnect: websocketAuthenticationMiddleware}},() => console.log('Server is running on localhost:4000'))

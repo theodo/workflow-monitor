@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const sequelize = require('./sequelize')
 
 const verifyJWTToken = (token, callback) => {
-  jwt.verify(token, 'JWT_SECRET', callback);
+  return jwt.verify(token, 'JWT_SECRET', callback);
 }
 
 const findUser = (userTrelloId) => {
@@ -37,16 +37,17 @@ const authenticationMiddleware = (req, res, next) => {
   };
 }
 
-const websocketAuthenticationMiddleware = (connectionParams, webSocket) => {
+const websocketAuthenticationMiddleware = async (connectionParams, webSocket) => {
   if (connectionParams.authToken) {
     return verifyJWTToken(connectionParams.authToken, (err, result) => {
       if (err) {
         console.error(result);
         res.status(405).send('{"error": "Not authorized!"}')
       } else {
-        findUser(result.trelloId)
+        return findUser(result.trelloId)
           .then((user) => {
             if(user) {
+
               return {
                   user: user,
               };

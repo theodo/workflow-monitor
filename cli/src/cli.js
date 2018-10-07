@@ -3,6 +3,7 @@ const { stateSubscription } = require('./api')
 const MonitorReducers = require('./MonitorReducers')
 const render = require('./renderer')
 const data = require('./data')
+const { askCredentials } = require('./auth')
 
 const development = false;
 
@@ -11,6 +12,8 @@ const clear = () => {
 }
 
 const main = () => {
+  askCredentials();
+
   let store = MonitorReducers();
   clear();
   if (development) {
@@ -26,6 +29,7 @@ const main = () => {
   }
 
   readline.emitKeypressEvents(process.stdin);
+  process.stdin.resume();
   process.stdin.setRawMode(true);
   process.stdin.on('keypress', (str, key) => {
     if (key.ctrl && key.name === 'c') {
@@ -49,9 +53,8 @@ const main = () => {
       render(store);
     }
   });
+
+  console.log('Waiting for ticket start...');
 }
 
 main();
-
-
-//console.log(' Waiting for ticket start...');

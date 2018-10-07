@@ -7,10 +7,11 @@ const { WebSocketLink } = require('apollo-link-ws');
 const gql = require('graphql-tag');
 const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
+const { getToken } = require('./auth')
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ0cmVsbG9JZCI6IjU5NWE3ZDk1MDQ0Njk5YjRmYmI3OWMyYyIsImlhdCI6MTUzNjg2NTMyOX0.jiSBsO35Boq6k_yXTY_fu9kdboQm8pHtgwb0594OxbQ';
+  const token = getToken();
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -23,9 +24,12 @@ const authLink = setContext((_, { headers }) => {
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:4000/`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      authToken: getToken(),
+    },
   },
-  webSocketImpl: ws
+  webSocketImpl: ws,
 });
 
 const httpLink = createHttpLink({
