@@ -1,10 +1,10 @@
 const readline = require('readline');
-const stateSubscription = require('./api')
+const { stateSubscription } = require('./api')
 const MonitorReducers = require('./MonitorReducers')
 const render = require('./renderer')
 const data = require('./data')
 
-const development = true;
+const development = false;
 
 const clear = () => {
   console.log('\x1Bc');

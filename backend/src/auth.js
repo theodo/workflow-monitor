@@ -2,20 +2,28 @@ const https = require('https');
 const jwt = require('jsonwebtoken')
 const sequelize = require('./sequelize')
 
+const verifyJWTToken = (token, callback) => {
+  jwt.verify(token, 'JWT_SECRET', callback);
+}
+
+const findUser = (userTrelloId) => {
+  return sequelize.models.user.find({
+    where: {trelloId: userTrelloId},
+    include: [{ model:  sequelize.models.project, as: 'currentProject' }]
+  });
+}
+
 const authenticationMiddleware = (req, res, next) => {
   let authorization = req.headers.authentication
   const bearerLength = "Bearer ".length;
   if (authorization && authorization.length > bearerLength) {
     const token = authorization.slice(bearerLength);
-    jwt.verify(token, 'JWT_SECRET', (err, result) => {
+    verifyJWTToken(token, (err, result) => {
       if (err) {
         console.error(result);
         res.status(405).send('{"error": "Not authorized!"}')
       } else {
-        sequelize.models.user.find({
-          where: {trelloId: result.trelloId},
-          include: [{ model:  sequelize.models.project, as: 'currentProject' }]
-        })
+        findUser(result.trelloId)
           .then((user) => {
             if(user) {
               req.user = user
@@ -28,6 +36,30 @@ const authenticationMiddleware = (req, res, next) => {
     });
   };
 }
+
+const websocketAuthenticationMiddleware = (connectionParams, webSocket) => {
+  if (connectionParams.authToken) {
+    return verifyJWTToken(connectionParams.authToken, (err, result) => {
+      if (err) {
+        console.error(result);
+        res.status(405).send('{"error": "Not authorized!"}')
+      } else {
+        findUser(result.trelloId)
+          .then((user) => {
+            if(user) {
+              return {
+                  user: user,
+              };
+            } else {
+              throw new Error('Missing auth token!');
+            }
+          });
+      };
+    });
+  }
+
+  throw new Error('Missing auth token!');
+};
 
 const loginRoute = (req, res) => {
   const trelloToken = req.body.trelloToken
@@ -64,4 +96,4 @@ const loginRoute = (req, res) => {
   });
 }
 
-module.exports = { authenticationMiddleware, loginRoute }
+module.exports = { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware }

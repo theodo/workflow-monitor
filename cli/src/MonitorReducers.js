@@ -1,6 +1,8 @@
 const uuid = require('uuid');
 const { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE } = require('./MonitorActions');
 const axios = require('axios');
+const { gqlClient } = require('./api');
+const gql = require('graphql-tag');
 
 const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
@@ -178,18 +180,15 @@ const MonitorReducers = (state = initialMonitorState, action) => {
     newState = state;
   }
   if (action.type !== UPDATE) {
-    const query = `
-        mutation {
-          updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
-        }
-      `;
-    axios.post('/api/', {
-      query
-    })
-      .then((response) => {
-        //console.log(response);
+    gqlClient
+      .mutate({
+        mutation: gql`
+          mutation {
+            updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
+          }
+        `,
       })
-      .catch(() => {});
+      .then(() => {});
     }
   return newState;
 };

@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
+import { subscriptionClient } from '../../Utils/Graphql';
+import gql from 'graphql-tag';
 import './Monitor.css';
 
 export const MONITOR_STEPS = {
@@ -97,6 +99,17 @@ class Monitor extends Component {
         currentTaskCheckOK: false,
       }
     };
+    subscriptionClient.subscribe({
+      query: gql`
+      subscription {
+        state
+      }`,
+      variables: {}
+    }).subscribe({
+      next (data) {
+        props.update(JSON.parse(data.data.state));
+      }
+    },() => console.log('error'));
   }
   areTasksValid(tasks) {
     return tasks && tasks.length > 0;
@@ -288,6 +301,9 @@ const mapDispatchToProps = dispatch => {
     },
     previousTask: (newTasks, taskProblem) => {
       dispatch(previousTask(newTasks, taskProblem));
+    },
+    update: (newState) => {
+      dispatch(update(newState));
     },
     goToHome: () => {
       window.location.hash = '#/';
