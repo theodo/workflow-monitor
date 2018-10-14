@@ -57,4 +57,4 @@ const main = () => {
   console.log('Waiting for ticket start...');
 }
 
-main();
+module.exports = main
