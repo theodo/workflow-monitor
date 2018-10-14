@@ -22,7 +22,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/`,
+  uri: `ws://caspr.theo.do:4000/`,
   options: {
     reconnect: true,
     connectionParams: {
@@ -33,7 +33,7 @@ const wsLink = new WebSocketLink({
 });
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost/api/',
+  uri: 'http://caspr.theo.do/api/',
   fetch,
 });
 
