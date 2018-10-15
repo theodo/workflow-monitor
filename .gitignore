@@ -9,6 +9,9 @@
 # production
 /build
 
+# provisioning
+devops/provisioning/playbook.yml
+
 # misc
 .DS_Store
 .env.local

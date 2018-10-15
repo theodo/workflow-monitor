@@ -1,0 +1,11 @@
+---
+#PUT here your main variable
+project_name: caspr
+port: 80
+apt_specific_packages:
+  - git
+
+update_apt_cache: yes
+postgresql_version: 9.6
+
+nodejs_version: "8.x"
