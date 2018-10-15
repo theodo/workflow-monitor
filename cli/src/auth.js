@@ -11,6 +11,9 @@ const askCredentials = () => {
 
   const token = readlineSync.question('Enter your JWT token :')
   writeToken(token);
+
+  console.log('Your token has been saved, you can restart caspr-cli')
+  process.exit()
 }
 
 

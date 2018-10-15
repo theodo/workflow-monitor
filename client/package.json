@@ -1,6 +1,6 @@
 {
   "name": "production-monitor",
-  "homepage": "http://theodo.github.io/workflow-monitor",
+  "homepage": "http://caspr.theo.do/",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
