@@ -1,0 +1,43 @@
+server {
+    listen 8080;
+    server_name {{ inventory_hostname }};
+
+    root /var/www/{{ project_name }}/current;
+
+    error_log /var/log/nginx/{{ project_name }}.error.log;
+    access_log /var/log/nginx/{{ project_name }}.access.log;
+
+    # index build/index.html
+    gzip            on;
+    gzip_min_length 1000;
+    gzip_comp_level 9;
+    gzip_proxied    any;
+    gzip_types      application/javascript application/x-javascript application/json text/css;
+
+    location /api {
+	proxy_pass         http://localhost:4000/;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+    }
+
+    location / {
+        try_files $uri /build/index.html;
+    }
+
+    location ~ ^/static/(.*) {
+      return 301 /build/static/$1;
+    }
+
+    location ~ ^\/(.[^\/]*\.(json|ico|js))$ {
+      rewrite ^\/(.[^\/]*\.(json|ico|js))$ /build/$1 last;
+    }
+
+    location ~* \.(css|txt|xml|js|gif|jpe?g|png|ico)$ {
+        add_header Cache-Control "public";
+        expires 1y;
+        log_not_found off;
+    }
+}
