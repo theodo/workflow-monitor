@@ -16,7 +16,7 @@
 #    - ubuntu-apt
     - create-www-data-user
     - nginx
-    - ubuntu-postgresql
-    - { role: geerlingguy.nodejs }
+    - geerlingguy.postgresql
+    - geerlingguy.nodejs
     - certbot
 
