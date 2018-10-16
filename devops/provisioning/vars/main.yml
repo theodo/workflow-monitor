@@ -6,6 +6,15 @@ apt_specific_packages:
   - git
 
 update_apt_cache: yes
-postgresql_version: 9.6
 
 nodejs_version: "8.x"
+certbot_admin_email: "nicolasb@theodo.fr"
+
+# List of databases to be created
+postgresql_databases:
+  - name: caspr
+
+# List of users to be created
+postgresql_users:
+  - name: caspr
+    password: caspr

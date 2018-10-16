@@ -14,8 +14,8 @@ server {
 
     # Configure the Certificate and Key you got from your CA (e.g. Lets Encrypt)
     ssl on;
-    ssl_certificate {{ cert_fullchain_path }};
-    ssl_certificate_key {{ cert_privkey_path }};
+    ssl_certificate {{ certbot_output_dir }}/cert.pem;
+    ssl_certificate_key {{ certbot_output_dir }}/privkey.pem;
 
     # Only use TLS v1.2 as Transport Security Protocol
     ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
