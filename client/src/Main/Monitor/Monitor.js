@@ -7,13 +7,15 @@ import PlayArrowIcon from 'material-ui-icons/PlayArrow';
 import PauseIcon from 'material-ui-icons/Pause';
 import Grid from 'material-ui/Grid';
 import { LinearProgress } from 'material-ui/Progress';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession, backToPlanning } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
 import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';
+import { subscriptionClient } from '../../Utils/Graphql';
+import gql from 'graphql-tag';
 import './Monitor.css';
 
 export const MONITOR_STEPS = {
@@ -106,6 +108,17 @@ class Monitor extends Component {
         currentTaskCheckOK: false,
       }
     };
+    subscriptionClient.subscribe({
+      query: gql`
+      subscription {
+        state
+      }`,
+      variables: {}
+    }).subscribe({
+      next (data) {
+        props.update(JSON.parse(data.data.state));
+      }
+    },() => console.log('error'));
   }
   getProgressPercentage() {
     switch (this.props.step) {
@@ -319,6 +332,9 @@ const mapDispatchToProps = dispatch => {
     },
     previousTask: (newTasks, taskProblem) => {
       dispatch(previousTask(newTasks, taskProblem));
+    },
+    update: (newState) => {
+      dispatch(update(newState));
     },
     goToHome: () => {
       window.location.hash = '#/';

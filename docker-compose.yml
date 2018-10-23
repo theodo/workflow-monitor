@@ -1,4 +1,4 @@
-version: '3.2'
+version: '2.0'
 
 services:
   postgresql:
@@ -22,9 +22,10 @@ services:
     build: ./client
     command: yarn start
     volumes:
-      - ./client:/frontend
+      - ./client:/app
     ports:
       - "3000:3000"
+      - "35729:35729"
   nginx:
     image: nginx
     volumes:

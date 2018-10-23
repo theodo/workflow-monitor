@@ -1,10 +1,17 @@
 {
   "name": "production-monitor",
-  "homepage": "http://theodo.github.io/workflow-monitor",
+  "homepage": "http://caspr.theo.do/",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "gh-pages": "1.1.0",
+    "apollo-boost": "^0.1.15",
+    "apollo-link-context": "^1.0.8",
+    "apollo-link-ws": "1.0.8",
+    "apollo-client": "2.0.1",
+    "axios": "^0.18.0",
+    "gh-pages": "^1.2.0",
+    "graphql": "^0.12.3",
+    "graphql-tag": "^2.9.2",
     "history": "4.7.2",
     "material-ui": "1.0.0-beta.25",
     "material-ui-icons": "1.0.0-beta.17",
@@ -15,17 +22,21 @@
     "react-redux": "5.0.6",
     "react-router-dom": "4.2.2",
     "react-router-redux": "5.0.0-alpha.9",
-    "react-scripts": "1.0.17",
+    "react-scripts": "^1.1.5",
     "redux": "3.7.2",
+    "subscriptions-transport-ws": "0.9.14",
+    "throttle-debounce": "^1.0.1",
+    "utf-8-validate": "^5.0.1",
     "uuid": "3.1.0",
-    "throttle-debounce": "^1.0.1"
+    "ws": "^6.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOST=0.0.0.0 CHOKIDAR_USEPOLLING=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "npm run build && gh-pages -d build",
+    "deploy-prod": "npm run build && rsync -avz -e ssh build ubuntu@caspr.theo.do:/var/www/caspr/current/",
     "lint": "eslint ./src"
   },
   "devDependencies": {
