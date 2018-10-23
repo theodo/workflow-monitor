@@ -36,7 +36,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "npm run build && gh-pages -d build",
-    "deploy-prod": "npm run build && rsync -avz -e ssh build ubuntu@caspr.theo.do:~",
+    "deploy-prod": "npm run build && rsync -avz -e ssh build ubuntu@caspr.theo.do:/var/www/caspr/current/",
     "lint": "eslint ./src"
   },
   "devDependencies": {

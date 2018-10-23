@@ -27,7 +27,7 @@ export const gqlClient = new ApolloClient({
 
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://caspr.theo.do:4000/',
+  uri: 'wss://caspr.theo.do/api/',
   options: {
     reconnect: true,
     connectionParams: {
