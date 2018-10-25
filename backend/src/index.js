@@ -1,7 +1,10 @@
+const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
+
+const isDev = false;
 
 const typeDefs = `
   type Query {
@@ -77,5 +80,14 @@ const context = async ({ request, connection }) => ({
 const server = new GraphQLServer({ typeDefs, resolvers, context })
 server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware)
 
+const serverOptions = isDev ?
+  {subscriptions : {onConnect: websocketAuthenticationMiddleware}} :
+  {
+  https:{
+    cert: fs.readFileSync('/etc/letsencrypt/live/caspr.theo.do/cert.pem','utf8'),
+    key: fs.readFileSync('/etc/letsencrypt/live/caspr.theo.do/privkey.pem','utf8'),
+  },
+  subscriptions : {onConnect: websocketAuthenticationMiddleware}}
+
 server.express.post(`/login`, bodyParser.json(), loginRoute)
-server.start({subscriptions : {onConnect: websocketAuthenticationMiddleware}},() => console.log('Server is running on localhost:4000'))
+server.start(serverOptions,() => console.log('Server is running on localhost:4000'))
