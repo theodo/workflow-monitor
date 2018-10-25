@@ -4,6 +4,9 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
 
+const dev = false;
+const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
+
 const httpLink = createHttpLink({
   uri: '/api/',
 });
@@ -27,7 +30,7 @@ export const gqlClient = new ApolloClient({
 
 
 const wsLink = new WebSocketLink({
-  uri: 'wss://caspr.theo.do/api/',
+  uri: WS_API_URL,
   options: {
     reconnect: true,
     connectionParams: {

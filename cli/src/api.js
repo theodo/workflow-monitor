@@ -9,6 +9,10 @@ const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
 const { getToken } = require('./auth')
 
+const dev = false;
+const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
+const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
+
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = getToken();
@@ -22,7 +26,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const wsLink = new WebSocketLink({
-  uri: 'wss://caspr.theo.do/api/',
+  uri: WS_API_URL,
   options: {
     reconnect: true,
     connectionParams: {
@@ -33,7 +37,7 @@ const wsLink = new WebSocketLink({
 });
 
 const httpLink = createHttpLink({
-  uri: 'https://caspr.theo.do/api/',
+  uri: HTTP_API_URL,
   fetch,
 });
 
@@ -53,6 +57,6 @@ const stateSubscription = subscriptionClient.subscribe({
     state
   }`,
   variables: {}
-});
+},() => console.log('error'));
 
 module.exports = { stateSubscription, gqlClient }

@@ -4,9 +4,9 @@ services:
   postgresql:
     image: 'postgres:9.6.6'
     environment:
-      - POSTGRES_USER=digitalprodsystem
-      - POSTGRES_PASSWORD=digitalprodsystem
-      - POSTGRES_DB=digitalprodsystem
+      - POSTGRES_USER=caspr
+      - POSTGRES_PASSWORD=caspr
+      - POSTGRES_DB=caspr
     ports:
       - '5432:5432'
   backend:

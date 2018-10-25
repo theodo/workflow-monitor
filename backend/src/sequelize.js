@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('digitalprodsystem', 'digitalprodsystem', 'digitalprodsystem', {
-  host: 'postgresql',
+const sequelize = new Sequelize('caspr', 'caspr', 'caspr', {
+  host: 'localhost',
   dialect: 'postgres',
 
   pool: {
