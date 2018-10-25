@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import copy from 'copy-to-clipboard';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import { saveSettings } from './SettingsActions';
@@ -12,6 +13,7 @@ class Settings extends Component {
     super(props);
     this.handleTasksChange = this.handleTasksChange.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
+    this.copyToken = this.copyToken.bind(this);
     this.state = {
       beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [] ,
       endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : [],
@@ -25,6 +27,10 @@ class Settings extends Component {
       beginTasks: filterEmptyTasks(this.state.beginTasks),
       endTasks: filterEmptyTasks(this.state.endTasks),
     });
+  }
+  copyToken() {
+    copy(localStorage.getItem('jwt_token'));
+    alert('Token copied');
   }
   render() {
     return (
@@ -40,6 +46,10 @@ class Settings extends Component {
 
             <Button raised onClick={this.saveSettings}>
               Sauvegarder
+            </Button>
+            <h4>Copy CLI token</h4>
+            <Button raised onClick={this.copyToken}>
+              Copy
             </Button>
           </Grid>
         </Grid>

@@ -5,10 +5,11 @@
   "private": true,
   "dependencies": {
     "apollo-boost": "^0.1.15",
+    "apollo-client": "2.0.1",
     "apollo-link-context": "^1.0.8",
     "apollo-link-ws": "1.0.8",
-    "apollo-client": "2.0.1",
     "axios": "^0.18.0",
+    "copy-to-clipboard": "^3.0.8",
     "gh-pages": "^1.2.0",
     "graphql": "^0.12.3",
     "graphql-tag": "^2.9.2",

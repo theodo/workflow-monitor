@@ -9,7 +9,7 @@ const getToken = () => localStorage.getItem('token');
 const askCredentials = () => {
   if (getToken()) return;
 
-  const token = readlineSync.question('Enter your JWT token :')
+  const token = readlineSync.question('Enter your JWT token (Go to http://caspr.theo.do > Settings > Copy CLI token) :')
   writeToken(token);
 
   console.log('Your token has been saved, you can restart caspr-cli')
