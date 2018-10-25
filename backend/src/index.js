@@ -13,6 +13,7 @@ const typeDefs = `
     fullName: String,
     trelloId: String,
     currentProject: Project,
+    state: String,
   }
   type Project {
     id: Int
@@ -39,9 +40,11 @@ const resolvers = {
     currentUser: (_, args, { user }) => user,
   },
   Mutation: {
-    updateCurrentState: (_, args, { pubsub, user }) => {
+    updateCurrentState: (_, { state }, { pubsub, user }) => {
       const channel = 'user#'+user.id;
-      pubsub.publish(channel, { state: args.state });
+      pubsub.publish(channel, { state });
+      user.set('state', state);
+      user.save();
 
       return 1;
     },

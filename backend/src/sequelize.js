@@ -19,6 +19,7 @@ const User = sequelize.define('user', {
   id: { type: Sequelize.BIGINT, autoIncrement: true, primaryKey: true, allowNull: false },
   fullName: { type: Sequelize.STRING, allowNull: false },
   trelloId: { type: Sequelize.STRING, unique: true, allowNull: false },
+  state: { type: Sequelize.TEXT },
 });
 
 const Project = sequelize.define('project', {

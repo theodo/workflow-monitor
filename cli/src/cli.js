@@ -1,11 +1,13 @@
 const readline = require('readline');
-const { stateSubscription } = require('./api')
+const { stateSubscription, gqlClient } = require('./api')
 const MonitorReducers = require('./MonitorReducers')
 const render = require('./renderer')
 const data = require('./data')
 const { askCredentials } = require('./auth')
+const gql = require('graphql-tag');
 
-const development = false;
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+const backMocked = false;
 
 const clear = () => {
   console.log('\x1Bc');
@@ -13,13 +15,27 @@ const clear = () => {
 
 const main = () => {
   askCredentials();
-
   let store = MonitorReducers();
   clear();
-  if (development) {
+  if (backMocked) {
     store = MonitorReducers(store, {type: 'UPDATE', state: data});
     render(store);
   } else {
+    gqlClient
+      .query({
+        query: gql`
+           {
+            currentUser { state }
+          }
+        `,
+      })
+      .then(({ data: {currentUser: {state}}}) => {
+        if (state) {
+          store = MonitorReducers(store, {type: 'UPDATE', state: JSON.parse(state)});
+          render(store);
+        }
+      }).catch(error => console.log(error));
+
     stateSubscription.subscribe({
       next (data) {
         store = MonitorReducers(store, {type: 'UPDATE', state: JSON.parse(data.data.state)});
