@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 const styles = () => ({
   card: {
     width: 275,
+    margin: 8,
   },
   bullet: {
     display: 'inline-block',
@@ -22,7 +25,7 @@ function SimpleCard(props) {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography type="headline" component="h2">
+        <Typography variant="h5" component="h2">
           #{props.card.idShort}
         </Typography>
         <Typography component="p">
@@ -32,8 +35,8 @@ function SimpleCard(props) {
       <CardActions>
         {
           props.isCurrentTicket
-            ? <Button dense onClick={()=> props.handleCardContinueClick(props.card)}>Continue</Button>
-            : <Button dense onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
+            ? <Button onClick={()=> props.handleCardContinueClick(props.card)}>Continue</Button>
+            : <Button onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
         }
       </CardActions>
     </Card>

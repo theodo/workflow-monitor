@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import IconButton from 'material-ui/Button';
-import SkipPreviousIcon from 'material-ui-icons/SkipPrevious';
-import SkipNextIcon from 'material-ui-icons/SkipNext';
-import PlayArrowIcon from 'material-ui-icons/PlayArrow';
-import PauseIcon from 'material-ui-icons/Pause';
-import Grid from 'material-ui/Grid';
-import { LinearProgress } from 'material-ui/Progress';
+import IconButton from '@material-ui/core/Button';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import Grid from '@material-ui/core/Grid';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning } from './MonitorActions';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
@@ -62,7 +62,7 @@ class Footer extends Component {
   render() {
     return (
       <div>
-        <LinearProgress mode="determinate" value={this.props.progressPercentage}></LinearProgress>
+        <LinearProgress variant="determinate" value={this.props.progressPercentage}></LinearProgress>
         <footer className="Monitor-footer">
           <div className="Monitor-footer-bloc">
             <IconButton aria-label="Previous" className="Monitor-footer-button" color="primary" disabled={this.props.isPreviousDisabled} tabIndex="-1" onClick={this.handlePreviousClick}>
@@ -106,7 +106,7 @@ class Monitor extends Component {
         newTasks: [],
         problems: '',
         currentTaskCheckOK: false,
-      }
+      },
     };
     subscriptionClient.subscribe({
       query: gql`
@@ -116,7 +116,7 @@ class Monitor extends Component {
       variables: {}
     }).subscribe({
       next (data) {
-        props.update(JSON.parse(data.data.state));
+        props.update(JSON.parse(data.state));
       }
     },() => console.log('error'));
   }

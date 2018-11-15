@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
-import Select from 'material-ui/Select';
+import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import { filterEmptyTasks, formatStringToTasks } from '../../../Utils/TaskUtils';
 import { debounce } from 'throttle-debounce';
@@ -91,7 +91,7 @@ class PlanningPanel extends Component {
                   <h2>Task list :</h2>
                 </Grid>
                 <Grid item xs={4} className="PlanningPanel-save-button-container">
-                  <Link to="/settings"><Button raised>Edit default tasks</Button></Link>
+                  <Link to="/settings"><Button variant="contained">Edit default tasks</Button></Link>
                   <FormControl style={{marginTop: 8}}>
                     <InputLabel htmlFor="selected-checklist">Import trello checklist</InputLabel>
                     <Select

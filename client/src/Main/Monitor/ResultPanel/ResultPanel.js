@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
-import Grid from 'material-ui/Grid';
+import Grid from '@material-ui/core/Grid';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
@@ -118,8 +118,8 @@ class ResultPanel extends Component {
                 <h2>Results :</h2>
               </Grid>
               <Grid item xs={4} className="PlanningPanel-save-button-container">
-                <Button raised className="ResultPanel-button" onClick={() => this.printResults()}>Print results</Button>
-                <Button raised className="ResultPanel-button" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+                <Button variant="contained" className="ResultPanel-button" onClick={() => this.printResults()}>Print results</Button>
+                <Button variant="contained" className="ResultPanel-button" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
               </Grid>
             </Grid>
             <div className="printArea">

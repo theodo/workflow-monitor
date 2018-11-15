@@ -55,6 +55,6 @@ Ticket.belongsTo(Project);
 
 Project.hasMany(Task, {as: 'Tasks'})
 
-sequelize.sync({force: true});
+sequelize.sync();
 
 module.exports = sequelize

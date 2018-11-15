@@ -3,11 +3,11 @@ import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
-import IconButton from 'material-ui/IconButton';
-import Button from 'material-ui/Button';
-import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
-import CheckBoxIcon from 'material-ui-icons/CheckBox';
-import DragHandleIcon from 'material-ui-icons/DragHandle';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 import './TaskEditor.css';
 
 const dashedBlocStyle = {

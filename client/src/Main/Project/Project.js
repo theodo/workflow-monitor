@@ -5,11 +5,12 @@ import { selectProject } from '../../Login/LoginActions';
 import { saveSettings } from '../Settings/SettingsActions';
 import { gqlClient } from '../../Utils/Graphql';
 import gql from 'graphql-tag';
-import { FormControl } from 'material-ui/Form';
-import Input, { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
-import Button from 'material-ui/Button';
-import Select from 'material-ui/Select';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
 
 class Projects extends Component {
   constructor(props){
@@ -59,14 +60,14 @@ class Projects extends Component {
   render() {
     return (
       <div className="Project">
-        <form autoComplete="on">
+        <form autoComplete="off">
           <FormControl>
-            <InputLabel htmlFor="project">Project</InputLabel>
+            <InputLabel htmlFor="selectedProjectId">Project</InputLabel>
             <Select
               className="select"
               autoWidth={true}
               value={this.state.selectedProjectId}
-              onChange={(event) => this.handleChange(event)}
+              onChange={this.handleChange}
               input={<Input name="selectedProjectId" id="selectedProjectId" />}
             >
               {

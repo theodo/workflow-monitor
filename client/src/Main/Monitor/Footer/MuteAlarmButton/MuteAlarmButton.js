@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import IconButton from 'material-ui/IconButton';
-import MusicNoteIcon from 'material-ui-icons/MusicNote';
-import SvgIcon from 'material-ui/SvgIcon';
+import IconButton from '@material-ui/core/IconButton';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import { saveSettings } from '../../../Settings/SettingsActions';
 import { setMuted } from '../../../../Utils/AlarmUtils';
 

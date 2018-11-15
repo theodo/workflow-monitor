@@ -2,28 +2,31 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import Drawer from 'material-ui/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
 import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
 import Settings from './Settings/Settings';
 import Project from './Project/Project';
 
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
-import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
-import ChevronRightIcon from 'material-ui-icons/ChevronRight';
-import HomeIcon from 'material-ui-icons/Home';
-import ListIcon from 'material-ui-icons/List';
-import TrackChangesIcon from 'material-ui-icons/TrackChanges';
-import SettingsIcon from 'material-ui-icons/Settings';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import HomeIcon from '@material-ui/icons/Home';
+import ListIcon from '@material-ui/icons/List';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 // The code of this component come from https://material-ui-next.com/demos/drawers/
 
@@ -31,20 +34,13 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
-    width: '100%',
-    height: '100%',
-    zIndex: 1,
-    overflow: 'hidden',
-  },
-  appFrame: {
-    position: 'relative',
     display: 'flex',
-    width: '100%',
-    height: '100%',
+    height: '100%,',
+    maxHeight: '100%',
+    minHeight: '100%',
   },
   appBar: {
-    position: 'absolute',
-    zIndex: theme.zIndex.navDrawer + 1,
+    zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -60,14 +56,14 @@ const styles = theme => ({
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 12,
+    marginRight: 36,
   },
   hide: {
     display: 'none',
   },
   drawerPaper: {
     position: 'relative',
-    height: '100%',
+    whiteSpace: 'nowrap',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -75,18 +71,17 @@ const styles = theme => ({
     }),
   },
   drawerPaperClose: {
-    width: 60,
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 9,
+    },
   },
-  drawerInner: {
-    // Make the items inside not wrap when transitioning:
-    width: drawerWidth,
-  },
-  drawerHeader: {
+  toolbar: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -94,15 +89,11 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    width: '100%',
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    height: 'calc(100% - 56px)',
-    marginTop: 56,
-    [theme.breakpoints.up('sm')]: {
-      height: 'calc(100% - 64px)',
-      marginTop: 64,
-    },
+  },
+  // custom code
+  mainContent: {
+    height: 'calc(100% - 64px)',
   },
   title: {
     marginLeft: 20,
@@ -119,11 +110,16 @@ export class Main extends Component {
   constructor(props){
     super(props);
     this.checkPrevent = this.checkPrevent.bind(this);
-    this.state = { isDrawerOpen: false };
+    this.state = { open: false };
   }
-  toggleDrawer(isDrawerOpen){
-    this.setState({ isDrawerOpen });
-  }
+
+  handleDrawerOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ open: false });
+  };
   checkPrevent(e){
     if(!this.props.isProjectSelected) e.preventDefault();
   }
@@ -131,82 +127,87 @@ export class Main extends Component {
     const { classes, theme } = this.props;
     return (
       <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <AppBar className={classNames(classes.appBar, this.state.isDrawerOpen && classes.appBarShift)}>
-            <Toolbar disableGutters={!this.state.isDrawerOpen}>
-              <IconButton
-                color="contrast"
-                aria-label="open drawer"
-                onClick={() => this.toggleDrawer(true)}
-                className={classNames(classes.menuButton, this.state.isDrawerOpen && classes.hide)}
-              >
-                <MenuIcon />
-              </IconButton>
-              <img src="./casper.png" height="50px" alt="logo"/>
-              <Typography type="title" color="inherit" className={classes.title} noWrap>
-                Caspr - The Ghost Programming Companion
-              </Typography>
-              <a href="https://goo.gl/forms/QEUYWJFubYwcYPrf1" target="_blank" className={classes.feedbackButton} rel="noopener noreferrer">Give feedback</a>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            type="permanent"
-            classes={{
-              paper: classNames(classes.drawerPaper, !this.state.isDrawerOpen && classes.drawerPaperClose),
-            }}
-            open={this.state.isDrawerOpen}
-          >
-            <div className={classes.drawerInner}>
-              <div className={classes.drawerHeader}>
-                <IconButton onClick={() => this.toggleDrawer(false)}>
-                  {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </IconButton>
-              </div>
-              <Divider />
-              <div>
-                <Link to="/" onClick={this.checkPrevent} >
-                  <ListItem disabled={!this.props.isProjectSelected} button>
-                    <ListItemIcon>
-                      <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home page" />
-                  </ListItem>
-                </Link>
-                <Link to="/monitor" onClick={this.checkPrevent} >
-                  <ListItem disabled={!this.props.isProjectSelected} button>
-                    <ListItemIcon>
-                      <TrackChangesIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Session monitor" />
-                  </ListItem>
-                </Link>
-                <Link to="/settings" onClick={this.checkPrevent} >
-                  <ListItem disabled={!this.props.isProjectSelected} button>
-                    <ListItemIcon>
-                      <SettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Settings" />
-                  </ListItem>
-                </Link>
-                <Link to="/project">
-                  <ListItem button>
-                    <ListItemIcon>
-                      <ListIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Projects" />
-                  </ListItem>
-                </Link>
-              </div>
-              <Divider />
-            </div>
-          </Drawer>
-          <main className={classes.content}>
-            <Route exact path="/" component={Home}/>
-            <Route path="/monitor" component={Monitor}/>
-            <Route path="/settings" component={Settings}/>
-            <Route path="/project" component={Project}/>
-          </main>
-        </div>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={classNames(classes.appBar, {
+            [classes.appBarShift]: this.state.open,
+          })}
+        >
+          <Toolbar disableGutters={!this.state.open}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleDrawerOpen}
+              className={classNames(classes.menuButton, this.state.isDrawerOpen && classes.hide)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <img src="./casper.png" height="50px" alt="logo"/>
+            <Typography variant="h6" color="inherit" className={classes.title} noWrap>
+              Caspr - The Ghost Programming Companion
+            </Typography>
+            <a href="https://goo.gl/forms/QEUYWJFubYwcYPrf1" target="_blank" className={classes.feedbackButton} rel="noopener noreferrer">Give feedback</a>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toolbar}>
+            <IconButton onClick={this.handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <div>
+            <Link to="/" onClick={this.checkPrevent} >
+              <ListItem disabled={!this.props.isProjectSelected} button>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home page" />
+              </ListItem>
+            </Link>
+            <Link to="/monitor" onClick={this.checkPrevent} >
+              <ListItem disabled={!this.props.isProjectSelected} button>
+                <ListItemIcon>
+                  <TrackChangesIcon />
+                </ListItemIcon>
+                <ListItemText primary="Session monitor" />
+              </ListItem>
+            </Link>
+            <Link to="/settings" onClick={this.checkPrevent} >
+              <ListItem disabled={!this.props.isProjectSelected} button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </Link>
+            <Link to="/project">
+              <ListItem button>
+                <ListItemIcon>
+                  <ListIcon />
+                </ListItemIcon>
+                <ListItemText primary="Projects" />
+              </ListItem>
+            </Link>
+          </div>
+          <Divider />
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <div className={classes.mainContent} >
+          <Route exact path="/" component={Home}/>
+          <Route path="/monitor" component={Monitor}/>
+          <Route path="/settings" component={Settings}/>
+          <Route path="/project" component={Project}/>
+          </div>
+        </main>
       </div>
     );
   }

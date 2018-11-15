@@ -42,10 +42,6 @@
   color: white;
 }
 
-.Monitor-footer-bloc {
-  margin: 28px;
-}
-
 .Monitor-footer-bloc > .Monitor-footer-button:not(:disabled) {
   color: white;
 }
