@@ -2,6 +2,7 @@ const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
+const { saveSessionToSkillpool } = require('./skillpool');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const isDev = false;
@@ -48,6 +49,12 @@ const resolvers = {
       pubsub.publish(channel, { state });
       user.set('state', state);
       user.save();
+
+      jsState = JSON.parse(state);
+      if (jsState.currentStep === 'RESULTS') {
+        const project = user.get('currentProject');
+        saveSessionToSkillpool(project, user, jsState);
+      }
 
       return 1;
     },

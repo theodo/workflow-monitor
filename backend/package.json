@@ -4,6 +4,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "graphql-yoga": "^1.8.5",
     "jsonwebtoken": "^8.2.1",
