@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 
+const isDev = process.env.ENV && process.env.ENV === 'DEV';
+
 const sequelize = new Sequelize('caspr', 'caspr', 'caspr', {
-  host: 'localhost',
+  host: isDev ? 'postgresql' : 'localhost',
   dialect: 'postgres',
 
   pool: {

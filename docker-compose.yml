@@ -12,6 +12,8 @@ services:
   backend:
     build: ./backend
     command: yarn start
+    environment:
+      - ENV=DEV
     volumes:
       - ./backend:/app
     ports:
@@ -21,6 +23,8 @@ services:
   react:
     build: ./client
     command: yarn start
+    environment:
+      - ENV=DEV
     volumes:
       - ./client:/app
     ports:

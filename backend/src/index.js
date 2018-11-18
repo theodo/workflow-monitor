@@ -5,7 +5,7 @@ const sequelize = require('./sequelize')
 const { saveSessionToSkillpool } = require('./skillpool');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
-const isDev = false;
+const isDev = process.env.ENV && process.env.ENV === 'DEV';
 
 const typeDefs = `
   type Query {

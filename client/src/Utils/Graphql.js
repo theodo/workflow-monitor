@@ -4,7 +4,7 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
 
-const dev = false;
+const dev = process.env.ENV && process.env.ENV === 'DEV';
 const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
 
 const httpLink = createHttpLink({
