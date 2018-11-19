@@ -1,7 +1,13 @@
+const https = require('https');
 const axios = require('axios');
 
+const isDev = process.env.ENV && process.env.ENV === 'DEV';
+
 const client = axios.create({
-  baseURL: 'https://api.skillpool.theo.do/'
+  baseURL: isDev ? 'https://api.skillpool.theo.do/' : 'https://10.0.246.2/',
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
 });
 
 const getOrCreateProject = async (project) => {
@@ -68,10 +74,14 @@ const createTasks = async (ticket, tasks) => {
 };
 
 const saveSessionToSkillpool = async (project, user, state) => {
-  const skillpoolProject = await getOrCreateProject(project);
-  const ticket = extractTicketFromState(state);
-  const skillpoolTicket = await getOrCreateTicket(skillpoolProject, mockSkillpoolUser, ticket);
-  createTasks(skillpoolTicket, state.tasks);
+  try {
+    const skillpoolProject = await getOrCreateProject(project);
+    const ticket = extractTicketFromState(state);
+    const skillpoolTicket = await getOrCreateTicket(skillpoolProject, mockSkillpoolUser, ticket);
+    createTasks(skillpoolTicket, state.tasks);
+  } catch (error) {
+    console.error(error);
+  }
 };
 /*
 try {
