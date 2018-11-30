@@ -246,7 +246,7 @@ class TaskEditor extends Component {
     this.updateTasks(newTasks);
   }
   addTask() {
-    this.updateTasks([...this.props.tasks, {id:uuid(), label:'', estimatedTimeText: '', checks:['mon check']}]);
+    this.updateTasks([...this.props.tasks, {id:uuid(), label:'', problems: '', estimatedTimeText: '', checks:['mon check']}]);
   }
   removeTask(taskId) {
     this.updateTasks([...this.props.tasks.filter((task) => taskId !== task.id)]);

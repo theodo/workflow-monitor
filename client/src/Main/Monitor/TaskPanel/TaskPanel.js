@@ -24,7 +24,6 @@ class TaskPanel extends Component {
   constructor(props){
     super(props);
     this.state = {
-      problems: '',
       newTasks: [],
       currentTaskCheckOK: false,
     };
@@ -42,7 +41,6 @@ class TaskPanel extends Component {
       cancelAlarm();
       initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
-        problems: '',
         newTasks: [],
         currentTaskCheckOK: false,
       });
@@ -68,7 +66,7 @@ class TaskPanel extends Component {
     });
   }
   handleProblemsValueChange(event) {
-    this.setState({problems: event.target.value}, this.handleTaskPanelChange);
+    this.props.handleCurrentTaskProblemChange(event.target.value);
   }
   handleNewTasksValueChange(tasks) {
     this.setState({newTasks: tasks}, this.handleTaskPanelChange);
@@ -118,7 +116,7 @@ class TaskPanel extends Component {
             label="Problems"
             multiline
             rowsMax="4"
-            value={this.state.problems}
+            value={this.props.currentTask.problems}
             onChange={(event) => this.handleProblemsValueChange(event)}
             className="TaskPanel-problem-textarea"
             margin="normal"

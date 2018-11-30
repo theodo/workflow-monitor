@@ -7,7 +7,8 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning, setCurrentTaskProblems } from './MonitorActions';
+import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel/ResultPanel';
@@ -183,7 +184,7 @@ class Monitor extends Component {
     this.setState({
       taskPanelChanges : {
         newTasks: [],
-        problems: '',
+        problems: (this.props.currentTask && this.props.currentTask.problems) || '',
         currentTaskCheckOK: false,
       }
     });
@@ -213,7 +214,7 @@ class Monitor extends Component {
     case MONITOR_STEPS.PLANNING:
       return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause !== undefined;
     case MONITOR_STEPS.WORKFLOW: {
-      const currentTask = this.props.tasks[this.props.currentTaskIndex];
+      const { currentTask } = this.props;
 
       return this.props.dateLastPause !== undefined ||
         (currentTask.check && currentTask.check.length > 0 && !this.state.taskPanelChanges.currentTaskCheckOK);
@@ -243,7 +244,8 @@ class Monitor extends Component {
             <TaskPanel
               dateLastPause={this.props.dateLastPause}
               taskChrono={this.props.taskChrono}
-              currentTask={this.props.tasks[this.props.currentTaskIndex]}
+              currentTask={this.props.currentTask}
+              handleCurrentTaskProblemChange={this.props.handleCurrentTaskProblemChange}
               handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
           </Grid>
           <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
@@ -304,6 +306,7 @@ const mapStateToProps = state => {
     step: state.MonitorReducers.currentStep,
     tasks: state.MonitorReducers.tasks,
     currentTaskIndex: state.MonitorReducers.currentTaskIndex,
+    currentTask: currentTaskSelector(state.MonitorReducers),
     results: state.MonitorReducers.results,
     taskChrono: state.MonitorReducers.taskChrono,
     globalChrono: state.MonitorReducers.globalChrono,
@@ -335,6 +338,9 @@ const mapDispatchToProps = dispatch => {
     },
     update: (newState) => {
       dispatch(update(newState));
+    },
+    handleCurrentTaskProblemChange: (problems) => {
+      dispatch(setCurrentTaskProblems(problems));
     },
     goToHome: () => {
       window.location.hash = '#/';

@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE, BACK_TO_PLANNING } from './MonitorActions';
+import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE, BACK_TO_PLANNING, SET_CURRENT_TASK_PROBLEMS } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
 import { gqlClient } from '../../Utils/Graphql';
@@ -93,7 +93,6 @@ const MonitorReducers = (state = currentInitialState, action) => {
   case NEXT_TASK: {
     const result = {
       ...state.tasks[state.currentTaskIndex],
-      problems: action.taskProblems,
       realTime: calculateCurrentTaskTime(state.taskChrono, now),
     };
 
@@ -142,7 +141,6 @@ const MonitorReducers = (state = currentInitialState, action) => {
     if (state.currentStep === MONITOR_STEPS.WORKFLOW){
       const result = {
         ...state.tasks[state.currentTaskIndex],
-        problems: action.taskProblems,
         realTime: calculateCurrentTaskTime(state.taskChrono, now),
       };
 
@@ -213,6 +211,22 @@ const MonitorReducers = (state = currentInitialState, action) => {
     break;
   case UPDATE:
     newState = action.state;
+    break;
+  case SET_CURRENT_TASK_PROBLEMS: {
+    let currentTask = state.tasks[state.currentTaskIndex];
+    currentTask = {
+      ...currentTask,
+      problems: action.problems,
+    };
+
+    const tasks = state.tasks;
+    tasks[state.currentTaskIndex] = currentTask;
+
+    newState = {
+      ...state,
+      tasks,
+    };
+  }
     break;
   default:
     newState = state;
