@@ -116,7 +116,7 @@ class TaskPanel extends Component {
             label="Problems"
             multiline
             rowsMax="4"
-            value={this.props.currentTask.problems}
+            value={this.props.currentTask.problems || ''}
             onChange={(event) => this.handleProblemsValueChange(event)}
             className="TaskPanel-problem-textarea"
             margin="normal"
