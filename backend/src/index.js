@@ -3,6 +3,8 @@ const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
 const { saveSessionToSkillpool } = require('./skillpool');
+const { formatFullTicket, formatTasks } = require('./formatters');
+const { upsert } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const isDev = process.env.ENV && process.env.ENV === 'DEV';
@@ -54,6 +56,14 @@ const resolvers = {
       if (jsState.currentStep === 'RESULTS') {
         const project = user.get('currentProject');
         saveSessionToSkillpool(project, user, jsState);
+
+        const formattedTicket = formatFullTicket(jsState, project, user);
+        upsert(sequelize.models.ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
+          .then(ticket => {
+            sequelize.models.task.destroy({ where: { ticketId: ticket.id}});
+            const formattedTasks = formatTasks(jsState, ticket);
+            sequelize.models.task.bulkCreate(formattedTasks);
+          });
       }
 
       return 1;

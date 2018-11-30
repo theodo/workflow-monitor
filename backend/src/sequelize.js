@@ -34,18 +34,14 @@ const Project = sequelize.define('project', {
 const Ticket = sequelize.define('ticket', {
   id: { type: Sequelize.BIGINT, autoIncrement: true, primaryKey: true, allowNull: false },
   description: { type: Sequelize.STRING, allowNull: false },
-  trelloId: { type: Sequelize.INTEGER, allowNull: true },
-  trelloUrl: { type: Sequelize.STRING, allowNull: true },
+  thirdPartyId: { type: Sequelize.STRING, allowNull: true },
   complexity: { type: Sequelize.INTEGER, allowNull: true },
-  status: { type: Sequelize.ENUM('PLANNING', 'DONE', 'DEFAULT_TASKS_BEFORE', 'DEFAULT_TASKS_AFTER'), allowNull: false }
+  status: { type: Sequelize.ENUM('PLANNING', 'DONE'), allowNull: false }
 });
 
 const Task = sequelize.define('task', {
-  id: { type: Sequelize.UUID, primaryKey: true, allowNull: false },
+  id: { type: Sequelize.BIGINT, autoIncrement: true, primaryKey: true, allowNull: false },
   description: { type: Sequelize.STRING, allowNull: false },
-  trelloId: { type: Sequelize.INTEGER, allowNull: true },
-  trelloUrl: { type: Sequelize.STRING, allowNull: true },
-  complexity: { type: Sequelize.INTEGER, allowNull: true },
   estimatedTime: { type: Sequelize.INTEGER, allowNull: true },
   realTime: { type: Sequelize.INTEGER, allowNull: true },
   problems: { type: Sequelize.STRING, allowNull: true },
@@ -53,9 +49,10 @@ const Task = sequelize.define('task', {
 
 User.hasOne(Project, { as: 'currentProject' })
 
-Ticket.belongsTo(Project);
+Ticket.belongsTo(Project, {as: 'project'});
+Ticket.belongsTo(User, {as: 'user'});
 
-Project.hasMany(Task, {as: 'Tasks'})
+Ticket.hasMany(Task, {as: 'tasks'})
 
 sequelize.sync();
 
