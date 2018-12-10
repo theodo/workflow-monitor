@@ -8,6 +8,7 @@ import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
 import { filterEmptyTasks } from '../../../Utils/TaskUtils';
+import RootCauseCategoryAutocomplete from '../RootCauseCategoryAutocomplete/RootCauseCategoryAutocomplete';
 import './TaskPanel.css';
 
 const TEXT_AREA_BORDER = '1px solid #CACFD2';
@@ -109,11 +110,12 @@ class TaskPanel extends Component {
                 />
               </div>
           }
-          <h3>Problems :</h3>
+          <Grid item xs={9}>
+          <h3>Root cause (why the problem occurred)</h3>
           <TextField
             style={{ ...problemsTextFieldStyle }}
             id="multiline-flexible"
-            label="Problems"
+            label="Root cause"
             multiline
             rowsMax="4"
             value={this.props.currentTask.problems || ''}
