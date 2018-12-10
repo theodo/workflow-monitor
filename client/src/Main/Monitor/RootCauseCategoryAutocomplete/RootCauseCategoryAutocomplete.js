@@ -101,19 +101,15 @@ const options = [
 ];
 
 class RootCauseCategoryAutocomplete extends Component {
-  state = {
-    selectedOption: null,
-  }
-
-  handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
+  constructor(props){
+    super(props);
   }
 
   render() {
     return (
       <Select
-        value={this.state.selectedOption}
-        onChange={this.handleChange}
+        value={this.props.value}
+        onChange={this.props.onChange}
         options={options}
         placeholder={'Choose the root cause category'}
       />

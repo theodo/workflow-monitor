@@ -28,9 +28,11 @@ class TaskPanel extends Component {
     this.state = {
       newTasks: [],
       currentTaskCheckOK: false,
+      rootCauseCategory: {},
     };
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleRootCauseCategoryValueChange = this.handleRootCauseCategoryValueChange.bind(this);
     if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
@@ -45,6 +47,7 @@ class TaskPanel extends Component {
       this.setState({
         newTasks: [],
         currentTaskCheckOK: false,
+        rootCauseCategory: {},
       });
     }
   }
@@ -63,12 +66,16 @@ class TaskPanel extends Component {
       taskPanelChanges : {
         newTasks: this.getFormattedTasks(this.state.newTasks),
         problems: this.state.problems,
+        rootCauseCategory: this.state.rootCauseCategory,
         currentTaskCheckOK: this.state.currentTaskCheckOK,
       },
     });
   }
   handleProblemsValueChange(event) {
     this.props.handleCurrentTaskProblemChange(event.target.value);
+  }
+  handleRootCauseCategoryValueChange(selectedOption) {
+    this.setState({rootCauseCategory: selectedOption}, this.handleTaskPanelChange);
   }
   handleNewTasksValueChange(tasks) {
     this.setState({newTasks: tasks}, this.handleTaskPanelChange);
@@ -128,7 +135,10 @@ class TaskPanel extends Component {
             </Grid>
             <Grid item xs={5}>
               <h3>Root cause category</h3>
-              <RootCauseCategoryAutocomplete />
+              <RootCauseCategoryAutocomplete
+                value={this.state.rootCauseCategory}
+                onChange={(this.handleRootCauseCategoryValueChange)}
+              />
             </Grid>
           </Grid>
           <h3>Add tasks after this one :</h3>

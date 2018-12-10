@@ -22,20 +22,22 @@ export function startSession(tasks) {
   };
 }
 
-export function nextTask(newTasks, taskProblems, projectId) {
+export function nextTask(newTasks, taskProblems, taskRootCauseCategory, projectId) {
   return {
     type: NEXT_TASK,
     newTasks,
     taskProblems,
+    taskRootCauseCategory,
     projectId,
   };
 }
 
-export function previousTask(newTasks, taskProblems) {
+export function previousTask(newTasks, taskProblems, taskRootCauseCategory) {
   return {
     type: PREVIOUS_TASK,
     newTasks,
     taskProblems,
+    taskRootCauseCategory,
   };
 }
 

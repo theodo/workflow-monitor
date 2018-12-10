@@ -107,6 +107,7 @@ class Monitor extends Component {
         newTasks: [],
         problems: '',
         currentTaskCheckOK: false,
+        rootCauseCategory: {},
       },
     };
     subscriptionClient.subscribe({
@@ -186,6 +187,7 @@ class Monitor extends Component {
         newTasks: [],
         problems: (this.props.currentTask && this.props.currentTask.problems) || '',
         currentTaskCheckOK: false,
+        rootCauseCategory: {},
       }
     });
   }
@@ -194,11 +196,11 @@ class Monitor extends Component {
     this.startTask();
   }
   goToNextTask() {
-    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.props.projectId);
+    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.state.taskPanelChanges.rootCauseCategory, this.props.projectId);
     this.startTask();
   }
   goToPreviousTask() {
-    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
+    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.state.taskPanelChanges.rootCauseCategory);
     this.startTask();
   }
   goToHome() {
@@ -330,11 +332,11 @@ const mapDispatchToProps = dispatch => {
     startSession: (tasks, planningRealTime) => {
       dispatch(startSession(tasks, planningRealTime));
     },
-    nextTask: (newTasks, taskProblem, projectId) => {
-      dispatch(nextTask(newTasks, taskProblem, projectId));
+    nextTask: (newTasks, taskProblem, taskRootCauseCategory, projectId) => {
+      dispatch(nextTask(newTasks, taskProblem, taskRootCauseCategory, projectId));
     },
-    previousTask: (newTasks, taskProblem) => {
-      dispatch(previousTask(newTasks, taskProblem));
+    previousTask: (newTasks, taskProblem, taskRootCauseCategory) => {
+      dispatch(previousTask(newTasks, taskProblem, taskRootCauseCategory));
     },
     update: (newState) => {
       dispatch(update(newState));
