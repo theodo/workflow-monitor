@@ -19,6 +19,7 @@ const problemsTextFieldStyle = {
   borderRight: TEXT_AREA_BORDER,
   borderRadius: '4px 4px 0 0',
   backgroundColor: 'white',
+  width: '100%',
 };
 
 class TaskPanel extends Component {
@@ -110,19 +111,26 @@ class TaskPanel extends Component {
                 />
               </div>
           }
-          <Grid item xs={9}>
-          <h3>Root cause (why the problem occurred)</h3>
-          <TextField
-            style={{ ...problemsTextFieldStyle }}
-            id="multiline-flexible"
-            label="Root cause"
-            multiline
-            rowsMax="4"
-            value={this.props.currentTask.problems || ''}
-            onChange={(event) => this.handleProblemsValueChange(event)}
-            className="TaskPanel-problem-textarea"
-            margin="normal"
-          />
+          <Grid container spacing={24} alignItems="center">
+            <Grid item xs={7}>
+              <h3>Root cause (why the problem occurred)</h3>
+              <TextField
+                style={{ ...problemsTextFieldStyle }}
+                id="multiline-flexible"
+                label="Root cause"
+                multiline
+                rowsMax="4"
+                value={this.props.currentTask.problems || ''}
+                onChange={(event) => this.handleProblemsValueChange(event)}
+                className="TaskPanel-problem-textarea"
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <h3>Root cause category</h3>
+              <RootCauseCategoryAutocomplete />
+            </Grid>
+          </Grid>
           <h3>Add tasks after this one :</h3>
           <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
         </Grid>

@@ -3,11 +3,3 @@
   word-break: break-word;
   overflow: hidden;
 }
-
-.TaskPanel-problem-textarea {
-  width: 100%;
-}
-
-h3 {
-  margin-bottom: 0;
-}

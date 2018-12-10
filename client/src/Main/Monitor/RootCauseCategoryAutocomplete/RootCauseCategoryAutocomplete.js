@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import Select from 'react-select';
 
@@ -108,7 +107,6 @@ class RootCauseCategoryAutocomplete extends Component {
 
   handleChange = (selectedOption) => {
     this.setState({ selectedOption });
-    console.log(`Option selected:`, selectedOption);
   }
 
   render() {
@@ -117,6 +115,7 @@ class RootCauseCategoryAutocomplete extends Component {
         value={this.state.selectedOption}
         onChange={this.handleChange}
         options={options}
+        placeholder={'Choose the root cause category'}
       />
     );
   }
