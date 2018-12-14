@@ -12,7 +12,7 @@ Go in the settings
 Copy your Token
 Run on your IDE Terminal : 
 ```
-capsr-cli
+caspr-cli
 ```
 Paste the Token
 
