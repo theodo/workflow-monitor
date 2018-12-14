@@ -109,11 +109,11 @@ class TaskPanel extends Component {
                 />
               </div>
           }
-          <h3>Problems :</h3>
+          <h3>Root cause (why the problem occurred)</h3>
           <TextField
             style={{ ...problemsTextFieldStyle }}
             id="multiline-flexible"
-            label="Problems"
+            label="Root cause"
             multiline
             rowsMax="4"
             value={this.props.currentTask.problems || ''}
