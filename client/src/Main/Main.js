@@ -46,6 +46,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: 'red',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -135,9 +136,8 @@ export class Main extends Component {
               >
                 <MenuIcon />
               </IconButton>
-              <img src="./casper.png" height="50px" alt="logo"/>
               <Typography type="title" color="inherit" className={classes.title} noWrap>
-                Caspr - The Ghost Programming Companion
+                New Caspr website is available! You can now use <a href="https://caspr.theo.do">https://caspr.theo.do</a> :)
               </Typography>
               <a href="https://goo.gl/forms/QEUYWJFubYwcYPrf1" target="_blank" className={classes.feedbackButton} rel="noopener noreferrer">Give feedback</a>
             </Toolbar>
