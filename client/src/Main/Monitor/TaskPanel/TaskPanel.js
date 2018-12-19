@@ -72,7 +72,7 @@ class TaskPanel extends Component {
     });
   }
   handleProblemsValueChange(event) {
-    this.props.handleCurrentTaskProblemChange(event.target.value);
+    this.props.handleCurrentTaskChange({ problems: event.target.value });
   }
   handleRootCauseCategoryValueChange(selectedOption) {
     this.setState({rootCauseCategory: selectedOption}, this.handleTaskPanelChange);

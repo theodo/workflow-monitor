@@ -6,7 +6,7 @@ export const RESET_MONITOR = 'RESET_MONITOR';
 export const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
 export const SET_CURRENT_TRELLO_CARD = 'SET_CURRENT_TRELLO_CARD';
 export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
-export const SET_CURRENT_TASK_PROBLEMS = 'SET_CURRENT_TASK_PROBLEMS';
+export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
 export const UPDATE = 'UPDATE';
 
 export function initSession() {
@@ -60,10 +60,10 @@ export function backToPlanning() {
   };
 }
 
-export function setCurrentTaskProblems(problems) {
+export function setCurrentTaskFields(fields) {
   return {
-    type: SET_CURRENT_TASK_PROBLEMS,
-    problems,
+    type: SET_CURRENT_TASK_FIELDS,
+    fields,
   };
 }
 
