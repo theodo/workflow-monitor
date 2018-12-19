@@ -105,9 +105,7 @@ class Monitor extends Component {
       },
       taskPanelChanges: {
         newTasks: [],
-        problems: '',
         currentTaskCheckOK: false,
-        rootCauseCategory: {},
       },
     };
     subscriptionClient.subscribe({
@@ -185,9 +183,7 @@ class Monitor extends Component {
     this.setState({
       taskPanelChanges : {
         newTasks: [],
-        problems: (this.props.currentTask && this.props.currentTask.problems) || '',
         currentTaskCheckOK: false,
-        rootCauseCategory: {},
       }
     });
   }
@@ -196,11 +192,11 @@ class Monitor extends Component {
     this.startTask();
   }
   goToNextTask() {
-    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.state.taskPanelChanges.rootCauseCategory, this.props.projectId);
+    this.props.nextTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.props.projectId);
     this.startTask();
   }
   goToPreviousTask() {
-    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems, this.state.taskPanelChanges.rootCauseCategory);
+    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
     this.startTask();
   }
   goToHome() {
@@ -332,11 +328,11 @@ const mapDispatchToProps = dispatch => {
     startSession: (tasks, planningRealTime) => {
       dispatch(startSession(tasks, planningRealTime));
     },
-    nextTask: (newTasks, taskProblem, taskRootCauseCategory, projectId) => {
-      dispatch(nextTask(newTasks, taskProblem, taskRootCauseCategory, projectId));
+    nextTask: (newTasks, projectId) => {
+      dispatch(nextTask(newTasks, projectId));
     },
-    previousTask: (newTasks, taskProblem, taskRootCauseCategory) => {
-      dispatch(previousTask(newTasks, taskProblem, taskRootCauseCategory));
+    previousTask: (newTasks) => {
+      dispatch(previousTask(newTasks));
     },
     update: (newState) => {
       dispatch(update(newState));
