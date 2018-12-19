@@ -220,7 +220,7 @@ Main.propTypes = {
 
 
 const mapStateToProps = state => ({
-  isProjectSelected: state.LoginReducers.currentProject !== undefined,
+  isProjectSelected: !!state.LoginReducers.currentProject,
 });
 
 export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Main));
