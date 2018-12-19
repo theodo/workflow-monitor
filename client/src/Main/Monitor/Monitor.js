@@ -7,7 +7,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning, setCurrentTaskProblems } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning, setCurrentTaskFields } from './MonitorActions';
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
@@ -245,7 +245,7 @@ class Monitor extends Component {
               dateLastPause={this.props.dateLastPause}
               taskChrono={this.props.taskChrono}
               currentTask={this.props.currentTask}
-              handleCurrentTaskProblemChange={this.props.handleCurrentTaskProblemChange}
+              handleCurrentTaskChange={this.props.handleCurrentTaskChange}
               handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
           </Grid>
           <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
@@ -339,8 +339,8 @@ const mapDispatchToProps = dispatch => {
     update: (newState) => {
       dispatch(update(newState));
     },
-    handleCurrentTaskProblemChange: (problems) => {
-      dispatch(setCurrentTaskProblems(problems));
+    handleCurrentTaskChange: (fields) => {
+      dispatch(setCurrentTaskFields(fields));
     },
     goToHome: () => {
       window.location.hash = '#/';
