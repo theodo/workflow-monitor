@@ -100,7 +100,7 @@ const options = [
   { value: 96 , label: 'Outils / Webpack' },
 ];
 
-class RootCauseCategoryAutocomplete extends Component {
+class ProblemCategoryAutocomplete extends Component {
   constructor(props){
     super(props);
   }
@@ -117,4 +117,4 @@ class RootCauseCategoryAutocomplete extends Component {
   }
 }
 
-export default RootCauseCategoryAutocomplete;
+export default ProblemCategoryAutocomplete;
