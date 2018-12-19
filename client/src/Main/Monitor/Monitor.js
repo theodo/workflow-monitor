@@ -269,7 +269,7 @@ class Monitor extends Component {
             <Grid item xs={8} lg={9} className="Monitor-header-centered-text">
               {
                 this.props.currentTrelloCard ?
-                  <a href={this.props.currentTrelloCard.url} target="_blank" className="Monitor-header-link">
+                  <a href={this.props.currentTrelloCard.url} target="_blank" rel="noopener noreferrer" className="Monitor-header-link">
                     #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
                   </a>
                   : ''

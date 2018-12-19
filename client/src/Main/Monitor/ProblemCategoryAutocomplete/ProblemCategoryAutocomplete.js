@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Select from 'react-select';
 
 const options = [
@@ -100,21 +100,13 @@ const options = [
   { value: 96 , label: 'Outils / Webpack' },
 ];
 
-class ProblemCategoryAutocomplete extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  render() {
-    return (
-      <Select
-        value={this.props.value}
-        onChange={this.props.onChange}
-        options={options}
-        placeholder={'Choose the root cause category'}
-      />
-    );
-  }
-}
+const ProblemCategoryAutocomplete = (props) => (
+  <Select
+    value={props.value}
+    onChange={props.onChange}
+    options={options}
+    placeholder={'Choose the root cause category'}
+  />
+);
 
 export default ProblemCategoryAutocomplete;
