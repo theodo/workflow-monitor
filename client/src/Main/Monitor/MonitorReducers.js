@@ -232,7 +232,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
     newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
-  if (action.type !== UPDATE) {
+  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS) {
     gqlClient
       .mutate({
         mutation: gql`
