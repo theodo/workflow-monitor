@@ -21,7 +21,7 @@ class Projects extends Component {
     };
     this.selectProject = this.selectProject.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    window.Trello.get('/member/me/boards').then((boards) => {
+    window.Trello.get('/member/me/boards', {filter: 'open'}).then((boards) => {
       this.setState({
         boards: boards.reduce((acc, board) => {
           acc[board.id] = board;
