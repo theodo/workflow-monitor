@@ -23,7 +23,7 @@ class Home extends Component {
       cards: [],
     };
     if (this.props.project) {
-      window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists`).then((lists) => {
+      window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists/open`).then((lists) => {
         this.setState({ lists });
       });
     }
