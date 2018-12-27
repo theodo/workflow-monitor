@@ -22,3 +22,9 @@ devops/provisioning/playbook.yml
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.vscode
+.vscode-test
+*.vsix
+/vs-code/out
+/vs-code/node_modules
