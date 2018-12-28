@@ -13,6 +13,7 @@ const typeDefs = `
   type Query {
     hello: String!
     currentUser: User
+    problemCategories: [ProblemCategory]
   }
   type User {
     id: String,
@@ -26,6 +27,10 @@ const typeDefs = `
     name: String
     thirdPartyType: String
     thirdPartyId: String
+  }
+  type ProblemCategory {
+    id: Int
+    description: String
   }
   input ProjectInput {
     name: String
@@ -44,6 +49,7 @@ const resolvers = {
   Query: {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
+    problemCategories: () => sequelize.models.problemCategory.findAll(),
   },
   Mutation: {
     updateCurrentState: (_, { state }, { pubsub, user }) => {

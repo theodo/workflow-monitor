@@ -47,12 +47,19 @@ const Task = sequelize.define('task', {
   problems: { type: Sequelize.STRING, allowNull: true },
 });
 
+const ProblemCategory = sequelize.define('problemCategory', {
+  id: { type: Sequelize.BIGINT, autoIncrement: true, primaryKey: true, allowNull: false },
+  description: { type: Sequelize.STRING, allowNull: false },
+});
+
 User.hasOne(Project, { as: 'currentProject' })
 
 Ticket.belongsTo(Project, {as: 'project'});
 Ticket.belongsTo(User, {as: 'user'});
 
 Ticket.hasMany(Task, {as: 'tasks'})
+
+Task.hasOne(ProblemCategory, { as: 'problemCategoryId' })
 
 sequelize.sync();
 
