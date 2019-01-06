@@ -39,6 +39,7 @@ const typeDefs = `
   type Mutation {
     updateCurrentState(state: String!): Int,
     selectProject(project: ProjectInput): Project,
+    addProblemCategory(problemCategoryDescription: String): ProblemCategory,
   }
   type Subscription {
     state: String!
@@ -82,6 +83,11 @@ const resolvers = {
       .spread((project) => {
         user.setCurrentProject(project);
         return project;
+      });
+    },
+    addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
+      return sequelize.models.problemCategory.create({
+        description: problemCategoryDescription,
       });
     },
   },
