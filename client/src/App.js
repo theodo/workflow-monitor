@@ -3,10 +3,12 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { ApolloProvider } from 'react-apollo';
 
 import { Route, Switch } from 'react-router';
 
 import { HashRouter } from 'react-router-dom';
+import { gqlClient } from './Utils/Graphql';
 import AppReducer from './AppReducer';
 import Login from './Login/Login';
 import Main from './Main/Main';
@@ -23,14 +25,16 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <HashRouter>
-          <div className="App">
-            <Switch>
-              <Route exact path="/login" component={Login}/>
-              <Route path="/" component={Main}/>
-            </Switch>
-          </div>
-        </HashRouter>
+        <ApolloProvider client={gqlClient}>
+          <HashRouter>
+            <div className="App">
+              <Switch>
+                <Route exact path="/login" component={Login}/>
+                <Route path="/" component={Main}/>
+              </Switch>
+            </div>
+          </HashRouter>
+        </ApolloProvider>
       </Provider>
     );
   }
