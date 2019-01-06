@@ -63,13 +63,15 @@ const resolvers = {
       if (jsState.currentStep === 'RESULTS') {
         const project = user.get('currentProject');
         saveSessionToSkillpool(project, user, jsState);
-
         const formattedTicket = formatFullTicket(jsState, project, user);
         upsert(sequelize.models.ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
           .then(ticket => {
             sequelize.models.task.destroy({ where: { ticketId: ticket.id}});
             const formattedTasks = formatTasks(jsState, ticket);
-            sequelize.models.task.bulkCreate(formattedTasks);
+            formattedTasks.map((formattedTask) =>
+              sequelize.models.task.create(formattedTask)
+                .then(task => formattedTask.problemCategory && task.setProblemCategory(formattedTask.problemCategory.id))
+            );
           });
       }
 

@@ -1,6 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 
+
+/* TODO: Translate and insert values below in database
 const options = [
   { value: 18 , label: 'Compétences / Git commit' },
   { value: 84 , label: 'Méthode / User story parfaite / Design' },
@@ -99,14 +103,41 @@ const options = [
   { value: 95 , label: 'Outils / Vagrant' },
   { value: 96 , label: 'Outils / Webpack' },
 ];
+*/
+
+const GET_PROBLEM_CATEGORIES = gql`
+  {
+    problemCategories {
+      id
+      description
+    }
+  }
+`;
+
+const ProblemCategoryAutocompleteContainer = (props) =>(
+  <Query query={GET_PROBLEM_CATEGORIES}>
+    {({ loading, error, data }) => {
+      if (loading) return 'Loading...';
+      if (error) return 'Unexpected error';
+      const options = data.problemCategories.map(
+        problemCategory => ({value: problemCategory.id, label: problemCategory.description})
+      );
+      return <ProblemCategoryAutocomplete
+        value={props.value}
+        onChange={props.onChange}
+        options={options}
+      />;
+    }}
+  </Query>
+);
 
 const ProblemCategoryAutocomplete = (props) => (
   <Select
     value={props.value}
     onChange={props.onChange}
-    options={options}
+    options={props.options}
     placeholder={'Choose the root cause category'}
   />
 );
 
-export default ProblemCategoryAutocomplete;
+export default ProblemCategoryAutocompleteContainer;
