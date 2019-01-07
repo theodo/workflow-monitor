@@ -15,9 +15,10 @@ const ADD_PROBLEM_CATEGORY = gql`
 
 const GET_PROBLEM_CATEGORIES = gql`
   {
-    problemCategories {
+    problemCategoriesWithCount {
       id
       description
+      count
     }
   }
 `;
@@ -28,7 +29,7 @@ class ProblemCategoryPageContainer extends Component {
       <Query query={GET_PROBLEM_CATEGORIES}>
         {({ loading, error, data, refetch }) => {
           if (error) return 'Unexpected error';
-          return <ProblemCategoryPageMutationContainer refetch={refetch} loading={loading} problemCategories={data.problemCategories}/>;
+          return <ProblemCategoryPageMutationContainer refetch={refetch} loading={loading} problemCategories={data.problemCategoriesWithCount}/>;
         }}
       </Query>
     );

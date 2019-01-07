@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
 const { saveSessionToSkillpool } = require('./skillpool');
 const { formatFullTicket, formatTasks } = require('./formatters');
-const { upsert } = require('./dbUtils');
+const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const isDev = process.env.ENV && process.env.ENV === 'DEV';
@@ -14,6 +14,7 @@ const typeDefs = `
     hello: String!
     currentUser: User
     problemCategories: [ProblemCategory]
+    problemCategoriesWithCount: [ProblemCategoryWithCount]
   }
   type User {
     id: String,
@@ -31,6 +32,11 @@ const typeDefs = `
   type ProblemCategory {
     id: Int
     description: String
+  }
+  type ProblemCategoryWithCount {
+    id: Int
+    description: String
+    count: Int
   }
   input ProjectInput {
     name: String
@@ -51,6 +57,13 @@ const resolvers = {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
     problemCategories: () => sequelize.models.problemCategory.findAll(),
+    problemCategoriesWithCount: (_, args, { user }) => {
+      const projectId = user.currentProject.id;
+      return sequelize.query(
+        SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
+        { replacements: [projectId], type: sequelize.QueryTypes.SELECT }
+      )
+    },
   },
   Mutation: {
     updateCurrentState: (_, { state }, { pubsub, user }) => {

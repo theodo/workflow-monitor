@@ -15,7 +15,7 @@ const ProblemCategoryPage = (props) => (
         <ul>
           {!props.loading && props.problemCategories.map(problemCategory => (
             <li key={problemCategory.id}>
-              {problemCategory.description}
+              {problemCategory.description} - {problemCategory.count ? problemCategory.count : 0 } occurrences
             </li>
           ))}
         </ul>
