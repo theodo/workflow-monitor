@@ -12,6 +12,7 @@ import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
 import Settings from './Settings/Settings';
 import Project from './Project/Project';
+import ProblemCategoryPage from './ProblemCategoryPage';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -25,6 +26,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/List';
+import CategoryIcon from '@material-ui/icons/Category';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import SettingsIcon from '@material-ui/icons/Settings';
 
@@ -196,6 +198,14 @@ export class Main extends Component {
                 <ListItemText primary="Projects" />
               </ListItem>
             </Link>
+            <Link to="/problem-categories">
+              <ListItem button>
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Problem types" />
+              </ListItem>
+            </Link>
           </div>
           <Divider />
         </Drawer>
@@ -206,6 +216,7 @@ export class Main extends Component {
           <Route path="/monitor" component={Monitor}/>
           <Route path="/settings" component={Settings}/>
           <Route path="/project" component={Project}/>
+          <Route path="/problem-categories" component={ProblemCategoryPage}/>
           </div>
         </main>
       </div>
@@ -220,7 +231,7 @@ Main.propTypes = {
 
 
 const mapStateToProps = state => ({
-  isProjectSelected: state.LoginReducers.currentProject !== undefined,
+  isProjectSelected: !!state.LoginReducers.currentProject,
 });
 
 export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Main));

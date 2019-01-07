@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./sequelize')
 const { saveSessionToSkillpool } = require('./skillpool');
 const { formatFullTicket, formatTasks } = require('./formatters');
-const { upsert } = require('./dbUtils');
+const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const isDev = process.env.ENV && process.env.ENV === 'DEV';
@@ -13,6 +13,8 @@ const typeDefs = `
   type Query {
     hello: String!
     currentUser: User
+    problemCategories: [ProblemCategory]
+    problemCategoriesWithCount: [ProblemCategoryWithCount]
   }
   type User {
     id: String,
@@ -27,6 +29,15 @@ const typeDefs = `
     thirdPartyType: String
     thirdPartyId: String
   }
+  type ProblemCategory {
+    id: Int
+    description: String
+  }
+  type ProblemCategoryWithCount {
+    id: Int
+    description: String
+    count: Int
+  }
   input ProjectInput {
     name: String
     thirdPartyId: String
@@ -34,6 +45,7 @@ const typeDefs = `
   type Mutation {
     updateCurrentState(state: String!): Int,
     selectProject(project: ProjectInput): Project,
+    addProblemCategory(problemCategoryDescription: String): ProblemCategory,
   }
   type Subscription {
     state: String!
@@ -44,6 +56,14 @@ const resolvers = {
   Query: {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
+    problemCategories: () => sequelize.models.problemCategory.findAll(),
+    problemCategoriesWithCount: (_, args, { user }) => {
+      const projectId = user.currentProject.id;
+      return sequelize.query(
+        SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
+        { replacements: [projectId], type: sequelize.QueryTypes.SELECT }
+      )
+    },
   },
   Mutation: {
     updateCurrentState: (_, { state }, { pubsub, user }) => {
@@ -56,13 +76,15 @@ const resolvers = {
       if (jsState.currentStep === 'RESULTS') {
         const project = user.get('currentProject');
         saveSessionToSkillpool(project, user, jsState);
-
         const formattedTicket = formatFullTicket(jsState, project, user);
         upsert(sequelize.models.ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
           .then(ticket => {
             sequelize.models.task.destroy({ where: { ticketId: ticket.id}});
             const formattedTasks = formatTasks(jsState, ticket);
-            sequelize.models.task.bulkCreate(formattedTasks);
+            formattedTasks.map((formattedTask) =>
+              sequelize.models.task.create(formattedTask)
+                .then(task => formattedTask.problemCategory && task.setProblemCategory(formattedTask.problemCategory.id))
+            );
           });
       }
 
@@ -76,6 +98,11 @@ const resolvers = {
       .spread((project) => {
         user.setCurrentProject(project);
         return project;
+      });
+    },
+    addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
+      return sequelize.models.problemCategory.create({
+        description: problemCategoryDescription,
       });
     },
   },

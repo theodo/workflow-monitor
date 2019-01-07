@@ -7,7 +7,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning, setCurrentTaskProblems } from './MonitorActions';
+import { initSession, nextTask, previousTask, startSession, playOrPauseSession, update, backToPlanning, setCurrentTaskFields } from './MonitorActions';
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
@@ -105,7 +105,6 @@ class Monitor extends Component {
       },
       taskPanelChanges: {
         newTasks: [],
-        problems: '',
         currentTaskCheckOK: false,
       },
     };
@@ -184,7 +183,6 @@ class Monitor extends Component {
     this.setState({
       taskPanelChanges : {
         newTasks: [],
-        problems: (this.props.currentTask && this.props.currentTask.problems) || '',
         currentTaskCheckOK: false,
       }
     });
@@ -245,7 +243,7 @@ class Monitor extends Component {
               dateLastPause={this.props.dateLastPause}
               taskChrono={this.props.taskChrono}
               currentTask={this.props.currentTask}
-              handleCurrentTaskProblemChange={this.props.handleCurrentTaskProblemChange}
+              handleCurrentTaskChange={this.props.handleCurrentTaskChange}
               handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
           </Grid>
           <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
@@ -271,7 +269,7 @@ class Monitor extends Component {
             <Grid item xs={8} lg={9} className="Monitor-header-centered-text">
               {
                 this.props.currentTrelloCard ?
-                  <a href={this.props.currentTrelloCard.url} target="_blank" className="Monitor-header-link">
+                  <a href={this.props.currentTrelloCard.url} target="_blank" rel="noopener noreferrer" className="Monitor-header-link">
                     #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
                   </a>
                   : ''
@@ -330,17 +328,17 @@ const mapDispatchToProps = dispatch => {
     startSession: (tasks, planningRealTime) => {
       dispatch(startSession(tasks, planningRealTime));
     },
-    nextTask: (newTasks, taskProblem, projectId) => {
-      dispatch(nextTask(newTasks, taskProblem, projectId));
+    nextTask: (newTasks, projectId) => {
+      dispatch(nextTask(newTasks, projectId));
     },
-    previousTask: (newTasks, taskProblem) => {
-      dispatch(previousTask(newTasks, taskProblem));
+    previousTask: (newTasks) => {
+      dispatch(previousTask(newTasks));
     },
     update: (newState) => {
       dispatch(update(newState));
     },
-    handleCurrentTaskProblemChange: (problems) => {
-      dispatch(setCurrentTaskProblems(problems));
+    handleCurrentTaskChange: (fields) => {
+      dispatch(setCurrentTaskFields(fields));
     },
     goToHome: () => {
       window.location.hash = '#/';

@@ -8,6 +8,7 @@ import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
 import { filterEmptyTasks } from '../../../Utils/TaskUtils';
+import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './TaskPanel.css';
 
 const TEXT_AREA_BORDER = '1px solid #CACFD2';
@@ -18,6 +19,7 @@ const problemsTextFieldStyle = {
   borderRight: TEXT_AREA_BORDER,
   borderRadius: '4px 4px 0 0',
   backgroundColor: 'white',
+  width: '100%',
 };
 
 class TaskPanel extends Component {
@@ -29,6 +31,7 @@ class TaskPanel extends Component {
     };
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleProblemCategoryValueChange = this.handleProblemCategoryValueChange.bind(this);
     if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
@@ -60,13 +63,15 @@ class TaskPanel extends Component {
     this.props.handleTaskPanelChange({
       taskPanelChanges : {
         newTasks: this.getFormattedTasks(this.state.newTasks),
-        problems: this.state.problems,
         currentTaskCheckOK: this.state.currentTaskCheckOK,
       },
     });
   }
   handleProblemsValueChange(event) {
-    this.props.handleCurrentTaskProblemChange(event.target.value);
+    this.props.handleCurrentTaskChange({ problems: event.target.value });
+  }
+  handleProblemCategoryValueChange(selectedOption) {
+    this.props.handleCurrentTaskChange({ problemCategory: selectedOption });
   }
   handleNewTasksValueChange(tasks) {
     this.setState({newTasks: tasks}, this.handleTaskPanelChange);
@@ -109,18 +114,29 @@ class TaskPanel extends Component {
                 />
               </div>
           }
-          <h3>Root cause (why the problem occurred)</h3>
-          <TextField
-            style={{ ...problemsTextFieldStyle }}
-            id="multiline-flexible"
-            label="Root cause"
-            multiline
-            rowsMax="4"
-            value={this.props.currentTask.problems || ''}
-            onChange={(event) => this.handleProblemsValueChange(event)}
-            className="TaskPanel-problem-textarea"
-            margin="normal"
-          />
+          <Grid container spacing={24} alignItems="center">
+            <Grid item xs={7}>
+              <h3>Root cause (why the problem occurred)</h3>
+              <TextField
+                style={{ ...problemsTextFieldStyle }}
+                id="multiline-flexible"
+                label="Root cause"
+                multiline
+                rowsMax="4"
+                value={this.props.currentTask.problems || ''}
+                onChange={(event) => this.handleProblemsValueChange(event)}
+                className="TaskPanel-problem-textarea"
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <h3>Root cause category</h3>
+              <ProblemCategoryAutocomplete
+                value={this.props.currentTask.problemCategory || null}
+                onChange={this.handleProblemCategoryValueChange}
+              />
+            </Grid>
+          </Grid>
           <h3>Add tasks after this one :</h3>
           <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
         </Grid>
