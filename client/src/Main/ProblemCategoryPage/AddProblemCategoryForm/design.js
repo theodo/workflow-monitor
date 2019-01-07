@@ -11,6 +11,7 @@ import { PROBLEM_LEAN_CATEGORY } from './constants';
 const addCategoryFormStyle = {
   display: 'flex',
   flexDirection: 'row',
+  justifyContent: 'center',
   width: '100%',
 };
 
@@ -22,6 +23,10 @@ const noMargin = {
   margin: 0,
 };
 
+const positionInherit = {
+  position: 'inherit',
+};
+
 const AddProblemCategoryForm = props => (
   <div>
     <h3>Add a problem category :</h3>
@@ -30,7 +35,7 @@ const AddProblemCategoryForm = props => (
       <li>Write in English language</li>
     </ul>
     <FormControl style={addCategoryFormStyle} variant="outlined">
-      <div>
+      <div style={positionInherit}>
         <InputLabel
           htmlFor="outlined-category-simple"
         >
@@ -42,7 +47,7 @@ const AddProblemCategoryForm = props => (
           onChange={props.handleChange}
           input={
             <OutlinedInput
-              labelWidth={200}
+              labelWidth={100}
               name="category"
               id="outlined-category-simple"
             />
