@@ -11,7 +11,7 @@ import { initSession, nextTask, previousTask, startSession, playOrPauseSession, 
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
 import PlanningPanel from './PlanningPanel/PlanningPanel';
-import ResultPanel from './ResultPanel/ResultPanel';
+import ResultPanel from './ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
 import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';

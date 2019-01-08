@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
-import Grid from '@material-ui/core/Grid';
+import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './ResultPanel.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
@@ -24,12 +25,18 @@ class ResultRow extends Component {
     this.initialEstimatedTime = props.estimatedTime;
     this.initialRealTime = props.realTime;
   }
-  componentWillMount() {
+
+  componentDidMount() {
     document.title = 'Worklow Monitor';
     setFavicon('favicon');
   }
+
+  handleProblemCategoryValueChange = (selectedOption) => {
+    this.props.handleTaskChange(this.props.index, { problemCategory: selectedOption });
+  };
+
   render() {
-    const { index, addedOnTheFly, label, estimatedTime, realTime, problems} = this.props;
+    const { index, addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory} = this.props;
     const contentEditableProps = {
       contentEditable: true,
       suppressContentEditableWarning: true,
@@ -56,6 +63,12 @@ class ResultRow extends Component {
           {formatMilliSecondToTime(this.initialRealTime)}
         </td>
         <td className="editable problems-cell" {...contentEditableProps}>{problems}</td>
+        <td>
+          <ProblemCategoryAutocomplete
+            value={problemCategory || null}
+            onChange={this.handleProblemCategoryValueChange}
+          />
+        </td>
       </tr>
     );
   }
@@ -130,10 +143,11 @@ class ResultPanel extends Component {
                     <th>Estimated time</th>
                     <th>Real Time</th>
                     <th>Problem</th>
+                    <th>Root Cause Category</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems}, index) =>
+                  {this.state.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) =>
                     <ResultRow
                       key={index}
                       index={index}
@@ -142,6 +156,8 @@ class ResultPanel extends Component {
                       estimatedTime={estimatedTime}
                       realTime={realTime}
                       problems={problems}
+                      problemCategory={problemCategory}
+                      handleTaskChange={this.props.handleTaskChange}
                       handleEditTime={(index, timeType, newTime) => this.setState({
                         results: Object.assign(
                           this.state.results,
