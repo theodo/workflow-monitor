@@ -227,38 +227,41 @@ class Monitor extends Component {
   }
   renderPanel() {
     switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      return <WelcomePanel />;
-    case MONITOR_STEPS.PLANNING:
-      return <PlanningPanel
-        dateLastPause={this.props.dateLastPause}
-        taskChrono={this.props.taskChrono}
-        currentTrelloCard={this.props.currentTrelloCard}
-        handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
-    case MONITOR_STEPS.WORKFLOW:
-      return (
-        <Grid className="Monitor-task-container" container spacing={0}>
-          <Grid item xs={8} lg={9} className="Monitor-FullHeightPanel">
-            <TaskPanel
-              dateLastPause={this.props.dateLastPause}
-              taskChrono={this.props.taskChrono}
-              currentTask={this.props.currentTask}
-              handleCurrentTaskChange={this.props.handleCurrentTaskChange}
-              handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
+      case MONITOR_STEPS.WELCOME:
+        return <WelcomePanel />;
+      case MONITOR_STEPS.PLANNING:
+        return <PlanningPanel
+          dateLastPause={this.props.dateLastPause}
+          taskChrono={this.props.taskChrono}
+          currentTrelloCard={this.props.currentTrelloCard}
+          handlePlanningPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />;
+      case MONITOR_STEPS.WORKFLOW:
+        return (
+          <Grid className="Monitor-task-container" container spacing={0}>
+            <Grid item xs={8} lg={9} className="Monitor-FullHeightPanel">
+              <TaskPanel
+                dateLastPause={this.props.dateLastPause}
+                taskChrono={this.props.taskChrono}
+                currentTask={this.props.currentTask}
+                handleCurrentTaskChange={this.props.handleCurrentTaskChange}
+                handleTaskPanelChange={(fieldsToUpdate) => this.updateMonitorState(fieldsToUpdate)} />
+            </Grid>
+            <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
+              <TasksLateralPanel
+                tasks={this.props.tasks}
+                currentTaskIndex={this.props.currentTaskIndex}
+                taskChrono={this.props.taskChrono}
+                dateLastPause={this.props.dateLastPause} />
+            </Grid>
           </Grid>
-          <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
-            <TasksLateralPanel
-              tasks={this.props.tasks}
-              currentTaskIndex={this.props.currentTaskIndex}
-              taskChrono={this.props.taskChrono}
-              dateLastPause={this.props.dateLastPause} />
-          </Grid>
-        </Grid>
-      );
-    case MONITOR_STEPS.RESULTS:
-      return <ResultPanel results={this.props.tasks} currentTrelloCard={this.props.currentTrelloCard}/>;
-    default:
-      break;
+        );
+      case MONITOR_STEPS.RESULTS:
+        return <ResultPanel
+          results={this.props.tasks}
+          currentTrelloCard={this.props.currentTrelloCard}
+        />;
+      default:
+        break;
     }
   }
   render() {
