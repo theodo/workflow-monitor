@@ -75,13 +75,6 @@ class ResultRow extends Component {
 }
 
 class ResultPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      results: this.props.results,
-    };
-  }
-
   printResults() {
     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
     let title = '';
@@ -116,7 +109,7 @@ class ResultPanel extends Component {
   }
 
   saveResultsInTrello(){
-    saveResultsInTrello(this.props.currentTrelloCard.id, this.state.results);
+    saveResultsInTrello(this.props.currentTrelloCard.id, this.props.results);
   }
 
   render() {
@@ -147,7 +140,7 @@ class ResultPanel extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) =>
+                  {this.props.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) =>
                     <ResultRow
                       key={index}
                       index={index}
@@ -160,22 +153,22 @@ class ResultPanel extends Component {
                       handleTaskChange={this.props.handleTaskChange}
                       handleEditTime={(index, timeType, newTime) => this.setState({
                         results: Object.assign(
-                          this.state.results,
-                          { [index]: { ...this.state.results[index], [timeType]: newTime } }
+                          this.props.results,
+                          { [index]: { ...this.props.results[index], [timeType]: newTime } }
                         )
                       })}
                     />)
                   }
                   <tr className='total-row'>
                     <td>Total</td>
-                    <td>{getTotalTime(this.state.results, 'estimatedTime')}</td>
+                    <td>{getTotalTime(this.props.results, 'estimatedTime')}</td>
                     <td
                       className={getRealTimeClass(
-                        getTotalTime(this.state.results, 'estimatedTime'),
-                        getTotalTime(this.state.results, 'realTime')
+                        getTotalTime(this.props.results, 'estimatedTime'),
+                        getTotalTime(this.props.results, 'realTime')
                       )}
                     >
-                      {getTotalTime(this.state.results, 'realTime')}</td>
+                      {getTotalTime(this.props.results, 'realTime')}</td>
                     <td />
                   </tr>
                 </tbody>
