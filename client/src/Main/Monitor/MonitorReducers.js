@@ -55,8 +55,9 @@ const updateTask = (state, taskIndex, newFields) => {
     ...newFields,
   };
 
-  const tasks = state.tasks;
+  let tasks = state.tasks;
   tasks[taskIndex] = taskToUpdate;
+  tasks = [...tasks];
 
   return {
     ...state,
