@@ -27,7 +27,7 @@ class ResultRow extends Component {
   }
 
   componentDidMount() {
-    document.title = 'Worklow Monitor';
+    document.title = 'Caspr - Results';
     setFavicon('favicon');
   }
 
