@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { gqlClient } from '../../Utils/Graphql';
-import ProblemCategoryPage from './design';
+import ProblemCategoryPage from './view';
 
 const ADD_PROBLEM_CATEGORY = gql`
   mutation AddProblemCategory($description: String!) {
