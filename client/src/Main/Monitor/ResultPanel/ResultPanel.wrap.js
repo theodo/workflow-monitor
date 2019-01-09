@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import ResultPanel from './ResultPanel';
+import ResultPanel from './view';
 import { setTaskFields } from '../MonitorActions';
 
 const mapStateToProps = state => ({});
