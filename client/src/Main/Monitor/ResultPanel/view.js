@@ -112,6 +112,10 @@ class ResultPanel extends Component {
     saveResultsInTrello(this.props.currentTrelloCard.id, this.props.results);
   }
 
+  saveResults(){
+    console.log('Results saved!');
+  }
+
   render() {
     return (
       <div className="ResultPanel">
@@ -120,10 +124,11 @@ class ResultPanel extends Component {
           </Grid>
           <Grid item xs={10}>
             <Grid container spacing={0}>
-              <Grid item xs={8}>
+              <Grid item xs={6}>
                 <h2>Results :</h2>
               </Grid>
-              <Grid item xs={4} className="PlanningPanel-save-button-container">
+              <Grid item xs={6} className="PlanningPanel-save-button-container">
+                <Button variant="contained" className="ResultPanel-button" onClick={() => this.saveResults()}>Save results</Button>
                 <Button variant="contained" className="ResultPanel-button" onClick={() => this.printResults()}>Print results</Button>
                 <Button variant="contained" className="ResultPanel-button" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
               </Grid>
