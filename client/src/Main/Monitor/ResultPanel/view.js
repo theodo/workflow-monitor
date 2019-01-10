@@ -113,7 +113,7 @@ class ResultPanel extends Component {
   }
 
   saveResults(){
-    console.log('Results saved!');
+    this.props.saveResults();
   }
 
   render() {

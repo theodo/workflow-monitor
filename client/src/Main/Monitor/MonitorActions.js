@@ -9,6 +9,7 @@ export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
 export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
 export const SET_TASK_FIELDS = 'SET_TASK_FIELDS';
 export const UPDATE = 'UPDATE';
+export const SAVE_RESULTS = 'SAVE_RESULTS';
 
 export function initSession() {
   return {
@@ -76,5 +77,11 @@ export function update(state) {
   return {
     type: UPDATE,
     state,
+  };
+}
+
+export function saveResults() {
+  return {
+    type: SAVE_RESULTS,
   };
 }

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ResultPanel from './view';
-import { setTaskFields } from '../MonitorActions';
+import { saveResults, setTaskFields } from '../MonitorActions';
 
 const mapStateToProps = state => ({
   results: state.MonitorReducers.tasks,
@@ -9,6 +9,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   handleTaskChange: (taskIndex, fields) => {
     dispatch(setTaskFields(taskIndex, fields));
+  },
+  saveResults: () => {
+    dispatch(saveResults());
   },
 });
 

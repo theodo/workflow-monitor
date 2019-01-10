@@ -1,5 +1,17 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE, BACK_TO_PLANNING, SET_CURRENT_TASK_FIELDS, SET_TASK_FIELDS } from './MonitorActions';
+import {
+  INIT_SESSION,
+  NEXT_TASK,
+  PREVIOUS_TASK,
+  START_SESSION,
+  PLAY_OR_PAUSE_SESSION,
+  RESET_MONITOR,
+  UPDATE,
+  BACK_TO_PLANNING,
+  SET_CURRENT_TASK_FIELDS,
+  SET_TASK_FIELDS,
+  SAVE_RESULTS,
+} from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
 import { gqlClient } from '../../Utils/Graphql';
@@ -234,6 +246,9 @@ const MonitorReducers = (state = currentInitialState, action) => {
       break;
     case SET_CURRENT_TASK_FIELDS:
       newState = updateTask(state, state.currentTaskIndex, action.fields);
+      break;
+    case SAVE_RESULTS:
+      newState = state;
       break;
     default:
       newState = state;
