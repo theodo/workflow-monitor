@@ -257,7 +257,6 @@ class Monitor extends Component {
         );
       case MONITOR_STEPS.RESULTS:
         return <ResultPanel
-          results={this.props.tasks}
           currentTrelloCard={this.props.currentTrelloCard}
         />;
       default:
