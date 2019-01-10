@@ -124,13 +124,19 @@ class ResultPanel extends Component {
           </Grid>
           <Grid item xs={10}>
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={7}>
                 <h2>Results :</h2>
               </Grid>
-              <Grid item xs={6} className="PlanningPanel-save-button-container">
-                <Button variant="contained" className="ResultPanel-button" onClick={() => this.saveResults()}>Save results</Button>
-                <Button variant="contained" className="ResultPanel-button" onClick={() => this.printResults()}>Print results</Button>
-                <Button variant="contained" className="ResultPanel-button" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+              <Grid container xs={5} direction="row" justify="space-between" alignItems="center" >
+                <Grid item xs>
+                  <Button variant="contained" color="primary" onClick={() => this.saveResults()}>Save results</Button>
+                </Grid>
+                <Grid item xs>
+                  <Button variant="contained" onClick={() => this.printResults()}>Print results</Button>
+                </Grid>
+                <Grid item xs>
+                  <Button variant="contained" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+                </Grid>
               </Grid>
             </Grid>
             <div className="printArea">
