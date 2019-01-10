@@ -307,7 +307,6 @@ const mapStateToProps = state => {
     tasks: state.MonitorReducers.tasks,
     currentTaskIndex: state.MonitorReducers.currentTaskIndex,
     currentTask: currentTaskSelector(state.MonitorReducers),
-    results: state.MonitorReducers.results,
     taskChrono: state.MonitorReducers.taskChrono,
     globalChrono: state.MonitorReducers.globalChrono,
     dateLastPause: state.MonitorReducers.dateLastPause,
