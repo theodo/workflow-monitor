@@ -33,6 +33,9 @@ class ResultPanel extends Component {
       tr.addedOnTheFly {
         background: #ffe6e6;
         -webkit-print-color-adjust: exact;
+      }
+      svg {
+        display: none;
       }`;
     mywindow.document.write('<style>' + css +'</style>');
     mywindow.document.write('</head><body>');
@@ -81,11 +84,11 @@ class ResultPanel extends Component {
               <table>
                 <thead>
                   <tr>
-                    <th>Task</th>
+                    <th width="30%">Task</th>
                     <th>Estimated time</th>
                     <th>Real Time</th>
-                    <th>Problem</th>
-                    <th>Root Cause Category</th>
+                    <th width="40%">Problem</th>
+                    <th width="20%">Root Cause Category</th>
                   </tr>
                 </thead>
                 <tbody>

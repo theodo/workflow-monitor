@@ -136,7 +136,7 @@ const ProblemCategoryAutocomplete = (props) => (
     value={props.value}
     onChange={props.onChange}
     options={props.options}
-    placeholder={'Choose the root cause category'}
+    placeholder={''}
   />
 );
 
