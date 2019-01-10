@@ -1,77 +1,15 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
-import { setFavicon } from '../../../Utils/FaviconUtils';
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
-import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
-import './ResultPanel.css';
+import ResultRow from '../ResultRow';
+import './style.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
   return estimatedTime ?
     (estimatedTime < realTime ? 'red' : 'green')
     : '';
-}
-function getRowClass(addedOnTheFly) {
-  return addedOnTheFly ?
-    'addedOnTheFly'
-    : '';
-}
-
-class ResultRow extends Component {
-  constructor(props) {
-    super(props);
-    this.initialEstimatedTime = props.estimatedTime;
-    this.initialRealTime = props.realTime;
-  }
-
-  componentDidMount() {
-    document.title = 'Caspr - Results';
-    setFavicon('favicon');
-  }
-
-  handleProblemCategoryValueChange = (selectedOption) => {
-    this.props.handleTaskChange(this.props.index, { problemCategory: selectedOption });
-  };
-
-  render() {
-    const { index, addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory} = this.props;
-    const contentEditableProps = {
-      contentEditable: true,
-      suppressContentEditableWarning: true,
-    };
-    return (
-      <tr className={getRowClass(addedOnTheFly)}>
-        <td className="editable" {...contentEditableProps}>{label}</td>
-        <td
-          className="editable"
-          {...contentEditableProps}
-          onInput={(event) =>
-            this.props.handleEditTime(index, 'estimatedTime', parseMillisecondFromFormattedTime(event.target.innerHTML))
-          }
-        >
-          {formatMilliSecondToTime(this.initialEstimatedTime)}
-        </td>
-        <td
-          className={`editable ${getRealTimeClass(estimatedTime, realTime)}`}
-          {...contentEditableProps}
-          onInput={(event) =>
-            this.props.handleEditTime(index, 'realTime', parseMillisecondFromFormattedTime(event.target.innerHTML))
-          }
-        >
-          {formatMilliSecondToTime(this.initialRealTime)}
-        </td>
-        <td className="editable problems-cell" {...contentEditableProps}>{problems}</td>
-        <td>
-          <ProblemCategoryAutocomplete
-            value={problemCategory || null}
-            onChange={this.handleProblemCategoryValueChange}
-          />
-        </td>
-      </tr>
-    );
-  }
 }
 
 class ResultPanel extends Component {
@@ -124,10 +62,10 @@ class ResultPanel extends Component {
           </Grid>
           <Grid item xs={10}>
             <Grid container spacing={0}>
-              <Grid item xs={7}>
+              <Grid item xs={6}>
                 <h2>Results :</h2>
               </Grid>
-              <Grid container xs={5} direction="row" justify="space-between" alignItems="center" >
+              <Grid container spacing={8} alignItems="center" item xs={6}>
                 <Grid item xs>
                   <Button variant="contained" color="primary" onClick={() => this.saveResults()}>Save results</Button>
                 </Grid>
