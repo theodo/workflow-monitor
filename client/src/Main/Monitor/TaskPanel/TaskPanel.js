@@ -134,6 +134,7 @@ class TaskPanel extends Component {
               <ProblemCategoryAutocomplete
                 value={this.props.currentTask.problemCategory || null}
                 onChange={this.handleProblemCategoryValueChange}
+                placeholder={'Select the root cause category'}
               />
             </Grid>
           </Grid>

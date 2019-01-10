@@ -63,6 +63,7 @@ class ResultRow extends Component {
           <ProblemCategoryAutocomplete
             value={problemCategory || null}
             onChange={this.handleProblemCategoryValueChange}
+            placeholder={''}
           />
         </td>
       </tr>
