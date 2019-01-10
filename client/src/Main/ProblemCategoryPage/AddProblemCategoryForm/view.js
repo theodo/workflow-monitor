@@ -29,11 +29,8 @@ const positionInherit = {
 
 const AddProblemCategoryForm = props => (
   <div>
-    <h3>Add a problem category :</h3>
-    <ul>
-      <li>Check that the category doesn't already exist</li>
-      <li>Write in English language</li>
-    </ul>
+    <h3>Add a problem category</h3>
+    <p style={{ margin: '10px' }}>Before adding any category, please check that the category doesn't already exist and write it in English.</p>
     <FormControl style={addCategoryFormStyle} variant="outlined">
       <div style={positionInherit}>
         <InputLabel
