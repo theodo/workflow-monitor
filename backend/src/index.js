@@ -1,13 +1,18 @@
 const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
-const sequelize = require('./sequelize')
+const { sequelize } = require('../models');
 const { saveSessionToSkillpool } = require('./skillpool');
 const { formatFullTicket, formatTasks } = require('./formatters');
 const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
 const isDev = process.env.ENV && process.env.ENV === 'DEV';
+
+const Project = sequelize.models.project;
+const ProblemCategory = sequelize.models.problemCategory;
+const Ticket = sequelize.models.ticket;
+const Task = sequelize.models.task;
 
 const typeDefs = `
   type Query {
@@ -56,7 +61,7 @@ const resolvers = {
   Query: {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
-    problemCategories: () => sequelize.models.problemCategory.findAll(),
+    problemCategories: () => ProblemCategory.findAll(),
     problemCategoriesWithCount: (_, args, { user }) => {
       const projectId = user.currentProject.id;
       return sequelize.query(
@@ -77,12 +82,12 @@ const resolvers = {
         const project = user.get('currentProject');
         saveSessionToSkillpool(project, user, jsState);
         const formattedTicket = formatFullTicket(jsState, project, user);
-        upsert(sequelize.models.ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
+        upsert(Ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
           .then(ticket => {
-            sequelize.models.task.destroy({ where: { ticketId: ticket.id}});
+            Task.destroy({ where: { ticketId: ticket.id}});
             const formattedTasks = formatTasks(jsState, ticket);
             formattedTasks.map((formattedTask) =>
-              sequelize.models.task.create(formattedTask)
+              Task.create(formattedTask)
                 .then(task => formattedTask.problemCategory && task.setProblemCategory(formattedTask.problemCategory.id))
             );
           });
@@ -91,7 +96,7 @@ const resolvers = {
       return 1;
     },
     selectProject: (_, { project }, { user }) => {
-      return sequelize.models.project.findOrCreate({
+      return Project.findOrCreate({
         where: {thirdPartyId: project.thirdPartyId},
         defaults: {...project}
       })
@@ -101,7 +106,7 @@ const resolvers = {
       });
     },
     addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
-      return sequelize.models.problemCategory.create({
+      return ProblemCategory.create({
         description: problemCategoryDescription,
       });
     },
