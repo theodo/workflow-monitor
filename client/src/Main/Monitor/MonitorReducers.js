@@ -1,5 +1,17 @@
 import uuid from 'uuid';
-import { INIT_SESSION, NEXT_TASK, PREVIOUS_TASK, START_SESSION, PLAY_OR_PAUSE_SESSION, RESET_MONITOR, UPDATE, BACK_TO_PLANNING, SET_CURRENT_TASK_FIELDS } from './MonitorActions';
+import {
+  INIT_SESSION,
+  NEXT_TASK,
+  PREVIOUS_TASK,
+  START_SESSION,
+  PLAY_OR_PAUSE_SESSION,
+  RESET_MONITOR,
+  UPDATE,
+  BACK_TO_PLANNING,
+  SET_CURRENT_TASK_FIELDS,
+  SET_TASK_FIELDS,
+  SAVE_RESULTS,
+} from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 import { sendEvent } from '../../Utils/AnalyticsUtils';
 import { gqlClient } from '../../Utils/Graphql';
@@ -48,97 +60,66 @@ const oldState = (JSON.parse(localStorage.getItem('monitorState')));
 
 const currentInitialState = localStorage.getItem('monitorState') ? oldState : initialMonitorState;
 
+const updateTask = (state, taskIndex, newFields) => {
+  let taskToUpdate = state.tasks[taskIndex];
+  taskToUpdate = {
+    ...taskToUpdate,
+    ...newFields,
+  };
+
+  let tasks = state.tasks;
+  tasks[taskIndex] = taskToUpdate;
+  tasks = [...tasks];
+
+  return {
+    ...state,
+    tasks,
+  };
+}
+
 const MonitorReducers = (state = currentInitialState, action) => {
   let newState = {};
   const now = (new Date()).getTime();
   switch (action.type) {
-  case INIT_SESSION:
-    localStorage.removeItem('planningTasks');
-    newState = {
-      ...state,
-      currentStep: MONITOR_STEPS.PLANNING,
-      tasks: [],
-      currentTaskIndex: 0,
-      dateLastPause: undefined,
-      taskChrono: {
-        dateLastStart: now,
-        elapsedTime: 0,
-      },
-      globalChrono: {
-        dateLastStart: now,
-        elapsedTime: 0,
-      }
-    };
-    break;
-  case START_SESSION:
-    newState = {
-      ...state,
-      currentStep: MONITOR_STEPS.WORKFLOW,
-      tasks: [{id: uuid(), label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
-      currentTaskIndex: 1,
-      taskChrono: {
-        dateLastStart: now,
-        elapsedTime: 0,
-      },
-    };
-    break;
-  case BACK_TO_PLANNING:
-    newState = {
-      ...state,
-      currentStep: MONITOR_STEPS.PLANNING,
-      tasks: state.tasks.map((task) => task),
-      currentTaskIndex: 0,
-    };
-    break;
-  case NEXT_TASK: {
-    const result = {
-      ...state.tasks[state.currentTaskIndex],
-      realTime: calculateCurrentTaskTime(state.taskChrono, now),
-    };
-
-    const tasks = state.tasks;
-    tasks[state.currentTaskIndex] = result;
-
-    let newStateForNextTask = {
-      ...state,
-      tasks,
-      currentTaskIndex: state.currentTaskIndex + 1,
-      taskChrono: {
-        dateLastStart: now,
-        elapsedTime: 0,
-      },
-    };
-
-    if (action.newTasks && action.newTasks.length > 0) {
-      newStateForNextTask.tasks = [
-        ...state.tasks.slice(0,state.currentTaskIndex+1),
-        ...action.newTasks,
-        ...state.tasks.slice(state.currentTaskIndex+1),
-      ];
-    }
-    if((!action.newTasks || action.newTasks.length === 0)
-        && state.currentTaskIndex >= state.tasks.length - 1) {
-      saveAnalytics(newStateForNextTask.tasks, action.projectId);
-      newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
-      newStateForNextTask.dateLastPause = now;
-    } else {
-      const nextStepRealTime = newStateForNextTask.tasks[state.currentTaskIndex + 1].realTime;
-      newStateForNextTask.taskChrono.elapsedTime =  nextStepRealTime || 0;
-    }
-    newState = newStateForNextTask;
-    break;
-  }
-  case PREVIOUS_TASK: {
-    let newStateForPreviousTask = {
-      ...state,
-      currentTaskIndex: state.currentTaskIndex - 1,
-      taskChrono: {
-        dateLastStart: now,
-        elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
-      },
-    };
-
-    if (state.currentStep === MONITOR_STEPS.WORKFLOW){
+    case INIT_SESSION:
+      localStorage.removeItem('planningTasks');
+      newState = {
+        ...state,
+        currentStep: MONITOR_STEPS.PLANNING,
+        tasks: [],
+        currentTaskIndex: 0,
+        dateLastPause: undefined,
+        taskChrono: {
+          dateLastStart: now,
+          elapsedTime: 0,
+        },
+        globalChrono: {
+          dateLastStart: now,
+          elapsedTime: 0,
+        }
+      };
+      break;
+    case START_SESSION:
+      newState = {
+        ...state,
+        currentStep: MONITOR_STEPS.WORKFLOW,
+        tasks: [{id: uuid(), label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
+        currentTaskIndex: 1,
+        taskChrono: {
+          dateLastStart: now,
+          elapsedTime: 0,
+        },
+      };
+      break;
+    case BACK_TO_PLANNING:
+      newState = {
+        ...state,
+        currentStep: MONITOR_STEPS.PLANNING,
+        tasks: state.tasks.map((task) => task),
+        currentTaskIndex: 0,
+      };
+      break;
+    case NEXT_TASK: {
       const result = {
         ...state.tasks[state.currentTaskIndex],
         realTime: calculateCurrentTaskTime(state.taskChrono, now),
@@ -147,92 +128,133 @@ const MonitorReducers = (state = currentInitialState, action) => {
       const tasks = state.tasks;
       tasks[state.currentTaskIndex] = result;
 
-      newStateForPreviousTask = {
-        ...newStateForPreviousTask,
+      let newStateForNextTask = {
+        ...state,
         tasks,
+        currentTaskIndex: state.currentTaskIndex + 1,
+        taskChrono: {
+          dateLastStart: now,
+          elapsedTime: 0,
+        },
       };
 
       if (action.newTasks && action.newTasks.length > 0) {
-        newStateForPreviousTask.tasks = [
+        newStateForNextTask.tasks = [
           ...state.tasks.slice(0,state.currentTaskIndex+1),
           ...action.newTasks,
           ...state.tasks.slice(state.currentTaskIndex+1),
         ];
       }
+      if((!action.newTasks || action.newTasks.length === 0)
+          && state.currentTaskIndex >= state.tasks.length - 1) {
+        saveAnalytics(newStateForNextTask.tasks, action.projectId);
+        newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
+        newStateForNextTask.dateLastPause = now;
+      } else {
+        const nextStepRealTime = newStateForNextTask.tasks[state.currentTaskIndex + 1].realTime;
+        newStateForNextTask.taskChrono.elapsedTime =  nextStepRealTime || 0;
+      }
+      newState = newStateForNextTask;
+      break;
     }
-    if (state.currentStep === MONITOR_STEPS.RESULTS){
-      newStateForPreviousTask = {
-        ...newStateForPreviousTask,
-        currentStep: MONITOR_STEPS.WORKFLOW,
-        dateLastPause: undefined,
-        globalChrono: {
-          dateLastStart: now,
-          elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
-        },
-      };
-    }
-    newState = newStateForPreviousTask;
-    break;
-  }
-  case RESET_MONITOR:
-    newState = {
-      ...initialMonitorState,
-      currentTrelloCard: action.card,
-    };
-    break;
-  case PLAY_OR_PAUSE_SESSION:
-    if (state.dateLastPause) {
-      newState = {
+    case PREVIOUS_TASK: {
+      let newStateForPreviousTask = {
         ...state,
-        dateLastPause: undefined,
+        currentTaskIndex: state.currentTaskIndex - 1,
         taskChrono: {
           dateLastStart: now,
-          elapsedTime: calculateElapsedTime(state.taskChrono, state.dateLastPause),
+          elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
         },
-        globalChrono: {
-          dateLastStart: now,
-          elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
-        }
       };
-    } else {
-      newState = {
-        ...state,
-        dateLastPause: now,
-        taskChrono: {
-          dateLastStart: state.taskChrono.dateLastStart,
-          elapsedTime: state.taskChrono.elapsedTime,
-        },
-        globalChrono: {
-          dateLastStart: state.globalChrono.dateLastStart,
-          elapsedTime: state.globalChrono.elapsedTime,
+
+      if (state.currentStep === MONITOR_STEPS.WORKFLOW){
+        const result = {
+          ...state.tasks[state.currentTaskIndex],
+          realTime: calculateCurrentTaskTime(state.taskChrono, now),
+        };
+
+        const tasks = state.tasks;
+        tasks[state.currentTaskIndex] = result;
+
+        newStateForPreviousTask = {
+          ...newStateForPreviousTask,
+          tasks,
+        };
+
+        if (action.newTasks && action.newTasks.length > 0) {
+          newStateForPreviousTask.tasks = [
+            ...state.tasks.slice(0,state.currentTaskIndex+1),
+            ...action.newTasks,
+            ...state.tasks.slice(state.currentTaskIndex+1),
+          ];
         }
-      };
+      }
+      if (state.currentStep === MONITOR_STEPS.RESULTS){
+        newStateForPreviousTask = {
+          ...newStateForPreviousTask,
+          currentStep: MONITOR_STEPS.WORKFLOW,
+          dateLastPause: undefined,
+          globalChrono: {
+            dateLastStart: now,
+            elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
+          },
+        };
+      }
+      newState = newStateForPreviousTask;
+      break;
     }
-    break;
-  case UPDATE:
-    newState = action.state;
-    break;
-  case SET_CURRENT_TASK_FIELDS: {
-    let currentTask = state.tasks[state.currentTaskIndex];
-    currentTask = {
-      ...currentTask,
-      ...action.fields,
-    };
-
-    const tasks = state.tasks;
-    tasks[state.currentTaskIndex] = currentTask;
-
-    newState = {
-      ...state,
-      tasks,
-    };
-  }
-    break;
-  default:
-    newState = state;
+    case RESET_MONITOR:
+      newState = {
+        ...initialMonitorState,
+        currentTrelloCard: action.card,
+      };
+      break;
+    case PLAY_OR_PAUSE_SESSION:
+      if (state.dateLastPause) {
+        newState = {
+          ...state,
+          dateLastPause: undefined,
+          taskChrono: {
+            dateLastStart: now,
+            elapsedTime: calculateElapsedTime(state.taskChrono, state.dateLastPause),
+          },
+          globalChrono: {
+            dateLastStart: now,
+            elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
+          }
+        };
+      } else {
+        newState = {
+          ...state,
+          dateLastPause: now,
+          taskChrono: {
+            dateLastStart: state.taskChrono.dateLastStart,
+            elapsedTime: state.taskChrono.elapsedTime,
+          },
+          globalChrono: {
+            dateLastStart: state.globalChrono.dateLastStart,
+            elapsedTime: state.globalChrono.elapsedTime,
+          }
+        };
+      }
+      break;
+    case UPDATE:
+      newState = action.state;
+      break;
+    case SET_TASK_FIELDS:
+      newState = updateTask(state, action.taskIndex, action.fields);
+      break;
+    case SET_CURRENT_TASK_FIELDS:
+      newState = updateTask(state, state.currentTaskIndex, action.fields);
+      break;
+    case SAVE_RESULTS:
+      newState = state;
+      break;
+    default:
+      newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
-  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS) {
+  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS && action.type !== SET_TASK_FIELDS) {
     gqlClient
       .mutate({
         mutation: gql`

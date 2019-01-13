@@ -91,7 +91,7 @@ class PlanningPanel extends Component {
                   <h2>Task list :</h2>
                 </Grid>
                 <Grid item xs={4} className="PlanningPanel-save-button-container">
-                  <Link to="/settings"><Button variant="contained">Edit default tasks</Button></Link>
+                  <Button variant="contained" color="primary" component={Link} to="/settings">Edit default tasks</Button>
                   <FormControl style={{marginTop: 8}}>
                     <InputLabel htmlFor="selected-checklist">Import trello checklist</InputLabel>
                     <Select

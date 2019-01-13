@@ -1,0 +1,15 @@
+table {
+    margin: auto
+}
+
+table, th {
+    border: 1px solid black;
+}
+
+.ResultPanel {
+  text-align: left;
+}
+
+.printArea {
+  text-align: center;
+}

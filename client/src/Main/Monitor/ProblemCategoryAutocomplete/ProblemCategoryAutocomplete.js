@@ -126,6 +126,7 @@ const ProblemCategoryAutocompleteContainer = (props) =>(
         value={props.value}
         onChange={props.onChange}
         options={options}
+        placeholder={props.placeholder}
       />;
     }}
   </Query>
@@ -136,7 +137,7 @@ const ProblemCategoryAutocomplete = (props) => (
     value={props.value}
     onChange={props.onChange}
     options={props.options}
-    placeholder={'Choose the root cause category'}
+    placeholder={props.placeholder}
   />
 );
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import AddProblemCategoryForm from './design';
+import AddProblemCategoryForm from './view';
 
 const computeFullProblemCategoryDescription = (category, description) => `${category} / ${description}`;
 

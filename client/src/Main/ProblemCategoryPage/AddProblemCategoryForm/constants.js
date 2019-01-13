@@ -1,6 +1,6 @@
 export const PROBLEM_LEAN_CATEGORY = {
-  MAN: 'Skills',
-  MATERIAL: 'Data',
-  MACHINES: 'Tools',
-  METHODS: 'Process',
+  SKILLS: 'Skills (MAN)',
+  INPUT: 'Input (MATERIAL)',
+  TOOLS: 'Tools (MACHINES)',
+  PROCESS: 'Process (METHODS)',
 };

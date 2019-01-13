@@ -1,8 +1,4 @@
-table {
-    margin: auto
-}
-
-table, th, td {
+td {
     border: 1px solid black;
 }
 
@@ -31,16 +27,4 @@ td.problems-cell {
   padding: 5px 10px;
   text-align: left;
   white-space: pre-wrap;
-}
-
-.ResultPanel {
-  text-align: left;
-}
-
-.ResultPanel-button {
-  margin: 5px;
-}
-
-.printArea {
-  text-align: center;
 }

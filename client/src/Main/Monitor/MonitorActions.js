@@ -7,7 +7,9 @@ export const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
 export const SET_CURRENT_TRELLO_CARD = 'SET_CURRENT_TRELLO_CARD';
 export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
 export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
+export const SET_TASK_FIELDS = 'SET_TASK_FIELDS';
 export const UPDATE = 'UPDATE';
+export const SAVE_RESULTS = 'SAVE_RESULTS';
 
 export function initSession() {
   return {
@@ -63,9 +65,23 @@ export function setCurrentTaskFields(fields) {
   };
 }
 
+export function setTaskFields(taskIndex, fields) {
+  return {
+    type: SET_TASK_FIELDS,
+    taskIndex,
+    fields,
+  };
+}
+
 export function update(state) {
   return {
     type: UPDATE,
     state,
+  };
+}
+
+export function saveResults() {
+  return {
+    type: SAVE_RESULTS,
   };
 }

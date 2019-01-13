@@ -20,15 +20,6 @@
   text-align: right;
 }
 
-.PlanningPanel-save-button-container > button {
-  color: white;
-  background-color: #2B5BA0;
-  border-radius: 3px;
-}
-.PlanningPanel-save-button-container > button:hover {
-  background-color: #72C2B7;
-}
-
 h4 {
   margin: 10px 0;
 }
