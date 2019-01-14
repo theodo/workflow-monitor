@@ -107,6 +107,7 @@ const styles = theme => ({
   }
 });
 
+const isCurrentPage = page => window.location.hash === `#/${page}`;
 
 export class Main extends Component {
   constructor(props){
@@ -167,7 +168,7 @@ export class Main extends Component {
           <Divider />
           <div>
             <Link to="/" onClick={this.checkPrevent} >
-              <ListItem disabled={!this.props.isProjectSelected} button>
+              <ListItem selected={isCurrentPage('')} disabled={!this.props.isProjectSelected} button>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
@@ -175,7 +176,7 @@ export class Main extends Component {
               </ListItem>
             </Link>
             <Link to="/monitor" onClick={this.checkPrevent} >
-              <ListItem disabled={!this.props.isProjectSelected} button>
+              <ListItem selected={isCurrentPage('monitor')} disabled={!this.props.isProjectSelected} button>
                 <ListItemIcon>
                   <TrackChangesIcon />
                 </ListItemIcon>
@@ -183,7 +184,7 @@ export class Main extends Component {
               </ListItem>
             </Link>
             <Link to="/settings" onClick={this.checkPrevent} >
-              <ListItem disabled={!this.props.isProjectSelected} button>
+              <ListItem selected={isCurrentPage('settings')} disabled={!this.props.isProjectSelected} button>
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>
@@ -191,15 +192,15 @@ export class Main extends Component {
               </ListItem>
             </Link>
             <Link to="/project">
-              <ListItem button>
+              <ListItem selected={isCurrentPage('project')} button>
                 <ListItemIcon>
                   <ListIcon />
                 </ListItemIcon>
                 <ListItemText primary="Projects" />
               </ListItem>
             </Link>
-            <Link to="/problem-categories">
-              <ListItem button>
+            <Link to="/problem-categories" onClick={this.checkPrevent}>
+              <ListItem selected={isCurrentPage('problem-categories')} disabled={!this.props.isProjectSelected} button>
                 <ListItemIcon>
                   <CategoryIcon />
                 </ListItemIcon>
