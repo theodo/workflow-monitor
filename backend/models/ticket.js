@@ -1,15 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Ticket = sequelize.define('ticket', {
+  const ticket = sequelize.define('ticket', {
     description: { type: DataTypes.STRING, allowNull: false },
-    thirdPartyId: { type: DataTypes.STRING, allowNull: true },
-    complexity: { type: DataTypes.INTEGER, allowNull: true },
+    thirdPartyId: DataTypes.STRING,
+    complexity: DataTypes.INTEGER,
     status: { type: DataTypes.ENUM('PLANNING', 'DONE'), allowNull: false }
-  });
-  Ticket.associate = function(models) {
-    Ticket.belongsTo(models.project, {as: 'project'});
-    Ticket.belongsTo(models.user, {as: 'user'});
-    Ticket.hasMany(models.task, {as: 'tasks'});
+  }, {});
+  ticket.associate = function(models) {
+    ticket.belongsTo(models.project, {as: 'project'});
+    ticket.belongsTo(models.user, {as: 'user'});
+    ticket.hasMany(models.task, {as: 'tasks'})
   };
-  return Ticket;
+  return ticket;
 };

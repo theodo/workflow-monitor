@@ -1,13 +1,13 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Task = sequelize.define('task', {
+  const task = sequelize.define('task', {
     description: { type: DataTypes.STRING, allowNull: false },
-    estimatedTime: { type: DataTypes.INTEGER, allowNull: true },
-    realTime: { type: DataTypes.INTEGER, allowNull: true },
-    problems: { type: DataTypes.STRING, allowNull: true },
+    estimatedTime: DataTypes.INTEGER,
+    realTime: DataTypes.INTEGER,
+    addedOnTheFly: DataTypes.BOOLEAN,
   }, {});
-  Task.associate = function(models) {
-    Task.belongsTo(models.problemCategory, {as:'problemCategory'})
+  task.associate = function(models) {
+    task.hasMany(models.problem, {as: 'problems', onDelete: 'cascade', hooks: true})
   };
-  return Task;
+  return task;
 };

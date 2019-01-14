@@ -16,12 +16,17 @@ const formatTasks = (state, ticket) => {
   const { tasks } = state;
   const { id: ticketId } = ticket;
 
-  return tasks.map(({ label, estimatedTime, realTime, problems, problemCategory }) => ({
+  return tasks.map(({ label, estimatedTime, addedOnTheFly, realTime, problems, problemCategory }) => ({
     description: label,
     estimatedTime,
-    problemCategory: problemCategory && { id: problemCategory.value, description: problemCategory.label },
+    addedOnTheFly: addedOnTheFly || false,
+    problems: (problems || problemCategory) ?
+      [{
+        description: problems,
+        problemCategory: problemCategory && { id: problemCategory.value, description: problemCategory.label }
+      }]
+      : [],
     realTime,
-    problems,
     ticketId,
   }));
 };

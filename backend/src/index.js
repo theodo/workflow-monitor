@@ -13,6 +13,7 @@ const Project = sequelize.models.project;
 const ProblemCategory = sequelize.models.problemCategory;
 const Ticket = sequelize.models.ticket;
 const Task = sequelize.models.task;
+const Problem = sequelize.models.problem;
 
 const typeDefs = `
   type Query {
@@ -88,7 +89,13 @@ const resolvers = {
             const formattedTasks = formatTasks(jsState, ticket);
             formattedTasks.map((formattedTask) =>
               Task.create(formattedTask)
-                .then(task => formattedTask.problemCategory && task.setProblemCategory(formattedTask.problemCategory.id))
+                .then(task => {
+                  formattedTask.problems.map(formattedProblem => {
+                    formattedProblem.taskId = task.id;
+                    Problem.create(formattedProblem)
+                      .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id));
+                  })
+                })
             );
           });
       }
@@ -96,12 +103,13 @@ const resolvers = {
       return 1;
     },
     selectProject: (_, { project }, { user }) => {
+      project.thirdPartyType = 'TRELLO';
       return Project.findOrCreate({
         where: {thirdPartyId: project.thirdPartyId},
         defaults: {...project}
       })
       .spread((project) => {
-        user.setCurrentProject(project);
+        user.setCurrentProject(project.id);
         return project;
       });
     },

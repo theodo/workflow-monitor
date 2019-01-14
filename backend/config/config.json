@@ -6,6 +6,13 @@
     "host": "postgresql",
     "dialect": "postgres"
   },
+  "local": {
+    "username": "caspr",
+    "password": "caspr",
+    "database": "caspr",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
   "production": {
     "username": "caspr",
     "password": "caspr",
