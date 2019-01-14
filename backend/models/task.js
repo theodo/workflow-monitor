@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const task = sequelize.define('task', {
-    description: DataTypes.STRING,
+    description: { type: DataTypes.STRING, allowNull: false },
     estimatedTime: DataTypes.INTEGER,
     realTime: DataTypes.INTEGER,
     addedOnTheFly: DataTypes.BOOLEAN,
