@@ -5,8 +5,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import AddProblemCategoryForm from './AddProblemCategoryForm';
 
+const fullPageHeightStyle = {
+  height: '100%',
+  overflow: 'auto'
+};
+
 const ProblemCategoryPage = (props) => (
-  <Grid container spacing={0}>
+  <Grid container spacing={0} style={fullPageHeightStyle}>
     <Grid item xs={1} >
     </Grid>
     <Grid item xs={10}>

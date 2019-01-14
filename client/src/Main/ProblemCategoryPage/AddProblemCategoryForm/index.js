@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import AddProblemCategoryForm from './view';
+import { PROBLEM_LEAN_CATEGORY_VALUES } from './constants';
 
-const computeFullProblemCategoryDescription = (category, description) => `${category} / ${description}`;
+const computeFullProblemCategoryDescription = (category, description) => `${PROBLEM_LEAN_CATEGORY_VALUES[category]} / ${description}`;
 
 class AddProblemCategoryFormContainer extends Component {
   state = {
@@ -15,6 +16,10 @@ class AddProblemCategoryFormContainer extends Component {
     this.props.addProblemCategory(
       computeFullProblemCategoryDescription(this.state.category, this.state.description)
     );
+    this.setState({
+      category: '',
+      description: '',
+    });
   }
   render(){
     return (
