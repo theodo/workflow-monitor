@@ -4,3 +4,10 @@ export const PROBLEM_LEAN_CATEGORY = {
   TOOLS: 'Tools (MACHINES)',
   PROCESS: 'Process (METHODS)',
 };
+
+export const PROBLEM_LEAN_CATEGORY_VALUES = {
+  SKILLS: 'Skills',
+  INPUT: 'Input',
+  TOOLS: 'Tools',
+  PROCESS: 'Process',
+};
