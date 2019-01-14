@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
-const sequelize = require('./sequelize')
+const { sequelize } = require('../models')
 const { saveSessionToSkillpool } = require('./skillpool');
 const { formatFullTicket, formatTasks } = require('./formatters');
 const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
@@ -83,7 +83,15 @@ const resolvers = {
             const formattedTasks = formatTasks(jsState, ticket);
             formattedTasks.map((formattedTask) =>
               sequelize.models.task.create(formattedTask)
-                .then(task => formattedTask.problemCategory && task.setProblemCategory(formattedTask.problemCategory.id))
+                .then(task => {
+                  console.log(formattedTask)
+                  formattedTask.problems.map(formattedProblem => {
+                    formattedProblem.taskId = task.id;
+                    sequelize.models.problem.create(formattedProblem)
+                      .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id));
+                  })
+                })
+
             );
           });
       }
@@ -91,12 +99,14 @@ const resolvers = {
       return 1;
     },
     selectProject: (_, { project }, { user }) => {
+      project.thirdPartyType = 'TRELLO';
+      console.log(project);
       return sequelize.models.project.findOrCreate({
         where: {thirdPartyId: project.thirdPartyId},
         defaults: {...project}
       })
       .spread((project) => {
-        user.setCurrentProject(project);
+        user.setCurrentProject(project.id);
         return project;
       });
     },

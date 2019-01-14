@@ -61,6 +61,6 @@ Ticket.hasMany(Task, {as: 'tasks'})
 
 Task.belongsTo(ProblemCategory, { as: 'problemCategory' })
 
-sequelize.sync();
+//sequelize.sync();
 
 module.exports = sequelize

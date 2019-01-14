@@ -9,7 +9,8 @@
     "graphql-yoga": "^1.8.5",
     "jsonwebtoken": "^8.2.1",
     "pg": "^7.4.3",
-    "sequelize": "^4.37.10"
+    "sequelize": "^4.37.10",
+    "sequelize-cli": "^5.4.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
