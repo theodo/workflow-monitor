@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import './Project.css';
 import { selectProject } from '../../Login/LoginActions';
 import { saveSettings } from '../Settings/SettingsActions';
+import { initSession } from '../Monitor/MonitorActions';
 import { gqlClient } from '../../Utils/Graphql';
 import gql from 'graphql-tag';
 import FormControl from '@material-ui/core/FormControl';
@@ -94,6 +95,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     selectProject: (project) => {
+      dispatch(initSession());
       dispatch(saveSettings({selectedBacklogId: undefined}));
       dispatch(selectProject(project));
       window.location.hash = '#/';
