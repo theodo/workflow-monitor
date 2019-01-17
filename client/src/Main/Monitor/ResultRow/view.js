@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TextField from '@material-ui/core/TextField';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
 import { setFavicon } from '../../../Utils/FaviconUtils';
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
@@ -31,6 +32,10 @@ class ResultRow extends Component {
     this.props.handleTaskChange(this.props.index, { problemCategory: selectedOption });
   };
 
+  handleProblemsValueChange = (event) => {
+    this.props.handleTaskChange(this.props.index, { problems: event.target.value });
+  };
+
   render() {
     const { index, addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory} = this.props;
     const contentEditableProps = {
@@ -58,7 +63,14 @@ class ResultRow extends Component {
         >
           {formatMilliSecondToTime(this.initialRealTime)}
         </td>
-        <td className="editable problems-cell" {...contentEditableProps}>{problems}</td>
+        <td className="editable problems-cell" {...contentEditableProps}>
+          <TextField
+            multiline
+            rowsMax="4"
+            value={problems || ''}
+            onChange={(event) => this.handleProblemsValueChange(event)}
+          />
+        </td>
         <td>
           <ProblemCategoryAutocomplete
             value={problemCategory || null}
