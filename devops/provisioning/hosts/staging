@@ -1,0 +1,2 @@
+[staging]
+caspr-staging.theo.do  ansible_ssh_user=ubuntu
