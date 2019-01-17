@@ -1,6 +1,6 @@
 const https = require('https');
 const jwt = require('jsonwebtoken')
-const sequelize = require('./sequelize')
+const { sequelize } = require('../models');
 
 const verifyJWTToken = (token, callback) => {
   return jwt.verify(token, 'JWT_SECRET', callback);

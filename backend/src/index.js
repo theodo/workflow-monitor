@@ -7,7 +7,7 @@ const { formatFullTicket, formatTasks } = require('./formatters');
 const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
 
-const isDev = process.env.ENV && process.env.ENV === 'DEV';
+const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 
 const Project = sequelize.models.project;
 const ProblemCategory = sequelize.models.problemCategory;

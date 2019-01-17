@@ -1,7 +1,7 @@
 const https = require('https');
 const axios = require('axios');
 
-const isDev = process.env.ENV && process.env.ENV === 'DEV';
+const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 
 const client = axios.create({
   baseURL: isDev ? 'https://api.skillpool.theo.do/' : 'https://10.0.246.2/',

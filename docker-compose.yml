@@ -13,7 +13,7 @@ services:
     build: ./backend
     command: yarn start
     environment:
-      - ENV=DEV
+      - NODE_ENV=development
     volumes:
       - ./backend:/app
     ports:
@@ -24,7 +24,7 @@ services:
     build: ./client
     command: yarn start
     environment:
-      - ENV=DEV
+      - NODE_ENV=development
     volumes:
       - ./client:/app
     ports:
