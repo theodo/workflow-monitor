@@ -63,7 +63,7 @@ class ResultRow extends Component {
         >
           {formatMilliSecondToTime(this.initialRealTime)}
         </td>
-        <td className="editable problems-cell" {...contentEditableProps}>
+        <td>
           <TextField
             multiline
             rowsMax="4"
