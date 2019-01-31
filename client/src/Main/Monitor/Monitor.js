@@ -116,7 +116,7 @@ class Monitor extends Component {
       variables: {}
     }).subscribe({
       next (data) {
-        props.update(JSON.parse(data.state));
+        props.update(JSON.parse(data.data.state));
       }
     },() => console.log('error'));
   }
