@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "nodemon src/index.js",
-    "deploy-prod": "rsync -avz --exclude 'node_modules' -e ssh . ubuntu@caspr.theo.do:~/api/"
+    "deploy:staging": "rsync -avz --exclude 'node_modules' -e ssh . ubuntu@caspr-staging.theo.do:~/api/",
+    "deploy:prod": "rsync -avz --exclude 'node_modules' -e ssh . ubuntu@caspr.theo.do:~/api/"
   }
 }
