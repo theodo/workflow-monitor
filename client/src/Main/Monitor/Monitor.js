@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/Button';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import LinkIcon from '@material-ui/icons/Link';
 import PauseIcon from '@material-ui/icons/Pause';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -265,7 +266,7 @@ class Monitor extends Component {
               {
                 this.props.currentTrelloCard ?
                   <a href={this.props.currentTrelloCard.url} target="_blank" rel="noopener noreferrer" className="Monitor-header-link">
-                    #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}
+                    #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name} <LinkIcon/>
                   </a>
                   : ''
               }
