@@ -22,6 +22,11 @@ const problemsTextFieldStyle = {
   width: '100%',
 };
 
+const fullPageHeightStyle = {
+  height: '100%',
+  overflow: 'auto'
+};
+
 class TaskPanel extends Component {
   constructor(props){
     super(props);
@@ -81,7 +86,7 @@ class TaskPanel extends Component {
   }
   render() {
     return (
-      <Grid className="TaskPanel" container spacing={24}>
+      <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
         <Grid item xs={1} >
         </Grid>
         <Grid item xs={10}>

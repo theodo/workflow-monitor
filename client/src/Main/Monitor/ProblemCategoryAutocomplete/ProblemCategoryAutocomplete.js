@@ -132,12 +132,20 @@ const ProblemCategoryAutocompleteContainer = (props) =>(
   </Query>
 );
 
+const customStyle = {
+  menuList: () => ({
+    maxHeight: 200,
+    overflow: 'auto',
+  }),
+};
+
 const ProblemCategoryAutocomplete = (props) => (
   <Select
     value={props.value}
     onChange={props.onChange}
     options={props.options}
     placeholder={props.placeholder}
+    styles={customStyle}
   />
 );
 
