@@ -14,6 +14,7 @@ import PlanningPanel from './PlanningPanel/PlanningPanel';
 import ResultPanel from './ResultPanel';
 import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
+import TicketStartPanel from './TicketStartPanel';
 import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';
 import { subscriptionClient } from '../../Utils/Graphql';
 import gql from 'graphql-tag';
@@ -81,14 +82,6 @@ class Footer extends Component {
           </div>
         </footer>
       </div>
-    );
-  }
-}
-
-class WelcomePanel extends Component {
-  render() {
-    return (
-      <p>To get started, press start.</p>
     );
   }
 }
@@ -228,7 +221,7 @@ class Monitor extends Component {
   renderPanel() {
     switch (this.props.step) {
       case MONITOR_STEPS.WELCOME:
-        return <WelcomePanel />;
+        return <TicketStartPanel />;
       case MONITOR_STEPS.PLANNING:
         return <PlanningPanel
           dateLastPause={this.props.dateLastPause}
