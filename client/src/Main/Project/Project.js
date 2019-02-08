@@ -6,19 +6,20 @@ import { saveSettings } from '../Settings/SettingsActions';
 import { initSession } from '../Monitor/MonitorActions';
 import { gqlClient } from '../../Utils/Graphql';
 import gql from 'graphql-tag';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
+import Select from 'react-select';
+
+const formStyle = {
+  width: 300,
+  margin: 'auto',
+};
 
 class Projects extends Component {
   constructor(props){
     super(props);
     this.state = {
       boards: {},
-      selectedProjectId: this.props.project ? this.props.project.thirdPartyId : '',
+      selectedProject: this.props.project ? { value: this.props.project.thirdPartyId, label: this.props.project.name } : null,
     };
     this.selectProject = this.selectProject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -31,14 +32,14 @@ class Projects extends Component {
       });
     });
   }
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+  handleChange(selectedProject) {
+    this.setState({ selectedProject });
   }
   selectProject(){
-    const selectedProject = (this.state.boards[this.state.selectedProjectId]);
+    const selectedProject = this.state.selectedProject;
     const graphqlProject = {
-      name: selectedProject.name,
-      thirdPartyId: selectedProject.id,
+      name: selectedProject.label,
+      thirdPartyId: selectedProject.value,
     };
 
     gqlClient
@@ -61,25 +62,20 @@ class Projects extends Component {
   render() {
     return (
       <div className="Project">
-        <form autoComplete="off">
-          <FormControl>
-            <InputLabel htmlFor="selectedProjectId">Project</InputLabel>
-            <Select
-              className="select"
-              autoWidth={true}
-              value={this.state.selectedProjectId}
-              onChange={this.handleChange}
-              input={<Input name="selectedProjectId" id="selectedProjectId" />}
-            >
-              {
-                Object.keys(this.state.boards)
-                  .map((boardId) => this.state.boards[boardId])
-                  .map((board) =>
-                    <MenuItem value={board.id} key={ board.id }>{ board.name }</MenuItem>)
-              }
-            </Select>
-            <Button onClick={this.selectProject}>Select</Button>
-          </FormControl>
+        <h2>Trello Project Selection :</h2>
+        <form autoComplete="off" style={formStyle}>
+          <Select
+            value={this.state.selectedProject}
+            onChange={this.handleChange}
+            options={
+              Object.keys(this.state.boards)
+                .map((boardId) => this.state.boards[boardId])
+                .map((board) =>
+                  ({value: board.id, label: board.name}) )
+            }
+            placeholder="Select project"
+          />
+          <Button onClick={this.selectProject}>Select</Button>
         </form>
       </div>
     );
