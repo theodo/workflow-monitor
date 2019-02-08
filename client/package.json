@@ -12,8 +12,6 @@
     "apollo-link-ws": "^1.0.8",
     "axios": "^0.18.0",
     "copy-to-clipboard": "^3.0.8",
-    "env-cmd": "^8.0.2",
-    "gh-pages": "^1.2.0",
     "graphql": "^0.12.3",
     "graphql-tag": "^2.9.2",
     "history": "4.7.2",
@@ -35,13 +33,10 @@
     "ws": "^6.1.0"
   },
   "scripts": {
-    "start": "HOST=0.0.0.0 REACT_APP_ENV=local CHOKIDAR_USEPOLLING=true react-scripts start",
-    "build": "env-cmd .env.${REACT_APP_ENV} react-scripts build",
+    "start": "HOST=0.0.0.0 CHOKIDAR_USEPOLLING=true react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy:github-pages": "npm run build && gh-pages -d build",
-    "deploy:staging": "REACT_APP_ENV=staging npm run build && rsync -avz -e ssh build ubuntu@caspr-staging.theo.do:~/client",
-    "deploy:prod": "REACT_APP_ENV=prod npm run build && rsync -avz -e ssh build ubuntu@caspr.theo.do:~/client",
     "lint": "eslint ./src"
   },
   "devDependencies": {},
