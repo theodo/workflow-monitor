@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import gql from 'graphql-tag';
+import { GET_PROBLEM_CATEGORIES } from '../../../Queries/Categories';
 import { Query } from 'react-apollo';
 
 
@@ -104,15 +104,6 @@ const options = [
   { value: 96 , label: 'Outils / Webpack' },
 ];
 */
-
-const GET_PROBLEM_CATEGORIES = gql`
-  {
-    problemCategories {
-      id
-      description
-    }
-  }
-`;
 
 const ProblemCategoryAutocompleteContainer = (props) =>(
   <Query query={GET_PROBLEM_CATEGORIES}>

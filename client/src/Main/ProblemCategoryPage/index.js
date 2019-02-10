@@ -1,35 +1,16 @@
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { gqlClient } from '../../Utils/Graphql';
 import ProblemCategoryPage from './view';
-
-const ADD_PROBLEM_CATEGORY = gql`
-  mutation AddProblemCategory($description: String!) {
-    addProblemCategory(problemCategoryDescription: $description) {
-      id
-      description
-    }
-  }
-`;
-
-const GET_PROBLEM_CATEGORIES = gql`
-  {
-    problemCategoriesWithCount {
-      id
-      description
-      count
-    }
-  }
-`;
+import { GET_PROBLEM_CATEGORIES, GET_PROBLEM_CATEGORIES_WITH_COUNT, ADD_PROBLEM_CATEGORY } from '../../Queries/Categories';
 
 class ProblemCategoryPageContainer extends Component {
   render(){
     return (
-      <Query query={GET_PROBLEM_CATEGORIES}>
-        {({ loading, error, data, refetch }) => {
+      <Query query={GET_PROBLEM_CATEGORIES_WITH_COUNT}>
+        {({ loading, error, data }) => {
           if (error) return 'Unexpected error';
-          return <ProblemCategoryPageMutationContainer refetch={refetch} loading={loading} problemCategories={data.problemCategoriesWithCount}/>;
+          return <ProblemCategoryPageMutationContainer loading={loading} problemCategories={data.problemCategoriesWithCount}/>;
         }}
       </Query>
     );
@@ -47,10 +28,13 @@ class ProblemCategoryPageMutationContainer extends Component {
         mutation: ADD_PROBLEM_CATEGORY,
         variables: {
           description,
-        }
+        },
+        refetchQueries: [
+          { query: GET_PROBLEM_CATEGORIES },
+          { query: GET_PROBLEM_CATEGORIES_WITH_COUNT }
+        ],
       })
       .then(() => {
-        this.props.refetch();
         this.setState({loading: false});
       });
   }
