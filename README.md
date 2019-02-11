@@ -16,17 +16,17 @@ You're all set! Go to http://localhost to access to Caspr.
 
 Staging platform is accessible at https://caspr-staging.theo.do. Ask SSH access to be able to deploy.
 
-### Front deployment
+### Deployment
 
-In client repository, create a `.env.staging` file with environment variables (ask Nicolas or Loïc to have the correct ones). Then run `npm run deploy:staging`.
+Run `npm run deploy:staging`.
 
 
 ## Production
 Production platform is accessible at https://caspr.theo.do. Ask SSH access to be able to deploy.
 
-### Front deployment
+### Deployment
 
-In client repository, create a `.env.prod` file with environment variables (ask Nicolas or Loïc to have the correct ones). Then run `npm run deploy:prod`.
+Run `npm run deploy:prod`.
 
 # Migrations
 
