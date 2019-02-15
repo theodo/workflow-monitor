@@ -31,14 +31,14 @@ class ResultRow extends Component {
   };
 
   render() {
-    const { index, addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory} = this.props;
+    const { index, addedOnTheFly, description, estimatedTime, realTime, problems, problemCategory} = this.props;
     const contentEditableProps = {
       contentEditable: true,
       suppressContentEditableWarning: true,
     };
     return (
       <tr className={getRowClass(addedOnTheFly)}>
-        <td className="editable" {...contentEditableProps}>{label}</td>
+        <td className="editable" {...contentEditableProps}>{description}</td>
         <td
           className="editable"
           {...contentEditableProps}

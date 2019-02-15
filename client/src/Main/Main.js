@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,8 +15,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import HistoryIcon from '@material-ui/icons/History';
 import IconButton from '@material-ui/core/IconButton';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@material-ui/icons/Settings'
 
 import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
 import { appColors, grid } from 'ui';
@@ -25,6 +26,8 @@ import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
 import Settings from './Settings';
 import ProblemCategoryPage from './ProblemCategoryPage';
+import ProjectHistoryPage from './ProjectHistoryPage';
+import TicketPage from './TicketPage';
 
 import PropTypes from 'prop-types';
 
@@ -108,7 +111,12 @@ const styles = theme => ({
   }
 });
 
-const isCurrentPage = page => window.location.hash === `#/${page}`;
+const isCurrentPage = page => {
+  const isHomePage = page === '';
+  if (isHomePage) return window.location.hash === '#/';
+
+  return window.location.hash.startsWith(`#/${page}`)
+};
 
 export class Main extends Component {
   constructor(props){
@@ -184,6 +192,14 @@ export class Main extends Component {
                 <ListItemText primary="Current Ticket" />
               </ListItem>
             </Link>
+            <Link to="/history" onClick={this.preventOn(!isProjectSelected)} >
+              <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
+                <ListItemIcon>
+                  <HistoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="History" />
+              </ListItem>
+            </Link>
             <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
@@ -206,10 +222,14 @@ export class Main extends Component {
         <main className={classes.content}>
           <div className={'no-print ' + classes.toolbar} />
           <div className={classes.mainContent} >
-          <Route exact path="/" component={Home}/>
-          <Route path="/monitor" component={Monitor}/>
-          <Route path="/settings" component={Settings}/>
-          <Route path="/problem-categories" component={ProblemCategoryPage}/>
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route path="/monitor" component={Monitor}/>
+              <Route path="/history/:ticketId" component={TicketPage}/>
+              <Route path="/history" component={ProjectHistoryPage}/>
+              <Route path="/settings" component={Settings}/>
+              <Route path="/problem-categories" component={ProblemCategoryPage}/>
+            </Switch>
           </div>
         </main>
       </div>
