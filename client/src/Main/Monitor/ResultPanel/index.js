@@ -3,7 +3,7 @@ import ResultPanel from './view';
 import { saveResults, setTaskFields } from '../MonitorActions';
 
 const mapStateToProps = state => ({
-  results: state.MonitorReducers.tasks,
+  results: state.MonitorReducers.tasks.map(task => ({...task, description: task.label})),
 });
 
 const mapDispatchToProps = dispatch => ({

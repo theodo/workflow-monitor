@@ -5,7 +5,6 @@ import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
 import ResultRow from '../ResultRow';
 import './style.css';
-import ResultPanelTable from '../ResultPanelTable';
 
 function getRealTimeClass(estimatedTime, realTime) {
   return estimatedTime ?
@@ -65,7 +64,6 @@ class ResultPanel extends Component {
           <Grid item xs={1}>
           </Grid>
           <Grid item xs={10}>
-            <ResultPanelTable datas={this.props.results} />
             <Grid container spacing={0}>
               <Grid item xs={6}>
                 <h2>Results :</h2>
@@ -94,12 +92,12 @@ class ResultPanel extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.props.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) =>
+                  {this.props.results.map(({ addedOnTheFly, description, estimatedTime, realTime, problems, problemCategory }, index) =>
                     <ResultRow
                       key={index}
                       index={index}
                       addedOnTheFly={addedOnTheFly}
-                      label={label}
+                      description={description}
                       estimatedTime={estimatedTime}
                       realTime={realTime}
                       problems={problems}

@@ -5,3 +5,35 @@
 .printArea {
   text-align: center;
 }
+
+.displayOnlyOnPrint{
+  display: none;
+}
+
+@media print {
+  html, body, #root, .App {
+    height : auto !important;
+  }
+
+  .Main
+  body * {
+    visibility: hidden;
+    height: auto;
+    margin: 0;
+  }
+  .displayOnlyOnPrint{
+    display: block;
+  }
+  .printArea * {
+    visibility: visible;
+  }
+  .green {
+    -webkit-print-color-adjust: exact;
+  }
+  .red {
+    -webkit-print-color-adjust: exact;
+  }
+  .addedOnTheFly {
+    -webkit-print-color-adjust: exact;
+  }
+}
