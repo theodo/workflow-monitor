@@ -1,10 +1,15 @@
 import * as vscode from 'vscode';
+import auth from '../../cli/src/auth';
 
 let originalConfig = null as any;
 interface AlertColors {
 	[key: string]: string;
 	red: string;
 	yellow: string;
+}
+
+function signIn() {
+	auth.askCredentials();
 }
 
 export function activate(context: vscode.ExtensionContext) {
