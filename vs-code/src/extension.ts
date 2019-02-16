@@ -28,10 +28,17 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('extension.casper.reset', () => {
 		cleanUp();
 	}));
+
+	signIn();
+	getCurrentStateFromServer();
+	updateLocalState();
+	subscribeToUpdates();
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+	// TODO
+}
 
 export function setAlertLevel(level: string): Thenable<void> {
 	const colors:AlertColors = {
