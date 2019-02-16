@@ -1,6 +1,6 @@
-declare let _default: {
+declare let auth: {
     getToken(): string;
     askCredentials(): void;
 }   
 
-export default _default;
+export default auth;
