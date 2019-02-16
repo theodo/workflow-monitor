@@ -1,7 +1,6 @@
-declare function askCredentials(): void;
+declare let _default: {
+    getToken(): string;
+    askCredentials(): void;
+}   
 
-declare function getToken(): string;
-
-export = {
-    getToken, askCredentials
-}
+export default _default;
