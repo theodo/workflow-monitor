@@ -6,7 +6,7 @@ function setContext(cont: vscode.ExtensionContext) {
     context = cont;
 }
 
-function getToken(): string|undefined {
+export function getToken(): string|undefined {
     if (!context) {
         return;
     }

@@ -18,19 +18,24 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [{
-			"command": "extension.caspr.red",
-			"title": "Caspr: Red Alert"
-		}, {
-			"command": "extension.caspr.yellow",
-			"title": "Caspr: Yellow Alert"
-		}, {
-			"command": "extension.caspr.reset",
-			"title": "Caspr: reset config"
-		}, {
-			"command": "extension.caspr.test",
-			"title": "Caspr: test"
-		}]
+		"commands": [
+			{
+				"command": "extension.caspr.red",
+				"title": "Caspr: Red Alert"
+			},
+			{
+				"command": "extension.caspr.yellow",
+				"title": "Caspr: Yellow Alert"
+			},
+			{
+				"command": "extension.caspr.reset",
+				"title": "Caspr: reset config"
+			},
+			{
+				"command": "extension.caspr.test",
+				"title": "Caspr: test"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -40,10 +45,22 @@
 		"test": "yarn run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"typescript": "^3.1.4",
-		"vscode": "^1.1.25",
-		"tslint": "^5.8.0",
+		"@types/mocha": "^2.2.42",
 		"@types/node": "^8.10.25",
-		"@types/mocha": "^2.2.42"
+		"tslint": "^5.8.0",
+		"typescript": "^3.1.4",
+		"vscode": "^1.1.25"
+	},
+	"dependencies": {
+		"apollo-cache-inmemory": "^1.4.3",
+		"apollo-client": "^2.4.13",
+		"apollo-link-context": "^1.0.14",
+		"apollo-link-http": "^1.5.11",
+		"apollo-link-ws": "^1.0.14",
+		"graphql": "^14.1.1",
+		"graphql-tag": "^2.10.1",
+		"node-fetch": "^2.3.0",
+		"subscriptions-transport-ws": "^0.9.15",
+		"ws": "^6.1.4"
 	}
 }
