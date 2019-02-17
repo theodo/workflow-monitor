@@ -1,6 +1,6 @@
 declare let auth: {
     getToken(): string;
-    askCredentials(): void;
+    askCredentials(): void|Promise<void>;
 }   
 
 export default auth;

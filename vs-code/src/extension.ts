@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import auth from '../../cli/src/auth';
+import auth from './auth';
 
 let originalConfig = null as any;
 interface AlertColors {
@@ -8,31 +8,36 @@ interface AlertColors {
 	yellow: string;
 }
 
-function signIn() {
+function signIn(context: vscode.ExtensionContext) {
+	auth.setContext(context);
 	auth.askCredentials();
 }
 
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(vscode.commands.registerCommand('extension.casper.red', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('extension.caspr.red', () => {
 		setAlertLevel('red')
 			.then(() => {
 				console.log('Alert level set to red');
 			});
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('extension.casper.yellow', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('extension.caspr.yellow', () => {
 		setAlertLevel('yellow')
 			.then(() => {
 				console.log('Alert level set to yellow');
 			});
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('extension.casper.reset', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('extension.caspr.reset', () => {
 		cleanUp();
 	}));
 
-	signIn();
-	getCurrentStateFromServer();
-	updateLocalState();
-	subscribeToUpdates();
+	context.subscriptions.push(vscode.commands.registerCommand('extension.caspr.test', async () => {
+		await signIn(context);
+	}));
+
+	// signIn();
+	// getCurrentStateFromServer();
+	// updateLocalState();
+	// subscribeToUpdates();
 }
 
 // this method is called when your extension is deactivated

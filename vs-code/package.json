@@ -1,7 +1,7 @@
 {
 	"name": "casper",
 	"license": "MIT",
-	"displayName": "Casper",
+	"displayName": "Caspr",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -11,21 +11,25 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.casper.red",
-		"onCommand:extension.casper.yellow",
-		"onCommand:extension.casper.reset"
+		"onCommand:extension.caspr.red",
+		"onCommand:extension.caspr.yellow",
+		"onCommand:extension.caspr.reset",
+		"onCommand:extension.caspr.test"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [{
-			"command": "extension.casper.red",
-			"title": "Casper: Red Alert"
+			"command": "extension.caspr.red",
+			"title": "Caspr: Red Alert"
 		}, {
-			"command": "extension.casper.yellow",
-			"title": "Casper: Yellow Alert"
+			"command": "extension.caspr.yellow",
+			"title": "Caspr: Yellow Alert"
 		}, {
-			"command": "extension.casper.reset",
-			"title": "Casper: reset config"
+			"command": "extension.caspr.reset",
+			"title": "Caspr: reset config"
+		}, {
+			"command": "extension.caspr.test",
+			"title": "Caspr: test"
 		}]
 	},
 	"scripts": {
