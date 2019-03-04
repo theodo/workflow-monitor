@@ -69,16 +69,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 function render(newState: any) {
 	const getTime = (dateLastPause: any, chrono: any) => {
-	if (!chrono.dateLastStart) { 
+		if (!chrono.dateLastStart) { 
 
-		return 0;
-	}
+			return 0;
+		}
 
-	const now = (new Date()).getTime();
+		const now = (new Date()).getTime();
 
-	return dateLastPause ?
-		chrono.elapsedTime + (dateLastPause - chrono.dateLastStart)
-		: chrono.elapsedTime + (now - chrono.dateLastStart);
+		return dateLastPause ?
+			chrono.elapsedTime + (dateLastPause - chrono.dateLastStart)
+			: chrono.elapsedTime + (now - chrono.dateLastStart);
 	};
 
 	let currentTime = getTime(newState.dateLastPause, newState.taskChrono);
@@ -139,7 +139,7 @@ export function deactivate() {
 export function setAlertLevel(level: string): Thenable<void> {
 	const colors:AlertColors = {
 		red: "#ff0033dd",
-		yellow: "#ecd71add"
+		yellow: "#ecd71add" // TODO : not used at the moment
 	};
 
 	let config = {
