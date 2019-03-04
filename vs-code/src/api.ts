@@ -1,4 +1,6 @@
-const { ApolloClient } = require('apollo-client');
+import { ApolloClient } from 'apollo-client';
+import { Observable } from 'apollo-link';
+
 const ws = require('ws');
 const { createHttpLink } = require('apollo-link-http');
 const { InMemoryCache } = require('apollo-cache-inmemory');
@@ -24,17 +26,6 @@ const authLink = setContext((_:any, { headers }: any) => {
   };
 });
 
-const wsLink = new WebSocketLink({
-  uri: WS_API_URL,
-  options: {
-    reconnect: true,
-    connectionParams: {
-      authToken: getToken(),
-    },
-  },
-  webSocketImpl: ws,
-});
-
 const httpLink = createHttpLink({
   uri: HTTP_API_URL,
   fetch,
@@ -42,18 +33,33 @@ const httpLink = createHttpLink({
 
 export const gqlClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
-});
-
-const subscriptionClient = new ApolloClient({
-  link: authLink.concat(wsLink),
   cache: new InMemoryCache(),
+  connectToDevTools: true
 });
 
-export const stateSubscription = subscriptionClient.subscribe({
-  query: gql`
-  subscription {
-    state
-  }`,
-  variables: {}
-},() => console.log('error'));
+export const createSubscriptionClient = function(): Observable<any> {
+  const wsLink = new WebSocketLink({
+    uri: WS_API_URL,
+    options: {
+      reconnect: true,
+      connectionParams: {
+        authToken: getToken(),
+      },
+    },
+    webSocketImpl: ws,
+  });
+
+  const subscriptionClient = new ApolloClient({
+    link: authLink.concat(wsLink),
+    cache: new InMemoryCache(),
+    connectToDevTools: true,
+  });
+
+  return subscriptionClient.subscribe({
+    query: gql`
+    subscription {
+      state
+    }`,
+    variables: {}
+  });
+};

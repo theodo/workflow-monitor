@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import auth from './auth';
-import { stateSubscription, gqlClient } from './api';
+import { createSubscriptionClient, gqlClient } from './api';
 
 // TODO : fix certificate on server ?
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0";
@@ -35,7 +35,7 @@ let store = MonitorReducers();
 
 function signIn(context: vscode.ExtensionContext) {
 	auth.setContext(context);
-	auth.askCredentials();
+	return auth.askCredentials();
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -59,7 +59,9 @@ export function activate(context: vscode.ExtensionContext) {
 		await signIn(context);
 		getCurrentStateFromServer()
 			.then((data: ServerUserData) => { updateLocalState(data, render); })
-			.catch((error: Error) => console.log(error));
+			.catch((error: Error) => {
+				console.log(error);
+			});
 
 		subscribeToUpdates(render);
 	}));
@@ -87,16 +89,22 @@ function render(newState: any) {
 			.then(() => {
 				console.log('Alert level set to red');
 			});
+	} else {
+		cleanUp()
+			.then(() => {
+				console.log('Alert level set to green');
+			});
 	}
 }
 
 function subscribeToUpdates(render: Function) {
-    stateSubscription.subscribe({
-      next (data: ServerUpdateData) {
-        store = MonitorReducers(store, {type: 'UPDATE', state: JSON.parse(data.data.state)});
-        render(store);
-      }
-    },() => console.log('error'));
+	createSubscriptionClient().subscribe({
+		next (data: ServerUpdateData) {
+			console.log(data);
+			store = MonitorReducers(store, {type: 'UPDATE', state: JSON.parse(data.data.state)});
+			render(store);
+		}
+	});
 }
 
 function updateLocalState({
@@ -125,7 +133,7 @@ function getCurrentStateFromServer(): Promise<ServerUserData> {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-	// TODO
+	return cleanUp();
 }
 
 export function setAlertLevel(level: string): Thenable<void> {
