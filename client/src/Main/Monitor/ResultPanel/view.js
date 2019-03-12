@@ -14,39 +14,7 @@ function getRealTimeClass(estimatedTime, realTime) {
 
 class ResultPanel extends Component {
   printResults() {
-    var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-    let title = '';
-    if(this.props.currentTrelloCard) title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
-    mywindow.document.write('<html><head><title>' + title  + '</title>');
-    const css =`
-      table, th, td {
-          border: 1px solid black;
-      }
-      td.red {
-        background: #ffa3a3;
-        -webkit-print-color-adjust: exact;
-      }
-      td.green {
-        background: #a2e5a7;
-        -webkit-print-color-adjust: exact;
-      }
-      tr.addedOnTheFly {
-        background: #ffe6e6;
-        -webkit-print-color-adjust: exact;
-      }
-      svg {
-        display: none;
-      }`;
-    mywindow.document.write('<style>' + css +'</style>');
-    mywindow.document.write('</head><body>');
-    mywindow.document.write('<h4>' + title  + '</h4>');
-    mywindow.document.write(document.getElementsByClassName('printArea')[0].innerHTML);
-    mywindow.document.write('</body></html>');
-    mywindow.document.close(); // necessary for IE >= 10
-    mywindow.focus(); // necessary for IE >= 10*/
-
-    mywindow.print();
-    mywindow.close();
+    window.print();
   }
 
   saveResultsInTrello(){
@@ -80,6 +48,9 @@ class ResultPanel extends Component {
                 </Grid>
               </Grid>
             </Grid>
+            <h2 className="displayOnlyOnPrint">
+              {(this.props.currentTrelloCard) ? '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name : ''}
+            </h2>
             <div className="printArea">
               <table>
                 <thead>
