@@ -48,10 +48,10 @@ class ResultPanel extends Component {
                 </Grid>
               </Grid>
             </Grid>
-            <h2 className="displayOnlyOnPrint">
-              {(this.props.currentTrelloCard) ? '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name : ''}
-            </h2>
             <div className="printArea">
+              <h2 className="displayOnlyOnPrint">
+                {(this.props.currentTrelloCard) ? '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name : ''}
+              </h2>
               <table>
                 <thead>
                   <tr>

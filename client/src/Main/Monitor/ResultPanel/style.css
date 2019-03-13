@@ -15,18 +15,20 @@ table, th {
 }
 
 .displayOnlyOnPrint{
-  visibility: hidden;
+  display: none;
 }
 
 @media print {
+  html, body, #root, .App {
+    height : auto !important;
+  }
+
   body * {
     visibility: hidden;
+    height: auto;
   }
   .displayOnlyOnPrint{
-    visibility: visible;
-    position: absolute;
-    left: 0;
-    top: 0;
+    display: block;
   }
   .printArea * {
     visibility: visible;
@@ -39,10 +41,5 @@ table, th {
   }
   .addedOnTheFly {
     -webkit-print-color-adjust: exact;
-  }
-  .printArea {
-    position: absolute;
-    left: 0;
-    top: 100px;
   }
 }
