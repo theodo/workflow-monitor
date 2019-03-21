@@ -112,7 +112,6 @@ const isCurrentPage = page => window.location.hash === `#/${page}`;
 export class Main extends Component {
   constructor(props){
     super(props);
-    this.checkPrevent = this.checkPrevent.bind(this);
     this.state = { open: false };
   }
 
@@ -123,11 +122,11 @@ export class Main extends Component {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
-  checkPrevent(e){
-    if(!this.props.isProjectSelected) e.preventDefault();
+  preventOn = condition => e => {
+    if(condition) e.preventDefault();
   }
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, isTrelloCardSelected, isProjectSelected } = this.props;
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -167,24 +166,24 @@ export class Main extends Component {
           </div>
           <Divider />
           <div>
-            <Link to="/" onClick={this.checkPrevent} >
-              <ListItem selected={isCurrentPage('')} disabled={!this.props.isProjectSelected} button>
+            <Link to="/" onClick={this.preventOn(!isProjectSelected)} >
+              <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Home page" />
               </ListItem>
             </Link>
-            <Link to="/monitor" onClick={this.checkPrevent} >
-              <ListItem selected={isCurrentPage('monitor')} disabled={!this.props.isProjectSelected} button>
+            <Link to="/monitor" onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)} >
+              <ListItem selected={isCurrentPage('monitor')} disabled={!isProjectSelected || !isTrelloCardSelected} button>
                 <ListItemIcon>
                   <TrackChangesIcon />
                 </ListItemIcon>
                 <ListItemText primary="Session monitor" />
               </ListItem>
             </Link>
-            <Link to="/settings" onClick={this.checkPrevent} >
-              <ListItem selected={isCurrentPage('settings')} disabled={!this.props.isProjectSelected} button>
+            <Link to="/settings" onClick={this.preventOn(!isProjectSelected)} >
+              <ListItem selected={isCurrentPage('settings')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>
@@ -199,8 +198,8 @@ export class Main extends Component {
                 <ListItemText primary="Projects" />
               </ListItem>
             </Link>
-            <Link to="/problem-categories" onClick={this.checkPrevent}>
-              <ListItem selected={isCurrentPage('problem-categories')} disabled={!this.props.isProjectSelected} button>
+            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)}>
+              <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <CategoryIcon />
                 </ListItemIcon>
@@ -233,6 +232,7 @@ Main.propTypes = {
 
 const mapStateToProps = state => ({
   isProjectSelected: !!state.LoginReducers.currentProject,
+  isTrelloCardSelected: !!state.MonitorReducers.currentTrelloCard,
 });
 
 export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Main));
