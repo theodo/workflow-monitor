@@ -2,7 +2,6 @@ const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga')
 const bodyParser = require('body-parser');
 const { sequelize } = require('../models');
-const { saveSessionToSkillpool } = require('./skillpool');
 const { formatFullTicket, formatTasks } = require('./formatters');
 const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
@@ -81,7 +80,6 @@ const resolvers = {
       jsState = JSON.parse(state);
       if (jsState.currentStep === 'RESULTS') {
         const project = user.get('currentProject');
-        saveSessionToSkillpool(project, user, jsState);
         const formattedTicket = formatFullTicket(jsState, project, user);
         upsert(Ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
           .then(ticket => {
