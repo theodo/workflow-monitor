@@ -29,10 +29,10 @@ class ResultPanel extends Component {
     return (
       <div className="ResultPanel">
         <Grid container spacing={0}>
-          <Grid item xs={1}>
+          <Grid className="no-print" item xs={1}>
           </Grid>
-          <Grid item xs={10}>
-            <Grid container spacing={0}>
+          <Grid className="maximize-width" item xs={10}>
+            <Grid className="no-print" container spacing={0}>
               <Grid item xs={6}>
                 <h2>Results :</h2>
               </Grid>
@@ -96,9 +96,10 @@ class ResultPanel extends Component {
                   </tr>
                 </tbody>
               </table>
+              <br/>
             </div>
           </Grid>
-          <Grid item xs={1}>
+          <Grid className="no-print" item xs={1}>
           </Grid>
         </Grid>
       </div>

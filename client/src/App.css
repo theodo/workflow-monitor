@@ -14,3 +14,9 @@ html, body, #root, .App{
 .Monitor-footer {
   background: linear-gradient(20deg,#2B5BA0,#72C2B7);
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
