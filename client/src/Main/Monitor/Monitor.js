@@ -260,7 +260,7 @@ class Monitor extends Component {
   render() {
     return (
       <div className="Monitor">
-        <header className="Monitor-header">
+        <header className="Monitor-header no-print">
           <Grid container spacing={0}>
             <Grid item xs={8} lg={9} className="Monitor-header-centered-text">
               {
@@ -279,16 +279,18 @@ class Monitor extends Component {
         <div className="Monitor-content">
           { this.renderPanel() }
         </div>
-        <Footer
-          step={this.props.step}
-          isNextDisabled={this.isNextButtonDisabled()}
-          isPreviousDisabled={this.isPreviousButtonDisabled()}
-          onPauseClick={() => this.props.playOrPauseSession()}
-          onNextClick={() => this.handleClickNextButton()}
-          onPreviousClick={() => this.handleClickPreviousButton()}
-          progressPercentage={this.getProgressPercentage()}
-          dateLastPause={this.props.dateLastPause}
-        />
+        <div className="no-print">
+          <Footer
+            step={this.props.step}
+            isNextDisabled={this.isNextButtonDisabled()}
+            isPreviousDisabled={this.isPreviousButtonDisabled()}
+            onPauseClick={() => this.props.playOrPauseSession()}
+            onNextClick={() => this.handleClickNextButton()}
+            onPreviousClick={() => this.handleClickPreviousButton()}
+            progressPercentage={this.getProgressPercentage()}
+            dateLastPause={this.props.dateLastPause}
+          />
+        </div>
       </div>
     );
   }

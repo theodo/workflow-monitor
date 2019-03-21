@@ -30,6 +30,10 @@ table, th {
   .displayOnlyOnPrint{
     display: block;
   }
+  .printArea {
+    width: 100% !important;
+    height: 100% !important;
+  }
   .printArea * {
     visibility: visible;
   }
@@ -41,5 +45,9 @@ table, th {
   }
   .addedOnTheFly {
     -webkit-print-color-adjust: exact;
+  }
+  .maximize-width {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
   }
 }

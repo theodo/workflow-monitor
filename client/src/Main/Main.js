@@ -153,6 +153,7 @@ export class Main extends Component {
           </Toolbar>
         </AppBar>
         <Drawer
+          className="no-print"
           variant="permanent"
           classes={{
             paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
@@ -210,7 +211,7 @@ export class Main extends Component {
           <Divider />
         </Drawer>
         <main className={classes.content}>
-          <div className={classes.toolbar} />
+          <div className={'no-print ' + classes.toolbar} />
           <div className={classes.mainContent} >
           <Route exact path="/" component={Home}/>
           <Route path="/monitor" component={Monitor}/>
