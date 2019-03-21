@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import './Home.css';
 import SimpleCard from './SimpleCard/SimpleCard';
 import { saveSettings } from '../Settings/SettingsActions';
 import { resetMonitor } from '../Monitor/MonitorActions';
+import BacklogAutocomplete from './BacklogAutocomplete';
 
 class Home extends Component {
   constructor(props){
@@ -33,15 +30,14 @@ class Home extends Component {
       });
     }
   }
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value }, () => {
+
+  handleSelectedBacklogChange = (backlogId) => {
+    this.setState({ backlog: backlogId }, () => {
       this.props.saveSettings({
         selectedBacklogId: this.state.backlog,
       });
     });
-    if (event.target.name === 'backlog') {
-      this.loadCardsFromTrello(event.target.value);
-    }
+    this.loadCardsFromTrello(backlogId);
   }
   loadCardsFromTrello(backlogId) {
     this.setState({ cards: [] });
@@ -60,20 +56,12 @@ class Home extends Component {
           <form autoComplete="on">
             Project : { this.state.project.name }
             <br />
-            <FormControl>
-              <InputLabel htmlFor="backlog">Backlog</InputLabel>
-              <Select
-                className="select"
-                autoWidth={true}
+            <FormControl fullWidth>
+              <BacklogAutocomplete
                 value={this.state.backlog}
-                onChange={(event) => this.handleChange(event)}
-                input={<Input name="backlog" id="backlog" />}
-              >
-                {
-                  this.state.lists.map((list) =>
-                    <MenuItem value={list.id} key={ list.id }>{ list.name }</MenuItem>)
-                }
-              </Select>
+                onChange={this.handleSelectedBacklogChange}
+                lists={this.state.lists}
+              />
             </FormControl>
             <br />
             <br />
