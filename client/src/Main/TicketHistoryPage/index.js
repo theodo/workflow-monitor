@@ -1,41 +1,72 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
+import { GET_TICKET } from '../../Queries/Tickets';
+import { gqlClient } from '../../Utils/Graphql';
 import TicketHistoryPage from './view';
+import { UPDATE_TASK } from '../../Queries/Tasks';
+
+const flattenTasks = tasks =>
+  tasks.map(task => task.problems && task.problems.length > 0 ?
+    {
+      ...task,
+      problems: task.problems[0].description,
+      problemCategory: task.problems[0].problemCategory,
+    }
+    : {
+      ...task,
+      problems: null,
+      problemCategory: null,
+    });
+
+const nestedTask = (task) => ( {
+  id: task.id,
+  description: task.description,
+  estimatedTime: task.estimatedTime,
+  realTime: task.realTime,
+  addedOnTheFly: task.addedOnTheFly,
+  problems: (task.problems || task.problemCategory) && [{
+    description: task.problems || '',
+    problemCategory: task.problemCategory ? {
+      id: task.problemCategory.id,
+      description: task.problemCategory.description,
+    } : null,
+  }]
+});
 
 class TicketHistoryPageContainer extends Component {
-  goToTicket = ticketId => window.location.hash = `#/history/${ticketId}`
+  updateTask = (task) => {
+    const nested = nestedTask(task);
+    gqlClient
+      .mutate({
+        mutation: UPDATE_TASK,
+        variables: {
+          task: nested,
+        },
+        refetchQueries: [
+          { query: GET_TICKET,
+            variables: {
+              ticketId: this.props.match.params.ticketId,
+            }
+          },
+        ],
+      });
+  }
   render(){
     return (
-      <Query query={GET_TICKETS_HISTORY} variables={{
-        pagination: {
-          offset: 0,
-          limit: 10,
-        },
+      <Query query={GET_TICKET} variables={{
+        ticketId: this.props.match.params.ticketId,
       }}>
-        {({ loading, error, data, fetchMore }) => {
+        {({ loading, error, data }) => {
           if (loading) return 'Loading...';
           if (error) return 'Unexpected error';
-          const loadMore = () =>
-            fetchMore({
-              variables: {
-                pagination: {
-                  offset: data.tickets.rows.length,
-                  limit: 10,
-                },
-              },
-              updateQuery: (prev, { fetchMoreResult }) => {
-                if (!fetchMoreResult) return prev;
-                return {
-                  tickets: {
-                    ...prev.tickets,
-                    rows: [...prev.tickets.rows, ...fetchMoreResult.tickets.rows]
-                  }
-                };
-              }
-            });
+          const flattenData = {
+            ticket: {
+              ...data.ticket,
+              tasks: flattenTasks(data.ticket.tasks).sort((a, b) => (a.id - b.id)),
+            },
+          };
 
-          return <TicketHistoryPage goToTicket={this.goToTicket} loadMore={loadMore} loading={loading} tickets={data.tickets}/>;
+          return <TicketHistoryPage loading={loading} ticket={flattenData.ticket} updateTask={this.updateTask} />;
         }}
       </Query>
     );
