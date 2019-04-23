@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
+import { setFavicon } from '../../../Utils/FaviconUtils';
 
 import ResultRow from '../ResultRow';
 import './style.css';
@@ -13,6 +14,15 @@ function getRealTimeClass(estimatedTime, realTime) {
 }
 
 class ResultPanel extends Component {
+  componentDidMount() {
+    document.title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
+    setFavicon('favicon');
+  }
+
+  componentWillUnmount() {
+    document.title = 'Caspr';
+  }
+
   printResults() {
     window.print();
   }
