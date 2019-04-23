@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
-import { setFavicon } from '../../../Utils/FaviconUtils';
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './style.css';
 
@@ -20,11 +19,6 @@ class ResultRow extends Component {
     super(props);
     this.initialEstimatedTime = props.estimatedTime;
     this.initialRealTime = props.realTime;
-  }
-
-  componentDidMount() {
-    document.title = 'Caspr - Results';
-    setFavicon('favicon');
   }
 
   handleProblemCategoryValueChange = (selectedOption) => {
