@@ -10,15 +10,15 @@ const fullPageHeightStyle = {
 
 const BackLink = props => <Link to="/history" {...props} />;
 
-const TicketHistoryPage = ({ ticket, updateTask }) => (
+const TicketPage = ({ ticket, updateTask }) => (
   <div style={fullPageHeightStyle}>
     <h3>
       <Button component={BackLink}>
         Back
-      </Button>#{ticket.thirdPartyId} {ticket.description}
+      </Button>{ticket.description}
     </h3>
     <TicketResultsTable updateTask={updateTask} results={ticket.tasks} />
   </div>
 );
 
-export default TicketHistoryPage;
+export default TicketPage;
