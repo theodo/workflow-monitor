@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+
 import { getTotalTime } from '../../../Utils/TaskUtils';
 import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
+
 import ResultRow from '../ResultRow';
 import './style.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
-  return estimatedTime ?
-    (estimatedTime < realTime ? 'red' : 'green')
-    : '';
+  return estimatedTime ? (estimatedTime < realTime ? 'red' : 'green') : '';
 }
 
 class ResultPanel extends Component {
@@ -17,11 +17,11 @@ class ResultPanel extends Component {
     window.print();
   }
 
-  saveResultsInTrello(){
+  saveResultsInTrello() {
     saveResultsInTrello(this.props.currentTrelloCard.id, this.props.results);
   }
 
-  saveResults(){
+  saveResults() {
     this.props.saveResults();
   }
 
@@ -29,8 +29,7 @@ class ResultPanel extends Component {
     return (
       <div className="ResultPanel">
         <Grid container spacing={0}>
-          <Grid className="no-print" item xs={1}>
-          </Grid>
+          <Grid className="no-print" item xs={1} />
           <Grid className="maximize-width" item xs={10}>
             <Grid className="no-print" container spacing={0}>
               <Grid item xs={6}>
@@ -38,19 +37,27 @@ class ResultPanel extends Component {
               </Grid>
               <Grid container spacing={8} alignItems="center" item xs={6}>
                 <Grid item xs>
-                  <Button variant="contained" color="primary" onClick={() => this.saveResults()}>Save results</Button>
+                  <Button variant="contained" color="primary" onClick={() => this.saveResults()}>
+                    Save results
+                  </Button>
                 </Grid>
                 <Grid item xs>
-                  <Button variant="contained" onClick={() => this.printResults()}>Print results</Button>
+                  <Button variant="contained" onClick={() => this.printResults()}>
+                    Print results
+                  </Button>
                 </Grid>
                 <Grid item xs>
-                  <Button variant="contained" onClick={() => this.saveResultsInTrello()}>Save results in Trello</Button>
+                  <Button variant="contained" onClick={() => this.saveResultsInTrello()}>
+                    Save results in Trello
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
             <div className="printArea">
               <h2 className="displayOnlyOnPrint">
-                {(this.props.currentTrelloCard) ? '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name : ''}
+                {this.props.currentTrelloCard
+                  ? '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name
+                  : ''}
               </h2>
               <table>
                 <thead>
@@ -63,26 +70,29 @@ class ResultPanel extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.props.results.map(({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) =>
-                    <ResultRow
-                      key={index}
-                      index={index}
-                      addedOnTheFly={addedOnTheFly}
-                      label={label}
-                      estimatedTime={estimatedTime}
-                      realTime={realTime}
-                      problems={problems}
-                      problemCategory={problemCategory}
-                      handleTaskChange={this.props.handleTaskChange}
-                      handleEditTime={(index, timeType, newTime) => this.setState({
-                        results: Object.assign(
-                          this.props.results,
-                          { [index]: { ...this.props.results[index], [timeType]: newTime } }
-                        )
-                      })}
-                    />)
-                  }
-                  <tr className='total-row'>
+                  {this.props.results.map(
+                    ({ addedOnTheFly, label, estimatedTime, realTime, problems, problemCategory }, index) => (
+                      <ResultRow
+                        key={index}
+                        index={index}
+                        addedOnTheFly={addedOnTheFly}
+                        label={label}
+                        estimatedTime={estimatedTime}
+                        realTime={realTime}
+                        problems={problems}
+                        problemCategory={problemCategory}
+                        handleTaskChange={this.props.handleTaskChange}
+                        handleEditTime={(index, timeType, newTime) =>
+                          this.setState({
+                            results: Object.assign(this.props.results, {
+                              [index]: { ...this.props.results[index], [timeType]: newTime }
+                            })
+                          })
+                        }
+                      />
+                    )
+                  )}
+                  <tr className="total-row">
                     <td>Total</td>
                     <td>{getTotalTime(this.props.results, 'estimatedTime')}</td>
                     <td
@@ -91,16 +101,16 @@ class ResultPanel extends Component {
                         getTotalTime(this.props.results, 'realTime')
                       )}
                     >
-                      {getTotalTime(this.props.results, 'realTime')}</td>
+                      {getTotalTime(this.props.results, 'realTime')}
+                    </td>
                     <td />
                   </tr>
                 </tbody>
               </table>
-              <br/>
+              <br />
             </div>
           </Grid>
-          <Grid className="no-print" item xs={1}>
-          </Grid>
+          <Grid className="no-print" item xs={1} />
         </Grid>
       </div>
     );
