@@ -145,7 +145,7 @@ export class Main extends Component {
             >
               <MenuIcon />
             </IconButton>
-            <img src="./casper.png" height="50px" alt="logo"/>
+            <img src="./caspr.png" height="50px" alt="logo"/>
             <Typography variant="h6" color="inherit" className={classes.title} noWrap>
               Caspr - The Ghost Programming Companion
             </Typography>
