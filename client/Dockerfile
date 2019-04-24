@@ -3,7 +3,7 @@ FROM node:8
 ADD package.json /package.json
 ADD package-lock.json /package-lock.json
 
-ENV NODE_PATH=/node_modules
+ENV NODE_PATH=src/
 ENV PATH=$PATH:/node_modules/.bin
 RUN npm i
 
