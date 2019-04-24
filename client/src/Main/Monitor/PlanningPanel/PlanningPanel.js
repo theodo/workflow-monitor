@@ -6,12 +6,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
-import { getTotalTime } from '../../../Utils/TaskUtils';
 import Button from '@material-ui/core/Button';
-import TaskEditor from '../../TaskEditor/TaskEditor';
-import { filterEmptyTasks, formatStringToTasks } from '../../../Utils/TaskUtils';
 import { debounce } from 'throttle-debounce';
+
+import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
+import { getTotalTime } from 'Utils/TaskUtils';
+import { filterEmptyTasks, formatStringToTasks } from 'Utils/TaskUtils';
+
+import TaskEditor from '../../TaskEditor/TaskEditor';
 import './PlanningPanel.css';
 
 const planningMaxTime = 600000;

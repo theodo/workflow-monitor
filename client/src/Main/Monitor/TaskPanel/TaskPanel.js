@@ -3,11 +3,13 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { initAlarm, cancelAlarm } from '../../../Utils/AlarmUtils';
+
+import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+import { filterEmptyTasks } from 'Utils/TaskUtils';
+
 import ReverseChrono from '../ReverseChrono/ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
-import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
-import { filterEmptyTasks } from '../../../Utils/TaskUtils';
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './TaskPanel.css';
 

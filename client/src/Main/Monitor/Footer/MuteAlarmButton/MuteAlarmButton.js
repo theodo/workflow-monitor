@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import SvgIcon from '@material-ui/core/SvgIcon';
+
+import { setMuted } from 'Utils/AlarmUtils';
+
 import { saveSettings } from '../../../Settings/SettingsActions';
-import { setMuted } from '../../../../Utils/AlarmUtils';
 
 const MuteAlarmButtonStyle = {
   color: 'white'

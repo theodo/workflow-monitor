@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import { getTotalTime } from '../../../Utils/TaskUtils';
-import { saveResultsInTrello } from '../../../Utils/TrelloApiUtils';
-import { setFavicon } from '../../../Utils/FaviconUtils';
+import { getTotalTime } from 'Utils/TaskUtils';
+import { saveResultsInTrello } from 'Utils/TrelloApiUtils';
+import { setFavicon } from 'Utils/FaviconUtils';
 
 import ResultRow from '../ResultRow';
 import './style.css';

@@ -1,5 +1,7 @@
 import React, { Component, PureComponent } from 'react';
-import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
+
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+
 import Chrono from '../Chrono/Chrono';
 import './TasksLateralPanel.css';
 

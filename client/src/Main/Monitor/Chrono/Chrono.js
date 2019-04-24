@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { formatMilliSecondToTime } from '../../../Utils/TimeUtils';
+
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+
 import './Chrono.css';
 
 class Chrono extends Component {

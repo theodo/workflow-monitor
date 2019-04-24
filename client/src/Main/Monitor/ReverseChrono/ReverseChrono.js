@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { formatMilliSecondToSentence } from '../../../Utils/TimeUtils';
-import { setFavicon } from '../../../Utils/FaviconUtils';
+
+import { formatMilliSecondToSentence } from 'Utils/TimeUtils';
+import { setFavicon } from 'Utils/FaviconUtils';
+
 import './ReverseChrono.css';
 
 class ReverseChrono extends Component {

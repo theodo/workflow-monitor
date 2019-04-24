@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import copy from 'copy-to-clipboard';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+
+import { filterEmptyTasks } from 'Utils/TaskUtils';
+
 import { saveSettings } from './SettingsActions';
 import TaskEditor from '../TaskEditor/TaskEditor';
-import { filterEmptyTasks } from '../../Utils/TaskUtils';
 import './Settings.css';
 
 class Settings extends Component {

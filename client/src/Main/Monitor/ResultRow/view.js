@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../../Utils/TimeUtils';
+
+import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from 'Utils/TimeUtils';
+
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './style.css';
 
