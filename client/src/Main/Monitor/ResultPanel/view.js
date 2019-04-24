@@ -16,7 +16,7 @@ function getRealTimeClass(estimatedTime, realTime) {
 class ResultPanel extends Component {
   componentDidMount() {
     document.title = '#' + this.props.currentTrelloCard.idShort + ' ' + this.props.currentTrelloCard.name;
-    setFavicon('favicon');
+    setFavicon('caspr');
   }
 
   componentWillUnmount() {

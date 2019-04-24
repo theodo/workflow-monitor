@@ -13,7 +13,7 @@ class ReverseChrono extends Component {
     };
     this.interval = setInterval(() => {
       document.title = formatMilliSecondToSentence(this.getTime());
-      setFavicon(this.isTimeOver() ? 'red' : 'green');
+      setFavicon(this.isTimeOver() ? 'red-light' : 'green-light');
       this.setState({
         now: new Date().getTime()
       });
