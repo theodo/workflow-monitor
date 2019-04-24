@@ -8,6 +8,9 @@ import LinkIcon from '@material-ui/icons/Link';
 import PauseIcon from '@material-ui/icons/Pause';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { subscriptionClient } from 'Utils/Graphql';
+
 import {
   initSession,
   nextTask,
@@ -26,7 +29,6 @@ import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
 import TicketStartPanel from './TicketStartPanel';
 import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';
-import { subscriptionClient } from '../../Utils/Graphql';
 import gql from 'graphql-tag';
 import './Monitor.css';
 

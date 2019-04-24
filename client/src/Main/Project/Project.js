@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Select from 'react-select';
+import gql from 'graphql-tag';
+import Button from '@material-ui/core/Button';
+
+import { gqlClient } from 'Utils/Graphql';
+
 import './Project.css';
 import { selectProject } from '../../Login/LoginActions';
 import { saveSettings } from '../Settings/SettingsActions';
 import { initSession } from '../Monitor/MonitorActions';
-import { gqlClient } from '../../Utils/Graphql';
-import gql from 'graphql-tag';
-import Button from '@material-ui/core/Button';
-import Select from 'react-select';
 
 const formStyle = {
   width: 300,

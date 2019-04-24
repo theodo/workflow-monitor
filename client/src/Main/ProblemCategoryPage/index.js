@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { gqlClient } from '../../Utils/Graphql';
+
+import { gqlClient } from 'Utils/Graphql';
+
 import ProblemCategoryPage from './view';
 import {
   GET_PROBLEM_CATEGORIES,

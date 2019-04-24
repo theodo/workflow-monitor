@@ -1,5 +1,6 @@
+import { setMuted } from 'Utils/AlarmUtils';
+
 import { SAVE_SETTINGS } from './SettingsActions';
-import { setMuted } from '../../Utils/AlarmUtils';
 
 const initialSettingsState = {
   selectedProjectId: undefined,

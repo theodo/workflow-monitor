@@ -1,4 +1,9 @@
 import uuid from 'uuid';
+import gql from 'graphql-tag';
+
+import { sendEvent } from 'Utils/AnalyticsUtils';
+import { gqlClient } from 'Utils/Graphql';
+
 import {
   INIT_SESSION,
   NEXT_TASK,
@@ -13,9 +18,6 @@ import {
   SAVE_RESULTS,
 } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
-import { sendEvent } from '../../Utils/AnalyticsUtils';
-import { gqlClient } from '../../Utils/Graphql';
-import gql from 'graphql-tag';
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
