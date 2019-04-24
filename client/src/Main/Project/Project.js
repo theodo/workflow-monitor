@@ -11,19 +11,21 @@ import Select from 'react-select';
 
 const formStyle = {
   width: 300,
-  margin: 'auto',
+  margin: 'auto'
 };
 
 class Projects extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       boards: {},
-      selectedProject: this.props.project ? { value: this.props.project.thirdPartyId, label: this.props.project.name } : null,
+      selectedProject: this.props.project
+        ? { value: this.props.project.thirdPartyId, label: this.props.project.name }
+        : null
     };
     this.selectProject = this.selectProject.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    window.Trello.get('/member/me/boards', {filter: 'open'}).then((boards) => {
+    window.Trello.get('/member/me/boards', { filter: 'open' }).then(boards => {
       this.setState({
         boards: boards.reduce((acc, board) => {
           acc[board.id] = board;
@@ -35,26 +37,26 @@ class Projects extends Component {
   handleChange(selectedProject) {
     this.setState({ selectedProject });
   }
-  selectProject(){
+  selectProject() {
     const selectedProject = this.state.selectedProject;
     const graphqlProject = {
       name: selectedProject.label,
-      thirdPartyId: selectedProject.value,
+      thirdPartyId: selectedProject.value
     };
 
     gqlClient
       .mutate({
         mutation: gql`
-          mutation ($project: ProjectInput){
+          mutation($project: ProjectInput) {
             selectProject(project: $project) {
-              id,
-              name,
-              thirdPartyId,
+              id
+              name
+              thirdPartyId
             }
           }
         `,
         variables: {
-          project: graphqlProject,
+          project: graphqlProject
         }
       })
       .then(result => this.props.selectProject(result.data.selectProject));
@@ -67,12 +69,9 @@ class Projects extends Component {
           <Select
             value={this.state.selectedProject}
             onChange={this.handleChange}
-            options={
-              Object.keys(this.state.boards)
-                .map((boardId) => this.state.boards[boardId])
-                .map((board) =>
-                  ({value: board.id, label: board.name}) )
-            }
+            options={Object.keys(this.state.boards)
+              .map(boardId => this.state.boards[boardId])
+              .map(board => ({ value: board.id, label: board.name }))}
             placeholder="Select project"
           />
           <Button onClick={this.selectProject}>Select</Button>
@@ -84,19 +83,22 @@ class Projects extends Component {
 
 const mapStateToProps = state => {
   return {
-    project: state.LoginReducers.currentProject,
+    project: state.LoginReducers.currentProject
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    selectProject: (project) => {
+    selectProject: project => {
       dispatch(initSession());
-      dispatch(saveSettings({selectedBacklogId: undefined}));
+      dispatch(saveSettings({ selectedBacklogId: undefined }));
       dispatch(selectProject(project));
       window.location.hash = '#/';
-    },
+    }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Projects);

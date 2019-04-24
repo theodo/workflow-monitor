@@ -9,23 +9,23 @@ import { filterEmptyTasks } from '../../Utils/TaskUtils';
 import './Settings.css';
 
 class Settings extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.handleTasksChange = this.handleTasksChange.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
     this.copyToken = this.copyToken.bind(this);
     this.state = {
-      beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [] ,
-      endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : [],
+      beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [],
+      endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : []
     };
   }
-  handleTasksChange( taskCategory, tasks ) {
+  handleTasksChange(taskCategory, tasks) {
     this.setState({ [taskCategory]: tasks });
   }
   saveSettings() {
     this.props.saveSettings({
       beginTasks: filterEmptyTasks(this.state.beginTasks),
-      endTasks: filterEmptyTasks(this.state.endTasks),
+      endTasks: filterEmptyTasks(this.state.endTasks)
     });
   }
   copyToken() {
@@ -36,14 +36,16 @@ class Settings extends Component {
     return (
       <div className="Settings">
         <Grid container spacing={24}>
-          <Grid item xs={1} lg={2}>
-          </Grid>
+          <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <h3>Add default tasks :</h3>
             <h4>Begin tasks</h4>
-            <TaskEditor tasks={this.state.beginTasks} updateTasks={(tasks) => this.handleTasksChange('beginTasks', tasks)} />
+            <TaskEditor
+              tasks={this.state.beginTasks}
+              updateTasks={tasks => this.handleTasksChange('beginTasks', tasks)}
+            />
             <h4>End tasks</h4>
-            <TaskEditor tasks={this.state.endTasks} updateTasks={(tasks) => this.handleTasksChange('endTasks', tasks)} />
+            <TaskEditor tasks={this.state.endTasks} updateTasks={tasks => this.handleTasksChange('endTasks', tasks)} />
 
             <Button variant="contained" onClick={this.saveSettings}>
               Sauvegarder
@@ -54,8 +56,7 @@ class Settings extends Component {
             </Button>
           </Grid>
         </Grid>
-        <Grid item xs={1} md={2}>
-        </Grid>
+        <Grid item xs={1} md={2} />
       </div>
     );
   }
@@ -69,10 +70,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    saveSettings: (settings) => {
+    saveSettings: settings => {
       dispatch(saveSettings(settings));
-    },
+    }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Settings);

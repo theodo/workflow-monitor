@@ -19,7 +19,7 @@ const problemsTextFieldStyle = {
   borderRight: TEXT_AREA_BORDER,
   borderRadius: '4px 4px 0 0',
   backgroundColor: 'white',
-  width: '100%',
+  width: '100%'
 };
 
 const fullPageHeightStyle = {
@@ -28,21 +28,21 @@ const fullPageHeightStyle = {
 };
 
 class TaskPanel extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       newTasks: [],
-      currentTaskCheckOK: false,
+      currentTaskCheckOK: false
     };
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleProblemCategoryValueChange = this.handleProblemCategoryValueChange.bind(this);
-    if(!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
+    if (!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.dateLastPause && !this.props.dateLastPause){
+    if (nextProps.dateLastPause && !this.props.dateLastPause) {
       cancelAlarm();
-    } else if (!nextProps.dateLastPause && this.props.dateLastPause){
+    } else if (!nextProps.dateLastPause && this.props.dateLastPause) {
       initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
     if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
@@ -50,26 +50,24 @@ class TaskPanel extends Component {
       initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         newTasks: [],
-        currentTaskCheckOK: false,
+        currentTaskCheckOK: false
       });
     }
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     cancelAlarm();
   }
 
   getFormattedTasks(tasks) {
-    return tasks ?
-      filterEmptyTasks(tasks).map((task) => ({ ...task, addedOnTheFly: true }))
-      : undefined;
+    return tasks ? filterEmptyTasks(tasks).map(task => ({ ...task, addedOnTheFly: true })) : undefined;
   }
 
   handleTaskPanelChange() {
     this.props.handleTaskPanelChange({
-      taskPanelChanges : {
+      taskPanelChanges: {
         newTasks: this.getFormattedTasks(this.state.newTasks),
-        currentTaskCheckOK: this.state.currentTaskCheckOK,
-      },
+        currentTaskCheckOK: this.state.currentTaskCheckOK
+      }
     });
   }
   handleProblemsValueChange(event) {
@@ -79,46 +77,40 @@ class TaskPanel extends Component {
     this.props.handleCurrentTaskChange({ problemCategory: selectedOption });
   }
   handleNewTasksValueChange(tasks) {
-    this.setState({newTasks: tasks}, this.handleTaskPanelChange);
+    this.setState({ newTasks: tasks }, this.handleTaskPanelChange);
   }
   handleCheckChange(event) {
-    this.setState({currentTaskCheckOK: event.target.checked}, this.handleTaskPanelChange);
+    this.setState({ currentTaskCheckOK: event.target.checked }, this.handleTaskPanelChange);
   }
   render() {
     return (
       <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
-        <Grid item xs={1} >
-        </Grid>
+        <Grid item xs={1} />
         <Grid item xs={10}>
           <h2>{this.props.currentTask.label}</h2>
-          {
-            this.props.currentTask.estimatedTime &&
-              <div>
-                <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
-                <h3>
-                  <ReverseChrono
-                    dateLastPause={this.props.dateLastPause}
-                    estimatedTaskTime={this.props.currentTask.estimatedTime}
-                    taskChrono={this.props.taskChrono} />
-                </h3>
-              </div>
-          }
-          {
-            this.props.currentTask.check && this.props.currentTask.check.length > 0 &&
-              <div>
-                <h3>Checks :</h3>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={this.state.currentTaskCheckOK}
-                      onChange={(this.handleCheckChange)}
-                      value="check"
-                    />
-                  }
-                  label={this.props.currentTask.check}
+          {this.props.currentTask.estimatedTime && (
+            <div>
+              <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
+              <h3>
+                <ReverseChrono
+                  dateLastPause={this.props.dateLastPause}
+                  estimatedTaskTime={this.props.currentTask.estimatedTime}
+                  taskChrono={this.props.taskChrono}
                 />
-              </div>
-          }
+              </h3>
+            </div>
+          )}
+          {this.props.currentTask.check && this.props.currentTask.check.length > 0 && (
+            <div>
+              <h3>Checks :</h3>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={this.state.currentTaskCheckOK} onChange={this.handleCheckChange} value="check" />
+                }
+                label={this.props.currentTask.check}
+              />
+            </div>
+          )}
           <Grid container spacing={24} alignItems="center">
             <Grid item xs={7}>
               <h3>Root cause (why the problem occurred)</h3>
@@ -129,7 +121,7 @@ class TaskPanel extends Component {
                 multiline
                 rowsMax="4"
                 value={this.props.currentTask.problems || ''}
-                onChange={(event) => this.handleProblemsValueChange(event)}
+                onChange={event => this.handleProblemsValueChange(event)}
                 className="TaskPanel-problem-textarea"
                 margin="normal"
               />
@@ -144,10 +136,9 @@ class TaskPanel extends Component {
             </Grid>
           </Grid>
           <h3>Add tasks after this one :</h3>
-          <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange}/>
+          <TaskEditor tasks={this.state.newTasks} updateTasks={this.handleNewTasksValueChange} />
         </Grid>
-        <Grid item xs={1} >
-        </Grid>
+        <Grid item xs={1} />
       </Grid>
     );
   }
