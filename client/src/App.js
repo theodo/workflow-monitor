@@ -15,7 +15,7 @@ import Main from './Main/Main';
 import './App.css';
 
 let store = createStore(
-  AppReducer, /* preloadedState, */
+  AppReducer /* preloadedState, */,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
@@ -29,8 +29,8 @@ class App extends Component {
           <HashRouter>
             <div className="App">
               <Switch>
-                <Route exact path="/login" component={Login}/>
-                <Route path="/" component={Main}/>
+                <Route exact path="/login" component={Login} />
+                <Route path="/" component={Main} />
               </Switch>
             </div>
           </HashRouter>
