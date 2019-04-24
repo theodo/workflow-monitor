@@ -27,8 +27,8 @@ const nestedTask = (task) => ( {
   problems: (task.problems || task.problemCategory) && [{
     description: task.problems || '',
     problemCategory: task.problemCategory ? {
-      id: task.problemCategory.id,
-      description: task.problemCategory.description,
+      id: task.problemCategory.value || task.problemCategory.id,
+      description: task.problemCategory.label || task.problemCategory.description,
     } : null,
   }]
 });

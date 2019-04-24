@@ -3,8 +3,9 @@ import { EditingState } from '@devexpress/dx-react-grid';
 import {
   Grid,
   Table,
-  TableHeaderRow,
+  TableEditColumn,
   TableEditRow,
+  TableHeaderRow,
 } from '@devexpress/dx-react-grid-material-ui';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
@@ -122,6 +123,9 @@ class TicketResultsTable extends React.Component {
         <TableHeaderRow />
         <TableEditRow
           cellComponent={EditCell}
+        />
+        <TableEditColumn
+          showEditCommand
         />
       </Grid>
     ) : null;

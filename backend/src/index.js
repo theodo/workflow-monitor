@@ -176,19 +176,21 @@ const resolvers = {
       user.save();
       return 1;
     },
-    updateTask: (_, { task }) => {
-      return Task.findById(task.id, {include: [ { model: Problem, as: "problems"} ]}).then(taskToUpdate => {
-        taskToUpdate.update(task).then(() => {
-          Problem.destroy({ where: { taskId: taskToUpdate.id}}).then(() => {
-            task.problems.map(formattedProblem => {
-              formattedProblem.taskId = taskToUpdate.id;
-              Problem.create(formattedProblem)
-              .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id))
-              .then(problem => problem.save());
-            })
-          });
-        });
-      });
+    updateTask: async (_, { task }) => {
+      console.log(task)
+      const taskToUpdate = await Task.findById(task.id, {include: [ { model: Problem, as: "problems"} ]});
+
+      await taskToUpdate.update(task);
+      await Problem.destroy({ where: { taskId: taskToUpdate.id }});
+
+      task.problems.map( async (formattedProblem) => {
+        console.log(formattedProblem)
+        formattedProblem.taskId = taskToUpdate.id;
+        const problem = await Problem.create(formattedProblem);
+        if(formattedProblem.problemCategory) problem.setProblemCategory(formattedProblem.problemCategory.id);
+
+        return problem.save();
+      })
     },
     selectProject: (_, { project }, { user }) => {
       project.thirdPartyType = 'TRELLO';
