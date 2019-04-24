@@ -18,6 +18,8 @@ You're all set! Go to http://localhost to access to Caspr.
 
 Staging platform is accessible at https://caspr-staging.theo.do. Ask SSH access to be able to deploy.
 
+To connect to the server, run `ssh ubuntu@caspr-staging.theo.do`
+
 ### Deployment
 
 Run `npm run deploy:staging`.
@@ -25,6 +27,8 @@ Run `npm run deploy:staging`.
 
 ## Production
 Production platform is accessible at https://caspr.theo.do. Ask SSH access to be able to deploy.
+
+To connect to the server, run `ssh ubuntu@caspr.theo.do`
 
 ### Deployment
 
@@ -41,3 +45,9 @@ Run `node_modules/.bin/sequelize model:generate --name User --attributes firstNa
 ## Run migrations
 
 Run `node_modules/.bin/sequelize db:migrate`.
+
+# Database
+To connect to the database, run the following command:
+- dev environnement : `docker-compose exec postgresql psql -U caspr`
+- staging & prod : `psql -h localhost -U caspr caspr`
+
