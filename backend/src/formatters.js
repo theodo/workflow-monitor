@@ -4,7 +4,7 @@ const formatFullTicket = (state, project, user) => {
   const { id: userId } = user;
 
   return {
-    thirdPartyId: idShort.toString(),
+    thirdPartyId: thirdPartyId.toString(),
     description,
     status: 'DONE',
     userId,
