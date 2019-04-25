@@ -113,23 +113,9 @@ const ProblemCategoryAutocompleteContainer = (props) =>(
       const options = data.problemCategories.map(
         problemCategory => ({value: problemCategory.id, label: problemCategory.description})
       );
-
-      // Code below allow us to pass eather a classic problemCategory object or a react-select object
-      const value = props.value;
-      const realValue = value && value.id ? {
-        value: value.id,
-        label: value.description,
-      } : value;
-
-      const onChange = props.onChange;
-      const realOnChange = value && value.id ? (newValue) => onChange({
-        id: newValue.value,
-        description: newValue.label
-      }) : onChange;
-
       return <ProblemCategoryAutocomplete
-        value={realValue}
-        onChange={realOnChange}
+        value={props.value}
+        onChange={props.onChange}
         options={options}
         placeholder={props.placeholder}
       />;

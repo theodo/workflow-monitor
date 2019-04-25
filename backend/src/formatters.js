@@ -12,25 +12,23 @@ const formatFullTicket = (state, project, user) => {
   }
 };
 
-const formatTask = (ticketId) => ({ label, estimatedTime, addedOnTheFly, realTime, problems, problemCategory }) => ({
-  description: label,
-  estimatedTime,
-  addedOnTheFly: addedOnTheFly || false,
-  problems: (problems || problemCategory) ?
-    [{
-      description: problems,
-      problemCategory: problemCategory && { id: problemCategory.value, description: problemCategory.label }
-    }]
-    : [],
-  realTime,
-  ticketId,
-});
-
 const formatTasks = (state, ticket) => {
   const { tasks } = state;
   const { id: ticketId } = ticket;
 
-  return tasks.map(formatTask(ticketId));
+  return tasks.map(({ label, estimatedTime, addedOnTheFly, realTime, problems, problemCategory }) => ({
+    description: label,
+    estimatedTime,
+    addedOnTheFly: addedOnTheFly || false,
+    problems: (problems || problemCategory) ?
+      [{
+        description: problems,
+        problemCategory: problemCategory && { id: problemCategory.value, description: problemCategory.label }
+      }]
+      : [],
+    realTime,
+    ticketId,
+  }));
 };
 
-module.exports = { formatFullTicket, formatTasks ,formatTask }
+module.exports = { formatFullTicket, formatTasks }
