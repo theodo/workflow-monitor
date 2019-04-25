@@ -20,8 +20,6 @@ const typeDefs = `
     currentUser: User
     problemCategories: [ProblemCategory]
     problemCategoriesWithCount: [ProblemCategoryWithCount]
-    tickets(pagination: PaginationInput): TicketList
-    ticket(ticketId: Int): Ticket
   }
   type User {
     id: String,
@@ -36,49 +34,7 @@ const typeDefs = `
     thirdPartyType: String
     thirdPartyId: String
   }
-  type TicketList {
-    count: Int
-    rows: [Ticket]
-  }
-  type Ticket {
-    id: Int
-    description: String
-    thirdPartyId: String
-    complexity: Int
-    status: String
-    tasks: [Task]
-  }
-  type Task {
-    id: Int
-    description: String
-    estimatedTime: Int,
-    realTime: Int,
-    addedOnTheFly: Boolean,
-    problems: [Problem]
-  }
-  input TaskInput {
-    id: Int
-    description: String
-    estimatedTime: Int,
-    realTime: Int,
-    addedOnTheFly: Boolean,
-    problems: [ProblemInput],
-  }
-  type Problem {
-    id: Int
-    description: String
-    problemCategory: ProblemCategory
-  }
-  input ProblemInput {
-    id: Int
-    description: String
-    problemCategory: ProblemCategoryInput
-  }
   type ProblemCategory {
-    id: Int
-    description: String
-  }
-  input ProblemCategoryInput {
     id: Int
     description: String
   }
@@ -91,13 +47,8 @@ const typeDefs = `
     name: String
     thirdPartyId: String
   }
-  input PaginationInput {
-    limit: Int = 0
-    offset: Int = 0
-  }
   type Mutation {
     updateCurrentState(state: String!): Int,
-    updateTask(task: TaskInput!): Task,
     selectProject(project: ProjectInput): Project,
     addProblemCategory(problemCategoryDescription: String): ProblemCategory,
   }
@@ -118,40 +69,16 @@ const resolvers = {
         { replacements: [projectId], type: sequelize.QueryTypes.SELECT }
       )
     },
-    ticket: (_, { ticketId }) => {
-      return Ticket.findById(
-        ticketId,
-        {
-          include: {
-            model: Task,
-            as: 'tasks',
-            include: {
-              model: Problem,
-              as: 'problems',
-              include: {
-                model: ProblemCategory,
-                as: 'problemCategory',
-              }
-            }
-          }
-        },
-      );
-    },
-    tickets: (_, { pagination: { limit, offset } }, { user }) => {
-      const project = user.get('currentProject');
-      return Ticket.findAndCountAll({where: { projectId: project.id }, limit, offset });
-    }
   },
   Mutation: {
     updateCurrentState: (_, { state }, { pubsub, user }) => {
       const channel = 'user#'+user.id;
       pubsub.publish(channel, { state });
-
+      user.set('state', state);
+      user.save();
 
       jsState = JSON.parse(state);
-
-      if (JSON.parse(user.state) && JSON.parse(user.state).currentStep === 'WORKFLOW' && jsState.currentStep === 'RESULTS') {
-        console.log('here')
+      if (jsState.currentStep === 'RESULTS') {
         const project = user.get('currentProject');
         const formattedTicket = formatFullTicket(jsState, project, user);
         upsert(Ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
@@ -164,31 +91,14 @@ const resolvers = {
                   formattedTask.problems.map(formattedProblem => {
                     formattedProblem.taskId = task.id;
                     Problem.create(formattedProblem)
-                      .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id))
-                      .then(problem => problem.save());
+                      .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id));
                   })
                 })
             );
           });
       }
 
-      user.set('state', state);
-      user.save();
       return 1;
-    },
-    updateTask: (_, { task }) => {
-      return Task.findById(task.id, {include: [ { model: Problem, as: "problems"} ]}).then(taskToUpdate => {
-        taskToUpdate.update(task).then(() => {
-          Problem.destroy({ where: { taskId: taskToUpdate.id}}).then(() => {
-            task.problems.map(formattedProblem => {
-              formattedProblem.taskId = taskToUpdate.id;
-              Problem.create(formattedProblem)
-              .then(problem => formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id))
-              .then(problem => problem.save());
-            })
-          });
-        });
-      });
     },
     selectProject: (_, { project }, { user }) => {
       project.thirdPartyType = 'TRELLO';

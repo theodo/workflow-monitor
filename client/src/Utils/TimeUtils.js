@@ -38,13 +38,9 @@ export const formatMilliSecondToSentence = (timeInMilliSecond) => {
 
 export const parseMillisecondFromFormattedTime = (timeString) => {
   const splittedTimeString = timeString.split(':');
-  if (splittedTimeString.length === 3) {
-    const [hh, mm, ss] = splittedTimeString;
-    return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)) + parseInt(ss, 10));
-  } else if (splittedTimeString.length === 2) {
-    const [hh, mm] = splittedTimeString;
-    return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)));
+  if (splittedTimeString.length !== 3) {
+    return NaN;
   }
-  return NaN;
-
+  const [hh, mm, ss] = splittedTimeString;
+  return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)) + parseInt(ss, 10));
 };
