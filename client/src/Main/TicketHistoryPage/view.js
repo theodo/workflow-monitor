@@ -1,24 +1,43 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import TicketResultsTable from '../TicketResultsTable';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 const fullPageHeightStyle = {
   height: '100%',
   overflow: 'auto'
 };
 
-const BackLink = props => <Link to="/history" {...props} />;
+const marginStyle = {
+  margin: 10,
+};
 
-const TicketHistoryPage = ({ ticket, updateTask }) => (
-  <div style={fullPageHeightStyle}>
-    <h3>
-      <Button component={BackLink}>
-        Back
-      </Button>{ticket.description}
-    </h3>
-    <TicketResultsTable updateTask={updateTask} results={ticket.tasks} />
-  </div>
+const TicketHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket }) => (
+  <Grid container spacing={0} style={fullPageHeightStyle}>
+    <Grid item xs={1} >
+    </Grid>
+    <Grid item xs={10}>
+      <h3>Ticket history</h3>
+      { rows.map(ticket => (
+
+        <Card key={ticket.id} style={marginStyle}>
+          <CardActionArea onClick={() => goToTicket(ticket.id)}>
+            <CardContent>
+              <Typography component="h3">
+                {ticket.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      ))}
+      { count > rows.length && <button onClick={loadMore}>Load more</button> }
+      { count === 0 && 'No ticket done on this project yet' }
+    </Grid>
+    <Grid item xs={1} >
+    </Grid>
+  </Grid>
 );
 
 export default TicketHistoryPage;
