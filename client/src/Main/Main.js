@@ -5,16 +5,7 @@ import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
-import Monitor from './Monitor/Monitor';
-import Home from './Home/Home';
-import Settings from './Settings/Settings';
-import Project from './Project/Project';
-import ProblemCategoryPage from './ProblemCategoryPage';
-
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import classNames from 'classnames';
@@ -24,11 +15,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import HomeIcon from '@material-ui/icons/Home';
-import ListIcon from '@material-ui/icons/List';
-import CategoryIcon from '@material-ui/icons/Category';
-import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
+
+import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
+import { appColors, grid } from 'ui';
+
+import Monitor from './Monitor/Monitor';
+import Home from './Home/Home';
+import Settings from './Settings';
+import ProblemCategoryPage from './ProblemCategoryPage';
+
+import PropTypes from 'prop-types';
 
 // The code of this component come from https://material-ui-next.com/demos/drawers/
 
@@ -170,7 +169,7 @@ export class Main extends Component {
             <Link to="/" onClick={this.preventOn(!isProjectSelected)} >
               <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
-                  <HomeIcon />
+                  <TrelloBoardIcon size="25px" color={appColors.darkGrey}/>
                 </ListItemIcon>
                 <ListItemText primary="Home page" />
               </ListItem>
@@ -178,9 +177,17 @@ export class Main extends Component {
             <Link to="/monitor" onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)} >
               <ListItem selected={isCurrentPage('monitor')} disabled={!isProjectSelected || !isTrelloCardSelected} button>
                 <ListItemIcon>
-                  <TrackChangesIcon />
+                  <ChecklistIcon size="25px" color={appColors.darkGrey}/>
                 </ListItemIcon>
                 <ListItemText primary="Session monitor" />
+              </ListItem>
+            </Link>
+            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)}>
+              <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
+                <ListItemIcon>
+                  <LineChartIcon size="25px" color={appColors.darkGrey}/>
+                </ListItemIcon>
+                <ListItemText primary="Problem types" />
               </ListItem>
             </Link>
             <Link to="/settings" onClick={this.preventOn(!isProjectSelected)} >
@@ -189,22 +196,6 @@ export class Main extends Component {
                   <SettingsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
-            <Link to="/project">
-              <ListItem selected={isCurrentPage('project')} button>
-                <ListItemIcon>
-                  <ListIcon />
-                </ListItemIcon>
-                <ListItemText primary="Projects" />
-              </ListItem>
-            </Link>
-            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)}>
-              <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
-                <ListItemIcon>
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="Problem types" />
               </ListItem>
             </Link>
           </div>
@@ -216,7 +207,6 @@ export class Main extends Component {
           <Route exact path="/" component={Home}/>
           <Route path="/monitor" component={Monitor}/>
           <Route path="/settings" component={Settings}/>
-          <Route path="/project" component={Project}/>
           <Route path="/problem-categories" component={ProblemCategoryPage}/>
           </div>
         </main>
