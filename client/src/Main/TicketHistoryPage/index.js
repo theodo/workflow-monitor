@@ -1,47 +1,14 @@
-import React, { Component } from 'react';
-import { Query } from 'react-apollo';
-import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
+import React from 'react';
+import { WithTicketData } from '../shared';
 import TicketHistoryPage from './view';
 
-class TicketHistoryPageContainer extends Component {
-  goToTicket = ticketId => window.location.hash = `#/history/${ticketId}`
-  render(){
-    return (
-      <Query query={GET_TICKETS_HISTORY} variables={{
-        pagination: {
-          offset: 0,
-          limit: 10,
-        },
-      }}>
-        {({ loading, error, data, fetchMore }) => {
-          if (loading) return 'Loading...';
-          if (error) return 'Unexpected error';
-          const loadMore = () =>
-            fetchMore({
-              variables: {
-                pagination: {
-                  offset: data.tickets.rows.length,
-                  limit: 10,
-                },
-              },
-              updateQuery: (prev, { fetchMoreResult }) => {
-                if (!fetchMoreResult) return prev;
-                return {
-                  tickets: {
-                    ...prev.tickets,
-                    rows: [...prev.tickets.rows, ...fetchMoreResult.tickets.rows]
-                  }
-                };
-              }
-            });
+class TicketHistoryPageContainer extends React.Component {
+  render() {
+    const id = this.props.match.params.ticketId;
+    const TicketHistoryPageWithTicketDataData = WithTicketData(TicketHistoryPage, id);
 
-          return <TicketHistoryPage goToTicket={this.goToTicket} loadMore={loadMore} loading={loading} tickets={data.tickets}/>;
-        }}
-      </Query>
-    );
+    return <TicketHistoryPageWithTicketDataData />;
   }
 }
-
-
 
 export default TicketHistoryPageContainer;
