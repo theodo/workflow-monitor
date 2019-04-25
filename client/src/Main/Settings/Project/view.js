@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import Select from 'react-select';
 import gql from 'graphql-tag';
 import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
 
 import { gqlClient } from 'Utils/Graphql';
 
-import './Project.css';
-import { selectProject } from '../../Login/LoginActions';
-import { saveSettings } from '../Settings/SettingsActions';
-import { initSession } from '../Monitor/MonitorActions';
-
-const formStyle = {
-  width: 300,
-  margin: 'auto'
-};
+const styles = () => ({
+  mt10: {
+    marginTop: '10px'
+  }
+});
 
 class Projects extends Component {
   constructor(props) {
@@ -63,44 +59,26 @@ class Projects extends Component {
       })
       .then(result => this.props.selectProject(result.data.selectProject));
   }
+
   render() {
+    const { classes } = this.props;
     return (
       <div className="Project">
-        <h2>Trello Project Selection :</h2>
-        <form autoComplete="off" style={formStyle}>
-          <Select
-            value={this.state.selectedProject}
-            onChange={this.handleChange}
-            options={Object.keys(this.state.boards)
-              .map(boardId => this.state.boards[boardId])
-              .map(board => ({ value: board.id, label: board.name }))}
-            placeholder="Select project"
-          />
-          <Button onClick={this.selectProject}>Select</Button>
-        </form>
+        <h2>Select your project :</h2>
+        <Select
+          value={this.state.selectedProject}
+          onChange={this.handleChange}
+          options={Object.keys(this.state.boards)
+            .map(boardId => this.state.boards[boardId])
+            .map(board => ({ value: board.id, label: board.name }))}
+          placeholder="Select project"
+        />
+        <Button variant="contained" className={classes.mt10} onClick={this.selectProject}>
+          Select
+        </Button>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    project: state.LoginReducers.currentProject
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    selectProject: project => {
-      dispatch(initSession());
-      dispatch(saveSettings({ selectedBacklogId: undefined }));
-      dispatch(selectProject(project));
-      window.location.hash = '#/';
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Projects);
+export default withStyles(styles)(Projects);
