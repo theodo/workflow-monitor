@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { GET_TICKET } from '../../Queries/Tickets';
 import { gqlClient } from '../../Utils/Graphql';
-import TicketPage from './view';
+import TicketHistoryPage from './view';
 import { UPDATE_TASK } from '../../Queries/Tasks';
 
 const flattenTasks = tasks =>
@@ -33,7 +33,7 @@ const nestedTask = (task) => ( {
   }]
 });
 
-class TicketPageContainer extends Component {
+class TicketHistoryPageContainer extends Component {
   updateTask = (task) => {
     const nested = nestedTask(task);
     gqlClient
@@ -43,7 +43,7 @@ class TicketPageContainer extends Component {
           task: nested,
         },
         refetchQueries: [
-          { query: GET_TICKET,
+          { query: GET_TICKET, 
             variables: {
               ticketId: this.props.match.params.ticketId,
             }
@@ -66,7 +66,7 @@ class TicketPageContainer extends Component {
             },
           };
 
-          return <TicketPage loading={loading} ticket={flattenData.ticket} updateTask={this.updateTask} />;
+          return <TicketHistoryPage loading={loading} ticket={flattenData.ticket} updateTask={this.updateTask} />;
         }}
       </Query>
     );
@@ -75,4 +75,4 @@ class TicketPageContainer extends Component {
 
 
 
-export default TicketPageContainer;
+export default TicketHistoryPageContainer;

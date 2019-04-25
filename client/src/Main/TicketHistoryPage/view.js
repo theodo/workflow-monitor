@@ -25,7 +25,11 @@ const TicketHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket }) =
         <Card key={ticket.id} style={marginStyle}>
           <CardActionArea onClick={() => goToTicket(ticket.id)}>
             <CardContent>
-              <Typography component="h3">
+              <Typography gutterBottom variant="h5" component="h2">
+                #{ticket.thirdPartyId}
+
+              </Typography>
+              <Typography component="p">
                 {ticket.description}
               </Typography>
             </CardContent>
