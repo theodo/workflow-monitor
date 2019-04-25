@@ -13,8 +13,8 @@ import Home from './Home/Home';
 import Settings from './Settings/Settings';
 import Project from './Project/Project';
 import ProblemCategoryPage from './ProblemCategoryPage';
-import ProjectHistoryPage from './ProjectHistoryPage';
 import TicketHistoryPage from './TicketHistoryPage';
+import TicketPage from './TicketPage';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -232,8 +232,8 @@ export class Main extends Component {
             <Switch>
               <Route exact path="/" component={Home}/>
               <Route path="/monitor" component={Monitor}/>
-              <Route path="/history/:ticketId" component={TicketHistoryPage}/>
-              <Route path="/history" component={ProjectHistoryPage}/>
+              <Route path="/history/:ticketId" component={TicketPage}/>
+              <Route path="/history" component={TicketHistoryPage}/>
               <Route path="/settings" component={Settings}/>
               <Route path="/project" component={Project}/>
               <Route path="/problem-categories" component={ProblemCategoryPage}/>

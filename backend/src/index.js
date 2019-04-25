@@ -151,6 +151,7 @@ const resolvers = {
       jsState = JSON.parse(state);
 
       if (JSON.parse(user.state) && JSON.parse(user.state).currentStep === 'WORKFLOW' && jsState.currentStep === 'RESULTS') {
+        console.log('here')
         const project = user.get('currentProject');
         const formattedTicket = formatFullTicket(jsState, project, user);
         upsert(Ticket, formattedTicket, {thirdPartyId: formattedTicket.thirdPartyId})
