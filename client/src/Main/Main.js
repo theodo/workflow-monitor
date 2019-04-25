@@ -34,6 +34,9 @@ import PropTypes from 'prop-types';
 const drawerWidth = 240;
 
 const styles = theme => ({
+  textDecorationReset: {
+    textDecoration: 'none'
+  },
   root: {
     display: 'flex',
     height: '100%,',
@@ -166,31 +169,31 @@ export class Main extends Component {
           </div>
           <Divider />
           <div>
-            <Link to="/" onClick={this.preventOn(!isProjectSelected)} >
+            <Link to="/" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <TrelloBoardIcon size="25px" color={appColors.darkGrey}/>
                 </ListItemIcon>
-                <ListItemText primary="Home page" />
+                <ListItemText primary="Ticket List" />
               </ListItem>
             </Link>
-            <Link to="/monitor" onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)} >
+            <Link to="/monitor" onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)} class={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('monitor')} disabled={!isProjectSelected || !isTrelloCardSelected} button>
                 <ListItemIcon>
                   <ChecklistIcon size="25px" color={appColors.darkGrey}/>
                 </ListItemIcon>
-                <ListItemText primary="Session monitor" />
+                <ListItemText primary="Current Ticket" />
               </ListItem>
             </Link>
-            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)}>
+            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <LineChartIcon size="25px" color={appColors.darkGrey}/>
                 </ListItemIcon>
-                <ListItemText primary="Problem types" />
+                <ListItemText primary="Pareto" />
               </ListItem>
             </Link>
-            <Link to="/settings" onClick={this.preventOn(!isProjectSelected)} >
+            <Link to="/settings" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('settings')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <SettingsIcon />
