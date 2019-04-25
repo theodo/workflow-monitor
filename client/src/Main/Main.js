@@ -16,7 +16,6 @@ import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
@@ -145,7 +144,7 @@ export class Main extends Component {
               onClick={this.handleDrawerOpen}
               className={classNames(classes.menuButton, this.state.isDrawerOpen && classes.hide)}
             >
-              <MenuIcon />
+              {!this.state.open && <ChevronRightIcon />}
             </IconButton>
             <img src="./casper.png" height="50px" alt="logo"/>
             <Typography variant="h6" color="inherit" className={classes.title} noWrap>
