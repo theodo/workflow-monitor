@@ -10,7 +10,7 @@ const fullPageHeightStyle = {
 
 const BackLink = props => <Link to="/history" {...props} />;
 
-class TicketHistoryPage extends React.Component {
+class TicketPage extends React.Component {
   render() {
     console.log(this.props.ticketData);
     return (
@@ -24,4 +24,4 @@ class TicketHistoryPage extends React.Component {
   }
 }
 
-export default TicketHistoryPage;
+export default TicketPage;
