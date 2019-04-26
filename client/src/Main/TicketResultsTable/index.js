@@ -27,6 +27,7 @@ const nestedTask = task => ({
 class TicketResultsTableContainer extends Component {
   updateTask = task => {
     const nested = nestedTask(task);
+
     gqlClient.mutate({
       mutation: UPDATE_TASK,
       variables: {
