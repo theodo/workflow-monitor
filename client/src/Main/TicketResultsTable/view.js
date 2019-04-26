@@ -93,11 +93,11 @@ class TicketResultsTable extends React.Component {
   };
   commitChanges = ({ changed }) => {
     if (changed) {
-      const tasks = this.props.ticketData.tasks
+      const tasksToUpdate = this.props.ticketData.tasks
         .filter(task => changed[task.id])
         .map(task => ({ ...task, ...changed[task.id] }));
 
-      tasks.forEach(task => this.props.updateTask(task));
+      tasksToUpdate.forEach(taskToUpdate => this.props.updateTask(taskToUpdate));
     }
   };
 

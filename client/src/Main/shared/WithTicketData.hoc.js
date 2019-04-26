@@ -23,6 +23,7 @@ const withTicketData = (WrappedComponent, ticketId) => props => (
     variables={{
       ticketId: ticketId
     }}
+    fetchPolicy="cache-and-network"
   >
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';

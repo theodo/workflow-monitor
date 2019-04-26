@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import gql from 'graphql-tag';
+import { gqlClient } from 'Utils/Graphql';
 import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/Button';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
@@ -19,7 +21,8 @@ import {
   playOrPauseSession,
   update,
   backToPlanning,
-  setCurrentTaskFields
+  setCurrentTaskFields,
+  setTicketId
 } from './MonitorActions';
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
@@ -29,7 +32,6 @@ import TaskPanel from './TaskPanel/TaskPanel';
 import TasksLateralPanel from './TasksLateralPanel/TasksLateralPanel';
 import TicketStartPanel from './TicketStartPanel';
 import MuteAlarmButton from './Footer/MuteAlarmButton/MuteAlarmButton';
-import gql from 'graphql-tag';
 import './Monitor.css';
 
 export const MONITOR_STEPS = {
@@ -149,6 +151,23 @@ class Monitor extends Component {
         () => console.log('error')
       );
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.step === MONITOR_STEPS.WORKFLOW && this.props.step === MONITOR_STEPS.RESULTS) {
+      gqlClient
+      .mutate({
+      mutation: gql`
+        mutation {
+          saveTicket(state:${JSON.stringify(JSON.stringify(this.props.monitorState))})
+        }
+        `,
+    })
+      .then((result) => {
+        this.props.setTicketId(result.data.saveTicket)
+      });
+    }
+  }
+
   getProgressPercentage() {
     switch (this.props.step) {
     case MONITOR_STEPS.WELCOME:
@@ -348,6 +367,7 @@ class Monitor extends Component {
 
 const mapStateToProps = state => {
   return {
+    monitorState: state.MonitorReducers,
     isSessionPaused: state.MonitorReducers.isSessionPaused,
     step: state.MonitorReducers.currentStep,
     tasks: state.MonitorReducers.tasks,
@@ -389,6 +409,9 @@ const mapDispatchToProps = dispatch => {
     },
     goToHome: () => {
       window.location.hash = '#/';
+    },
+    setTicketId: (ticketId) => {
+      dispatch(setTicketId(ticketId));
     }
   };
 };
