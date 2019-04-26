@@ -1,0 +1,37 @@
+.resultsPage {
+  padding: 10px;
+}
+
+.resultsGrid {
+  margin-bottom: 35px;
+}
+
+.printButton {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 50px;
+}
+
+.displayOnlyOnPrint {
+  display: none;
+}
+
+@media print {
+  html,
+  body,
+  #root,
+  .App {
+    height: auto !important;
+  }
+
+  .displayOnlyOnPrint {
+    display: block;
+  }
+  .printArea {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .printArea * {
+    visibility: visible;
+  }
+}

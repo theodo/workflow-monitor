@@ -6,6 +6,7 @@ import { getTotalTime } from 'Utils/TaskUtils';
 import { saveResultsInTrello } from 'Utils/TrelloApiUtils';
 import { setFavicon } from 'Utils/FaviconUtils';
 
+import { TicketResultsTable } from 'Main/TicketResultsTable';
 import ResultRow from '../ResultRow';
 import './style.css';
 

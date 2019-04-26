@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Query } from 'react-apollo';
-import { GET_TICKET } from '../../Queries/Tickets';
-import { gqlClient } from '../../Utils/Graphql';
+import { GET_TICKET } from 'Queries/Tickets';
+import { gqlClient } from 'Utils/Graphql';
 import TicketResultsTable from './view';
-import { UPDATE_TASK } from '../../Queries/Tasks';
-import { WithTicketData } from '../shared';
+import { UPDATE_TASK } from 'Queries/Tasks';
+import { WithTicketData } from 'Main/shared';
 
 const nestedTask = task => ({
   id: task.id,

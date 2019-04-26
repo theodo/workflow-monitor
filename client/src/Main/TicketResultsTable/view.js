@@ -1,10 +1,14 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 import { EditingState } from '@devexpress/dx-react-grid';
 import { Grid, Table, TableHeaderRow, TableEditRow, TableEditColumn } from '@devexpress/dx-react-grid-material-ui';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
 import ProblemCategoryAutocomplete from '../Monitor/ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from '../../Utils/TimeUtils';
+import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from 'Utils/TimeUtils';
+import { setFavicon } from 'Utils/FaviconUtils';
+
+import './style.css';
 
 const getRowId = row => row.id;
 
@@ -67,6 +71,17 @@ const Cell = props => {
 };
 
 class TicketResultsTable extends React.Component {
+  componentDidMount() {
+    document.title = this.title;
+    setFavicon('caspr');
+  }
+
+  componentWillUnmount() {
+    document.title = 'Caspr';
+  }
+
+  title = '#' + this.props.ticketData.thirdPartyId + ' ' + this.props.ticketData.description;
+
   state = {
     columns: [
       { name: 'description', title: 'Description' },
@@ -85,16 +100,33 @@ class TicketResultsTable extends React.Component {
       tasks.forEach(task => this.props.updateTask(task));
     }
   };
+
+  printResults() {
+    window.print();
+  }
+
   render() {
-    return this.props.ticketData ? (
-      <Grid rows={this.props.ticketData.tasks} columns={this.state.columns} getRowId={getRowId}>
-        <EditingState onCommitChanges={this.commitChanges} />
-        <Table cellComponent={Cell} />
-        <TableHeaderRow />
-        <TableEditRow cellComponent={EditCell} />
-        <TableEditColumn showEditCommand />
-      </Grid>
-    ) : null;
+    return (
+      <div className="resultsPage">
+        <div className="resultsGrid">
+          <div className="printArea">
+            <h2 className="displayOnlyOnPrint">{this.title}</h2>
+            <Grid rows={this.props.ticketData.tasks} columns={this.state.columns} getRowId={getRowId}>
+              <EditingState onCommitChanges={this.commitChanges} />
+              <Table cellComponent={Cell} />
+              <TableHeaderRow />
+              <TableEditRow cellComponent={EditCell} />
+              <TableEditColumn showEditCommand />
+            </Grid>
+          </div>
+        </div>
+        <div className="printButton">
+          <Button variant="contained" color="primary" onClick={() => this.printResults()}>
+            Print results
+          </Button>
+        </div>
+      </div>
+    );
   }
 }
 

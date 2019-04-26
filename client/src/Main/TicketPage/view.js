@@ -12,7 +12,6 @@ const BackLink = props => <Link to="/history" {...props} />;
 
 class TicketPage extends React.Component {
   render() {
-    console.log(this.props.ticketData);
     return (
       <div style={fullPageHeightStyle}>
         <h3>
