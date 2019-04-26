@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 
 import { formatMilliSecondToSentence } from 'Utils/TimeUtils';
 import { setFavicon } from 'Utils/FaviconUtils';
 
-import './ReverseChrono.css';
+const styles = () => ({
+  redText: {
+    color: '#BF0712'
+  }
+});
 
 class ReverseChrono extends Component {
   constructor(props) {
@@ -49,11 +54,11 @@ class ReverseChrono extends Component {
 
   render() {
     return (
-      <span className={'ReverseChrono ' + (this.isTimeOver() ? 'red' : 'green')}>
+      <span className={this.props.classes.redText}>
         {this.isTimeOver() && formatMilliSecondToSentence(this.getTime())}
       </span>
     );
   }
 }
 
-export default ReverseChrono;
+export default withStyles(styles)(ReverseChrono);
