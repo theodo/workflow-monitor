@@ -8,7 +8,7 @@ import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 import { filterEmptyTasks } from 'Utils/TaskUtils';
 
-import ReverseChrono from '../ReverseChrono/ReverseChrono';
+import ReverseChrono from '../ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './TaskPanel.css';
