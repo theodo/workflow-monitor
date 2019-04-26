@@ -1,5 +1,5 @@
 import React from 'react';
-import { WithTicketData } from '../shared';
+import { WithTicketData } from 'Main/shared';
 import TicketPage from './view';
 
 class TicketPageContainer extends React.Component {
