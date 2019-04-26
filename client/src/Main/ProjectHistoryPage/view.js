@@ -11,35 +11,27 @@ const fullPageHeightStyle = {
 };
 
 const marginStyle = {
-  margin: 10,
+  margin: 10
 };
 
 const ProjectHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket }) => (
   <Grid container spacing={0} style={fullPageHeightStyle}>
-    <Grid item xs={1} >
-    </Grid>
+    <Grid item xs={1} />
     <Grid item xs={10}>
       <h3>Ticket history</h3>
-      { rows.map(ticket => (
-
+      {rows.map(ticket => (
         <Card key={ticket.id} style={marginStyle}>
           <CardActionArea onClick={() => goToTicket(ticket.id)}>
             <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                #{ticket.thirdPartyId}
-              </Typography>
-              <Typography component="p">
-                {ticket.description}
-              </Typography>
+              <Typography component="h3">{ticket.description}</Typography>
             </CardContent>
           </CardActionArea>
         </Card>
       ))}
-      { count > rows.length && <button onClick={loadMore}>Load more</button> }
-      { count === 0 && 'No ticket done on this project yet' }
+      {count > rows.length && <button onClick={loadMore}>Load more</button>}
+      {count === 0 && 'No ticket done on this project yet'}
     </Grid>
-    <Grid item xs={1} >
-    </Grid>
+    <Grid item xs={1} />
   </Grid>
 );
 
