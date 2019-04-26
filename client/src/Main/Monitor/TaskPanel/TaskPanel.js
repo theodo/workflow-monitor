@@ -41,6 +41,7 @@ class TaskPanel extends Component {
     this.handleProblemCategoryValueChange = this.handleProblemCategoryValueChange.bind(this);
     if (!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.dateLastPause && !this.props.dateLastPause) {
       cancelAlarm();
@@ -56,6 +57,7 @@ class TaskPanel extends Component {
       });
     }
   }
+
   componentWillUnmount() {
     cancelAlarm();
   }
@@ -72,44 +74,50 @@ class TaskPanel extends Component {
       }
     });
   }
+
   handleProblemsValueChange(event) {
     this.props.handleCurrentTaskChange({ problems: event.target.value });
   }
+
   handleProblemCategoryValueChange(selectedOption) {
     this.props.handleCurrentTaskChange({ problemCategory: selectedOption });
   }
+
   handleNewTasksValueChange(tasks) {
     this.setState({ newTasks: tasks }, this.handleTaskPanelChange);
   }
+
   handleCheckChange(event) {
     this.setState({ currentTaskCheckOK: event.target.checked }, this.handleTaskPanelChange);
   }
+
   render() {
+    const { currentTask, dateLastPause, taskChrono } = this.props;
     return (
       <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
         <Grid item xs={1} />
         <Grid item xs={10}>
-          <h2>{this.props.currentTask.label}</h2>
-          {this.props.currentTask.estimatedTime && (
+          <h2>{currentTask.label}</h2>
+          {currentTask.estimatedTime && (
             <div>
-              <h3>Estimated time : {formatMilliSecondToTime(this.props.currentTask.estimatedTime)}</h3>
+              <h3>Estimated time : {formatMilliSecondToTime(currentTask.estimatedTime)}</h3>
               <h3>
                 <ReverseChrono
-                  dateLastPause={this.props.dateLastPause}
-                  estimatedTaskTime={this.props.currentTask.estimatedTime}
-                  taskChrono={this.props.taskChrono}
+                  dateLastPause={dateLastPause}
+                  estimatedTaskTime={currentTask.estimatedTime}
+                  taskChrono={taskChrono}
                 />
               </h3>
             </div>
           )}
-          {this.props.currentTask.check && this.props.currentTask.check.length > 0 && (
+          {currentTask.check && currentTask.check.length > 0 && (
             <div>
               <h3>Checks :</h3>
               <FormControlLabel
                 control={
                   <Checkbox checked={this.state.currentTaskCheckOK} onChange={this.handleCheckChange} value="check" />
                 }
-                label={this.props.currentTask.check}
+                label={currentTask.check}
               />
             </div>
           )}
@@ -122,7 +130,7 @@ class TaskPanel extends Component {
                 label="Root cause"
                 multiline
                 rowsMax="4"
-                value={this.props.currentTask.problems || ''}
+                value={currentTask.problems || ''}
                 onChange={event => this.handleProblemsValueChange(event)}
                 className="TaskPanel-problem-textarea"
                 margin="normal"
@@ -131,7 +139,7 @@ class TaskPanel extends Component {
             <Grid item xs={5}>
               <h3>Root cause category</h3>
               <ProblemCategoryAutocomplete
-                value={this.props.currentTask.problemCategory || null}
+                value={currentTask.problemCategory || null}
                 onChange={this.handleProblemCategoryValueChange}
                 placeholder={'Select the root cause category'}
               />
