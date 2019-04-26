@@ -103,6 +103,7 @@ class TaskPanel extends Component {
               <h3>Estimated time : {formatMilliSecondToTime(currentTask.estimatedTime)}</h3>
               <h3>
                 <ReverseChrono
+                  currentTaskLabel={currentTask.label}
                   dateLastPause={dateLastPause}
                   estimatedTaskTime={currentTask.estimatedTime}
                   taskChrono={taskChrono}
