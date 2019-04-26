@@ -1,18 +1,34 @@
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import gql from 'graphql-tag';
+import { gqlClient } from 'Utils/Graphql';
+
 import ResultPanel from './view';
-import { saveResults, setTaskFields } from '../MonitorActions';
 
 const mapStateToProps = state => ({
-  results: state.MonitorReducers.tasks.map(task => ({...task, description: task.label})),
+  monitorState: state.MonitorReducers,
 });
 
-const mapDispatchToProps = dispatch => ({
-  handleTaskChange: (taskIndex, fields) => {
-    dispatch(setTaskFields(taskIndex, fields));
-  },
-  saveResults: () => {
-    dispatch(saveResults());
-  },
-});
+class ResultPanelContainer extends Component {
+  state = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResultPanel);
+  componentDidMount() {
+      gqlClient
+      .mutate({
+      mutation: gql`
+        mutation {
+          saveTicket(state:${JSON.stringify(JSON.stringify(this.props.monitorState))})
+        }
+        `,
+    })
+    .then((result) => {
+      this.setState({ticketId: result.data.saveTicket})
+    });
+  }
+
+  render() {
+    return <ResultPanel ticketId={this.state.ticketId} />;
+  }
+}
+
+export default connect(mapStateToProps)(ResultPanelContainer);
