@@ -21,8 +21,7 @@ class Projects extends Component {
         ? { value: this.props.project.thirdPartyId, label: this.props.project.name }
         : null,
     };
-    this.selectProject = this.selectProject.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+
     window.Trello.get('/member/me/boards', { filter: 'open' }).then(boards => {
       this.setState({
         boards: boards.reduce((acc, board) => {
@@ -33,10 +32,10 @@ class Projects extends Component {
     });
   }
 
-  async handleChange(selectedProject) {
+  handleChange = async selectedProject => {
     await this.setState({ selectedProject });
     this.selectProject();
-  }
+  };
 
   selectProject() {
     const selectedProject = this.state.selectedProject;
