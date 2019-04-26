@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings'
 
 import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
-import { appColors, grid } from 'ui';
+import { appColors } from 'ui';
 
 import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
