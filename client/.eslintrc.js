@@ -1,42 +1,26 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "node": true,
-        "es6": true
-    },
-    "extends": "eslint:recommended",
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true
-        },
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react"
-    ],
-    "rules": {
-        "no-console": [1],
-        "no-case-declarations": [1],
-        "react/jsx-uses-react": [2],
-        "react/jsx-uses-vars": [2],
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    }
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+  },
+  extends: ['eslint:recommended', 'react-app', 'prettier', 'prettier/react'],
+  parserOptions: {
+    es6: true,
+    sourceType: 'module',
+    node: true
+  },
+  plugins: ['react', 'prettier'],
+  rules: {
+    'prettier/prettier': 'error',
+    'no-console': [1],
+    'no-case-declarations': [1],
+    'react/jsx-uses-react': [2],
+    'react/jsx-uses-vars': [2],
+    'react/no-array-index-key': 2,
+    'react/prefer-stateless-function': 0,
+    'react/prop-types': 0,
+    'react/require-default-props': 0,
+    'react/no-array-index-key': 1
+  },
 };
