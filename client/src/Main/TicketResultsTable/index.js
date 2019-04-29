@@ -16,12 +16,12 @@ const nestedTask = task => ({
       description: task.problems || '',
       problemCategory: task.problemCategory
         ? {
-          id: task.problemCategory.id || task.problemCategory.value,
-          description: task.problemCategory.description || task.problemCategory.label
-        }
-        : null
-    }
-  ]
+            id: task.problemCategory.id || task.problemCategory.value,
+            description: task.problemCategory.description || task.problemCategory.label,
+          }
+        : null,
+    },
+  ],
 });
 
 class TicketResultsTableContainer extends Component {
@@ -31,16 +31,16 @@ class TicketResultsTableContainer extends Component {
     gqlClient.mutate({
       mutation: UPDATE_TASK,
       variables: {
-        task: nested
+        task: nested,
       },
       refetchQueries: [
         {
           query: GET_TICKET,
           variables: {
-            ticketId: this.props.ticketId
-          }
-        }
-      ]
+            ticketId: this.props.ticketId,
+          },
+        },
+      ],
     });
   };
   render() {

@@ -54,5 +54,4 @@ export const parseMillisecondFromFormattedTime = timeString => {
     return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)));
   }
   return NaN;
-
 };

@@ -7,11 +7,11 @@ import Typography from '@material-ui/core/Typography';
 
 const fullPageHeightStyle = {
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
 const marginStyle = {
-  margin: 10
+  margin: 10,
 };
 
 const ProjectHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket }) => (

@@ -15,7 +15,7 @@ export const UPDATE_TASK = gql`
           id
           description
         }
-      } 
+      }
     }
   }
 `;

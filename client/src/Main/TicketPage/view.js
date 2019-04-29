@@ -5,7 +5,7 @@ import TicketResultsTable from '../TicketResultsTable';
 
 const fullPageHeightStyle = {
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
 const BackLink = props => <Link to="/history" {...props} />;

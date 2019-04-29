@@ -6,22 +6,22 @@ const flattenTasks = tasks =>
   tasks.map(task =>
     task.problems && task.problems.length > 0
       ? {
-        ...task,
-        problems: task.problems[0].description,
-        problemCategory: task.problems[0].problemCategory
-      }
+          ...task,
+          problems: task.problems[0].description,
+          problemCategory: task.problems[0].problemCategory,
+        }
       : {
-        ...task,
-        problems: null,
-        problemCategory: null
-      }
+          ...task,
+          problems: null,
+          problemCategory: null,
+        },
   );
 
 const withTicketData = (WrappedComponent, ticketId) => props => (
   <Query
     query={GET_TICKET}
     variables={{
-      ticketId: ticketId
+      ticketId: ticketId,
     }}
     fetchPolicy="cache-and-network"
   >
@@ -31,8 +31,8 @@ const withTicketData = (WrappedComponent, ticketId) => props => (
       const flattenData = {
         ticket: {
           ...data.ticket,
-          tasks: flattenTasks(data.ticket.tasks).sort((a, b) => a.id - b.id)
-        }
+          tasks: flattenTasks(data.ticket.tasks).sort((a, b) => a.id - b.id),
+        },
       };
 
       return <WrappedComponent ticketData={flattenData.ticket} {...props} />;
