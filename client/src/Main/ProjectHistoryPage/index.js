@@ -12,10 +12,10 @@ class ProjectHistoryPageContainer extends Component {
         variables={{
           pagination: {
             offset: 0,
-            limit: 10,
+            limit: 30,
           },
         }}
-        fetchPolicy="cache-and-network"
+        fetchPolicy="network-only"
       >
         {({ loading, error, data, fetchMore }) => {
           if (loading) return 'Loading...';
@@ -38,7 +38,6 @@ class ProjectHistoryPageContainer extends Component {
                 };
               },
             });
-
           return (
             <ProjectHistoryPage
               goToTicket={this.goToTicket}
