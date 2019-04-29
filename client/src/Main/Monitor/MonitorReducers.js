@@ -260,8 +260,8 @@ const MonitorReducers = (state = currentInitialState, action) => {
     case SET_TICKET_ID:
       newState = {
         ...state,
-        ticketId: action.ticketId
-      }
+        ticketId: action.ticketId,
+      };
       break;
     case SET_CURRENT_TASK_FIELDS:
       newState = updateTask(state, state.currentTaskIndex, action.fields);

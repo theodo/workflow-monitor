@@ -1,7 +1,13 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { EditingState } from '@devexpress/dx-react-grid';
-import { Grid, Table, TableHeaderRow, TableEditRow, TableEditColumn } from '@devexpress/dx-react-grid-material-ui';
+import {
+  Grid,
+  Table,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+} from '@devexpress/dx-react-grid-material-ui';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField';
 import ProblemCategoryAutocomplete from '../Monitor/ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
@@ -26,7 +32,7 @@ const DurationEditCell = ({ value, onValueChange }) => (
       value={formatMilliSecondToTime(value)}
       onChange={event => onValueChange(parseMillisecondFromFormattedTime(event.target.value))}
       inputProps={{
-        step: 1
+        step: 1,
       }}
     />
   </TableCell>
@@ -42,13 +48,15 @@ const EditCell = props => {
   return <TableEditRow.Cell {...props} />;
 };
 
-const ProblemCategoryCell = ({ value, style }) => <TableCell style={style}>{value && value.description}</TableCell>;
+const ProblemCategoryCell = ({ value, style }) => (
+  <TableCell style={style}>{value && value.description}</TableCell>
+);
 
 const DurationCell = ({ value, style, row }) => {
   if (row.estimatedTime) {
     style = {
       ...style,
-      color: row.estimatedTime < row.realTime ? 'red' : 'green'
+      color: row.estimatedTime < row.realTime ? 'red' : 'green',
     };
   }
 
@@ -59,8 +67,8 @@ const Cell = props => {
   const { column, row } = props;
   const style = row.addedOnTheFly
     ? {
-      backgroundColor: '#ffe6e6'
-    }
+        backgroundColor: '#ffe6e6',
+      }
     : {};
   if (column.name === 'problemCategory') {
     return <ProblemCategoryCell {...props} style={style} />;
@@ -88,8 +96,8 @@ class TicketResultsTable extends React.Component {
       { name: 'estimatedTime', title: 'Estimated Time' },
       { name: 'realTime', title: 'Real Time' },
       { name: 'problems', title: 'Problems' },
-      { name: 'problemCategory', title: 'Problem Category' }
-    ]
+      { name: 'problemCategory', title: 'Problem Category' },
+    ],
   };
   commitChanges = ({ changed }) => {
     if (changed) {
@@ -111,7 +119,11 @@ class TicketResultsTable extends React.Component {
         <div className="resultsGrid">
           <div className="printArea">
             <h2 className="displayOnlyOnPrint">{this.title}</h2>
-            <Grid rows={this.props.ticketData.tasks} columns={this.state.columns} getRowId={getRowId}>
+            <Grid
+              rows={this.props.ticketData.tasks}
+              columns={this.state.columns}
+              getRowId={getRowId}
+            >
               <EditingState onCommitChanges={this.commitChanges} />
               <Table cellComponent={Cell} />
               <TableHeaderRow />

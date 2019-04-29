@@ -14,14 +14,14 @@ export const SET_TICKET_ID = 'SET_TICKET_ID';
 
 export function initSession() {
   return {
-    type: INIT_SESSION
+    type: INIT_SESSION,
   };
 }
 
 export function startSession(tasks) {
   return {
     type: START_SESSION,
-    tasks
+    tasks,
   };
 }
 
@@ -29,20 +29,20 @@ export function nextTask(newTasks, projectId) {
   return {
     type: NEXT_TASK,
     newTasks,
-    projectId
+    projectId,
   };
 }
 
 export function previousTask(newTasks) {
   return {
     type: PREVIOUS_TASK,
-    newTasks
+    newTasks,
   };
 }
 
 export function playOrPauseSession() {
   return {
-    type: PLAY_OR_PAUSE_SESSION
+    type: PLAY_OR_PAUSE_SESSION,
   };
 }
 
@@ -55,14 +55,14 @@ export function resetMonitor(card) {
 
 export function backToPlanning() {
   return {
-    type: BACK_TO_PLANNING
+    type: BACK_TO_PLANNING,
   };
 }
 
 export function setCurrentTaskFields(fields) {
   return {
     type: SET_CURRENT_TASK_FIELDS,
-    fields
+    fields,
   };
 }
 
@@ -70,26 +70,26 @@ export function setTaskFields(taskIndex, fields) {
   return {
     type: SET_TASK_FIELDS,
     taskIndex,
-    fields
+    fields,
   };
 }
 
 export function setTicketId(ticketId) {
   return {
     type: SET_TICKET_ID,
-    ticketId
+    ticketId,
   };
 }
 
 export function update(state) {
   return {
     type: UPDATE,
-    state
+    state,
   };
 }
 
 export function saveResults() {
   return {
-    type: SAVE_RESULTS
+    type: SAVE_RESULTS,
   };
 }

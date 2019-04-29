@@ -4,15 +4,18 @@ import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 import ProjectHistoryPage from './view';
 
 class ProjectHistoryPageContainer extends Component {
-  goToTicket = ticketId => window.location.hash = `#/history/${ticketId}`
-  render(){
+  goToTicket = ticketId => (window.location.hash = `#/history/${ticketId}`);
+  render() {
     return (
-      <Query query={GET_TICKETS_HISTORY} variables={{
-        pagination: {
-          offset: 0,
-          limit: 10,
-        },
-      }}>
+      <Query
+        query={GET_TICKETS_HISTORY}
+        variables={{
+          pagination: {
+            offset: 0,
+            limit: 10,
+          },
+        }}
+      >
         {({ loading, error, data, fetchMore }) => {
           if (loading) return 'Loading...';
           if (error) return 'Unexpected error';
@@ -29,19 +32,24 @@ class ProjectHistoryPageContainer extends Component {
                 return {
                   tickets: {
                     ...prev.tickets,
-                    rows: [...prev.tickets.rows, ...fetchMoreResult.tickets.rows]
-                  }
+                    rows: [...prev.tickets.rows, ...fetchMoreResult.tickets.rows],
+                  },
                 };
-              }
+              },
             });
 
-          return <ProjectHistoryPage goToTicket={this.goToTicket} loadMore={loadMore} loading={loading} tickets={data.tickets}/>;
+          return (
+            <ProjectHistoryPage
+              goToTicket={this.goToTicket}
+              loadMore={loadMore}
+              loading={loading}
+              tickets={data.tickets}
+            />
+          );
         }}
       </Query>
     );
   }
 }
-
-
 
 export default ProjectHistoryPageContainer;

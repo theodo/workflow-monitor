@@ -157,7 +157,7 @@ const resolvers = {
       user.save();
       return 1;
     },
-    saveTicket: async (_, { state }, { pubsub, user }) => {
+    saveTicket: async (_, { state }, { user }) => {
       const jsState = JSON.parse(state);
 
       const project = user.get('currentProject');
@@ -169,11 +169,11 @@ const resolvers = {
       Task.destroy({ where: { ticketId: ticket.id } });
       const formattedTasks = formatTasks(jsState, ticket);
       formattedTasks.map(async formattedTask => {
-        task = await Task.create(formattedTask);
+        const task = await Task.create(formattedTask);
 
         formattedTask.problems.map(async formattedProblem => {
           formattedProblem.taskId = task.id;
-          problem = Problem.create(formattedProblem);
+          const problem = Problem.create(formattedProblem);
           formattedProblem.problemCategory &&
             problem.setProblemCategory(formattedProblem.problemCategory.id);
           problem.save();
