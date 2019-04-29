@@ -137,7 +137,7 @@ const resolvers = {
     },
     tickets: (_, { pagination: { limit, offset } }, { user }) => {
       const project = user.get('currentProject')
-      return Ticket.findAndCountAll({ where: { projectId: project.id }, limit, offset })
+      return Ticket.findAndCountAll({ where: { projectId: project.id }, limit, order: [['createdAt', 'DESC']], offset })
     }
   },
   Mutation: {
