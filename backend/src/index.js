@@ -105,6 +105,7 @@ const typeDefs = `
     updateTask(task: TaskInput!): Task,
     selectProject(project: ProjectInput): Project,
     addProblemCategory(problemCategoryDescription: String): ProblemCategory,
+    setTicketThirdPartyId(ticketId: Int!, idShort: String!): Int
   }
   type Subscription {
     state: String!
@@ -215,6 +216,10 @@ const resolvers = {
       return ProblemCategory.create({
         description: problemCategoryDescription,
       });
+    },
+    setTicketThirdPartyId: async (_, { ticketId, idShort }) => {
+      Ticket.update({ thirdPartyId: idShort }, { where: { id: ticketId } });
+      return 1;
     },
   },
   Subscription: {
