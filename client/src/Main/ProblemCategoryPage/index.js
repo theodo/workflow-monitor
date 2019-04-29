@@ -9,6 +9,7 @@ import {
   GET_PROBLEM_CATEGORIES_WITH_COUNT,
   ADD_PROBLEM_CATEGORY,
 } from '../../Queries/Categories';
+import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 
 class ProblemCategoryPageContainer extends Component {
   render() {
@@ -43,6 +44,7 @@ class ProblemCategoryPageMutationContainer extends Component {
         refetchQueries: [
           { query: GET_PROBLEM_CATEGORIES },
           { query: GET_PROBLEM_CATEGORIES_WITH_COUNT },
+          { query: GET_TICKETS_HISTORY },
         ],
       })
       .then(() => {

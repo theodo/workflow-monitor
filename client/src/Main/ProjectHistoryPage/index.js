@@ -15,6 +15,7 @@ class ProjectHistoryPageContainer extends Component {
             limit: 10,
           },
         }}
+        fetchPolicy="cache-and-network"
       >
         {({ loading, error, data, fetchMore }) => {
           if (loading) return 'Loading...';
