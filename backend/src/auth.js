@@ -36,15 +36,12 @@ const authenticationMiddleware = (req, res, next) => {
   }
 };
 
-const websocketAuthenticationMiddleware = async (
-  connectionParams,
-  webSocket,
-) => {
+const websocketAuthenticationMiddleware = async connectionParams => {
   if (connectionParams.authToken) {
     return verifyJWTToken(connectionParams.authToken, (err, result) => {
       if (err) {
         console.error(result);
-        res.status(405).send('{"error": "Not authorized!"}');
+        throw new Error('Not authorized!');
       } else {
         return findUser(result.trelloId).then(user => {
           if (user) {
@@ -66,43 +63,35 @@ const loginRoute = (req, res) => {
   const trelloToken = req.body.trelloToken;
   const trelloKey = '0314242ee352e79b01e16d6c79a6dee9';
   https
-    .get(
-      `https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`,
-      resp => {
-        if (resp && resp.statusCode === 200) {
-          let data = '';
+    .get(`https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`, resp => {
+      if (resp && resp.statusCode === 200) {
+        let data = '';
 
-          resp.on('data', chunk => {
-            data += chunk;
-          });
+        resp.on('data', chunk => {
+          data += chunk;
+        });
 
-          resp.on('end', () => {
-            const dataJson = JSON.parse(data);
-            sequelize.models.user
-              .findOrCreate({
-                where: { trelloId: dataJson.id },
-                defaults: { fullName: dataJson.fullName },
-                include: [
-                  { model: sequelize.models.project, as: 'currentProject' },
-                ],
-              })
-              .spread((user, created) => {
-                const loginView = {
-                  user,
-                  jwt: jwt.sign(
-                    { id: user.id, trelloId: dataJson.id },
-                    'JWT_SECRET',
-                  ),
-                };
-                res.status(200).send(loginView);
-              });
-          });
-        } else {
-          console.error(`Got error too:`);
-          res.status(405).send('{"error": "Not authorized!"}');
-        }
-      },
-    )
+        resp.on('end', () => {
+          const dataJson = JSON.parse(data);
+          sequelize.models.user
+            .findOrCreate({
+              where: { trelloId: dataJson.id },
+              defaults: { fullName: dataJson.fullName },
+              include: [{ model: sequelize.models.project, as: 'currentProject' }],
+            })
+            .spread(user => {
+              const loginView = {
+                user,
+                jwt: jwt.sign({ id: user.id, trelloId: dataJson.id }, 'JWT_SECRET'),
+              };
+              res.status(200).send(loginView);
+            });
+        });
+      } else {
+        console.error(`Got error too:`);
+        res.status(405).send('{"error": "Not authorized!"}');
+      }
+    })
     .on('error', e => {
       console.error(`Got error: ${e.message}`);
       res.status(405).send('{"error": "Not authorized!"}');
