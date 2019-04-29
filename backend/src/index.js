@@ -211,7 +211,7 @@ const resolvers = {
         return project;
       });
     },
-    addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
+    addProblemCategory: (_, { problemCategoryDescription }) => {
       return ProblemCategory.create({
         description: problemCategoryDescription,
       });

@@ -14,16 +14,29 @@ const formatFullTicket = (state, project, user) => {
   };
 };
 
-const formatTask = (ticketId) => ({ label, estimatedTime, addedOnTheFly, realTime, problems, problemCategory }) => ({
+const formatTask = ticketId => ({
+  label,
+  estimatedTime,
+  addedOnTheFly,
+  realTime,
+  problems,
+  problemCategory,
+}) => ({
   description: label,
   estimatedTime,
   addedOnTheFly: addedOnTheFly || false,
-  problems: (problems || problemCategory) ?
-    [{
-      description: problems,
-      problemCategory: problemCategory && { id: problemCategory.value, description: problemCategory.label }
-    }]
-    : [],
+  problems:
+    problems || problemCategory
+      ? [
+          {
+            description: problems,
+            problemCategory: problemCategory && {
+              id: problemCategory.value,
+              description: problemCategory.label,
+            },
+          },
+        ]
+      : [],
   realTime,
   ticketId,
 });
@@ -35,4 +48,4 @@ const formatTasks = (state, ticket) => {
   return tasks.map(formatTask(ticketId));
 };
 
-module.exports = { formatFullTicket, formatTasks ,formatTask }
+module.exports = { formatFullTicket, formatTasks, formatTask };
