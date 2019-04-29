@@ -9,8 +9,9 @@ const trelloAuthParams = {
   name: 'Workflow Monitor',
   scope: {
     read: 'true',
-    write: 'true' },
-  expiration: 'never',
+    write: 'true'
+  },
+  expiration: 'never'
 };
 
 class Login extends Component {
@@ -19,7 +20,7 @@ class Login extends Component {
     this.trelloAuthenticationFailure = this.trelloAuthenticationFailure.bind(this);
     this.trelloAuthenticationSuccess = this.trelloAuthenticationSuccess.bind(this);
     this.handleLoginButtonClick = this.handleLoginButtonClick.bind(this);
-    if(localStorage.getItem('trello_token')){
+    if (localStorage.getItem('trello_token')) {
       window.Trello.authorize({
         ...trelloAuthParams,
         interactive: false,
@@ -28,17 +29,18 @@ class Login extends Component {
       });
     }
   }
-  trelloAuthenticationSuccess(){
-    axios.post('/api/login', {
-      trelloToken: localStorage.getItem('trello_token'),
-    })
-      .then((response) => {
+  trelloAuthenticationSuccess() {
+    axios
+      .post('/api/login', {
+        trelloToken: localStorage.getItem('trello_token')
+      })
+      .then(response => {
         this.props.login(response.data.user, response.data.jwt);
       })
       .catch(() => {});
   }
-  trelloAuthenticationFailure(){}
-  handleLoginButtonClick(){
+  trelloAuthenticationFailure() {}
+  handleLoginButtonClick() {
     window.Trello.authorize({
       ...trelloAuthParams,
       success: this.trelloAuthenticationSuccess,
@@ -62,9 +64,12 @@ const mapDispatchToProps = dispatch => {
       localStorage.setItem('jwt_token', jwtToken);
       dispatch(login(user));
       if (user.currentProject) window.location.hash = '#/';
-      else window.location.hash = '#/project';
-    },
+      else window.location.hash = '#/settings';
+    }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
