@@ -14,7 +14,7 @@
     when: not project_folder.stat.exists
 
   - name: Pull project
-    raw: "cd workflow-monitor && git pull"
+    raw: "cd workflow-monitor && git fetch && git reset --hard"
 
   - name: Restart backend
     raw: "cd workflow-monitor/backend && npm i && NODE_ENV=production node_modules/.bin/sequelize db:migrate && pm2 restart index"
