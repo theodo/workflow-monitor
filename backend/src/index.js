@@ -1,18 +1,22 @@
-const fs = require('fs')
-const { GraphQLServer, PubSub } = require('graphql-yoga')
-const bodyParser = require('body-parser')
-const { sequelize } = require('../models')
-const { formatFullTicket, formatTasks } = require('./formatters')
-const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils')
-const { authenticationMiddleware, loginRoute, websocketAuthenticationMiddleware } = require('./auth')
+const fs = require('fs');
+const { GraphQLServer, PubSub } = require('graphql-yoga');
+const bodyParser = require('body-parser');
+const { sequelize } = require('../models');
+const { formatFullTicket, formatTasks } = require('./formatters');
+const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
+const {
+  authenticationMiddleware,
+  loginRoute,
+  websocketAuthenticationMiddleware,
+} = require('./auth');
 
-const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 
-const Project = sequelize.models.project
-const ProblemCategory = sequelize.models.problemCategory
-const Ticket = sequelize.models.ticket
-const Task = sequelize.models.task
-const Problem = sequelize.models.problem
+const Project = sequelize.models.project;
+const ProblemCategory = sequelize.models.problemCategory;
+const Ticket = sequelize.models.ticket;
+const Task = sequelize.models.task;
+const Problem = sequelize.models.problem;
 
 const typeDefs = `
   type Query {
@@ -105,7 +109,7 @@ const typeDefs = `
   type Subscription {
     state: String!
   }
-`
+`;
 
 const resolvers = {
   Query: {
@@ -113,11 +117,11 @@ const resolvers = {
     currentUser: (_, args, { user }) => user,
     problemCategories: () => ProblemCategory.findAll(),
     problemCategoriesWithCount: (_, args, { user }) => {
-      const projectId = user.currentProject.id
+      const projectId = user.currentProject.id;
       return sequelize.query(SELECT_PROBLEM_CATEGORY_COUNT_QUERY, {
         replacements: [projectId],
-        type: sequelize.QueryTypes.SELECT
-      })
+        type: sequelize.QueryTypes.SELECT,
+      });
     },
     ticket: (_, { ticketId }) => {
       return Ticket.findById(ticketId, {
@@ -129,106 +133,117 @@ const resolvers = {
             as: 'problems',
             include: {
               model: ProblemCategory,
-              as: 'problemCategory'
-            }
-          }
-        }
-      })
+              as: 'problemCategory',
+            },
+          },
+        },
+      });
     },
     tickets: (_, { pagination: { limit, offset } }, { user }) => {
-      const project = user.get('currentProject')
-      return Ticket.findAndCountAll({ where: { projectId: project.id }, limit, order: [['createdAt', 'DESC']], offset })
-    }
+      const project = user.get('currentProject');
+      return Ticket.findAndCountAll({
+        where: { projectId: project.id },
+        limit,
+        order: [['createdAt', 'DESC']],
+        offset,
+      });
+    },
   },
   Mutation: {
     updateCurrentState: async (_, { state }, { pubsub, user }) => {
-      const channel = 'user#' + user.id
-      pubsub.publish(channel, { state })
-      user.set('state', state)
-      user.save()
-      return 1
+      const channel = 'user#' + user.id;
+      pubsub.publish(channel, { state });
+      user.set('state', state);
+      user.save();
+      return 1;
     },
     saveTicket: async (_, { state }, { pubsub, user }) => {
-      jsState = JSON.parse(state)
+      const jsState = JSON.parse(state);
 
-      const project = user.get('currentProject')
-      const formattedTicket = formatFullTicket(jsState, project, user)
-      const ticket = await upsert(Ticket, formattedTicket, { thirdPartyId: formattedTicket.thirdPartyId })
-      const ticketId = ticket.id
-      Task.destroy({ where: { ticketId: ticket.id } })
-      const formattedTasks = formatTasks(jsState, ticket)
+      const project = user.get('currentProject');
+      const formattedTicket = formatFullTicket(jsState, project, user);
+      const ticket = await upsert(Ticket, formattedTicket, {
+        thirdPartyId: formattedTicket.thirdPartyId,
+      });
+      const ticketId = ticket.id;
+      Task.destroy({ where: { ticketId: ticket.id } });
+      const formattedTasks = formatTasks(jsState, ticket);
       formattedTasks.map(async formattedTask => {
-        task = await Task.create(formattedTask)
+        task = await Task.create(formattedTask);
 
         formattedTask.problems.map(async formattedProblem => {
-          formattedProblem.taskId = task.id
-          problem = Problem.create(formattedProblem)
-          formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id)
-          problem.save()
-        })
-      })
-      return ticketId
+          formattedProblem.taskId = task.id;
+          problem = Problem.create(formattedProblem);
+          formattedProblem.problemCategory &&
+            problem.setProblemCategory(formattedProblem.problemCategory.id);
+          problem.save();
+        });
+      });
+      return ticketId;
     },
     updateTask: (_, { task }) => {
-      return Task.findById(task.id, { include: [{ model: Problem, as: 'problems' }] }).then(taskToUpdate => {
-        taskToUpdate.update(task).then(() => {
-          Problem.destroy({ where: { taskId: taskToUpdate.id } }).then(() => {
-            task.problems.map(formattedProblem => {
-              formattedProblem.taskId = taskToUpdate.id
-              Problem.create(formattedProblem)
-                .then(
-                  problem =>
-                    formattedProblem.problemCategory && problem.setProblemCategory(formattedProblem.problemCategory.id)
-                )
-                .then(problem => problem.save())
-            })
-          })
-        })
-      })
+      return Task.findById(task.id, { include: [{ model: Problem, as: 'problems' }] }).then(
+        taskToUpdate => {
+          taskToUpdate.update(task).then(() => {
+            Problem.destroy({ where: { taskId: taskToUpdate.id } }).then(() => {
+              task.problems.map(formattedProblem => {
+                formattedProblem.taskId = taskToUpdate.id;
+                Problem.create(formattedProblem)
+                  .then(
+                    problem =>
+                      formattedProblem.problemCategory &&
+                      problem.setProblemCategory(formattedProblem.problemCategory.id),
+                  )
+                  .then(problem => problem.save());
+              });
+            });
+          });
+        },
+      );
     },
     selectProject: (_, { project }, { user }) => {
-      project.thirdPartyType = 'TRELLO'
+      project.thirdPartyType = 'TRELLO';
       return Project.findOrCreate({
         where: { thirdPartyId: project.thirdPartyId },
-        defaults: { ...project }
+        defaults: { ...project },
       }).spread(project => {
-        user.setCurrentProject(project.id)
-        return project
-      })
+        user.setCurrentProject(project.id);
+        return project;
+      });
     },
     addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
       return ProblemCategory.create({
-        description: problemCategoryDescription
-      })
-    }
+        description: problemCategoryDescription,
+      });
+    },
   },
   Subscription: {
     state: {
       subscribe: (_, args, { user }) => {
-        const channel = 'user#' + user.id
-        return pubsub.asyncIterator(channel)
-      }
-    }
-  }
-}
+        const channel = 'user#' + user.id;
+        return pubsub.asyncIterator(channel);
+      },
+    },
+  },
+};
 
-const pubsub = new PubSub()
+const pubsub = new PubSub();
 const context = async ({ request, connection }) => ({
   user: request ? request.user : connection ? connection.context.user : undefined,
-  pubsub
-})
-const server = new GraphQLServer({ typeDefs, resolvers, context })
-server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware)
+  pubsub,
+});
+const server = new GraphQLServer({ typeDefs, resolvers, context });
+server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware);
 
 const serverOptions = isDev
   ? { subscriptions: { onConnect: websocketAuthenticationMiddleware } }
   : {
       https: {
         cert: fs.readFileSync('/home/ubuntu/certificates/cert.pem', 'utf8'),
-        key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8')
+        key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8'),
       },
-      subscriptions: { onConnect: websocketAuthenticationMiddleware }
-    }
+      subscriptions: { onConnect: websocketAuthenticationMiddleware },
+    };
 
-server.express.post(`/login`, bodyParser.json(), loginRoute)
-server.start(serverOptions, () => console.log('Server is running on localhost:4000'))
+server.express.post(`/login`, bodyParser.json(), loginRoute);
+server.start(serverOptions, () => console.log('Server is running on localhost:4000'));

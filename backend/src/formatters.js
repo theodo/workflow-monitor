@@ -1,5 +1,7 @@
 const formatFullTicket = (state, project, user) => {
-  const { currentTrelloCard: { idShort: thirdPartyId, name: description } } = state;
+  const {
+    currentTrelloCard: { idShort: thirdPartyId, name: description },
+  } = state;
   const { id: projectId } = project;
   const { id: userId } = user;
 
@@ -9,7 +11,7 @@ const formatFullTicket = (state, project, user) => {
     status: 'DONE',
     userId,
     projectId,
-  }
+  };
 };
 
 const formatTask = (ticketId) => ({ label, estimatedTime, addedOnTheFly, realTime, problems, problemCategory }) => ({
