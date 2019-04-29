@@ -7,7 +7,7 @@ import ProblemCategoryPage from './view';
 import {
   GET_PROBLEM_CATEGORIES,
   GET_PROBLEM_CATEGORIES_WITH_COUNT,
-  ADD_PROBLEM_CATEGORY
+  ADD_PROBLEM_CATEGORY,
 } from '../../Queries/Categories';
 
 class ProblemCategoryPageContainer extends Component {
@@ -30,7 +30,7 @@ class ProblemCategoryPageContainer extends Component {
 
 class ProblemCategoryPageMutationContainer extends Component {
   state = {
-    loading: false
+    loading: false,
   };
   addProblemCategory = description => {
     this.setState({ loading: true });
@@ -38,9 +38,12 @@ class ProblemCategoryPageMutationContainer extends Component {
       .mutate({
         mutation: ADD_PROBLEM_CATEGORY,
         variables: {
-          description
+          description,
         },
-        refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }, { query: GET_PROBLEM_CATEGORIES_WITH_COUNT }]
+        refetchQueries: [
+          { query: GET_PROBLEM_CATEGORIES },
+          { query: GET_PROBLEM_CATEGORIES_WITH_COUNT },
+        ],
       })
       .then(() => {
         this.setState({ loading: false });

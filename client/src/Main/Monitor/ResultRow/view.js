@@ -5,14 +5,10 @@ import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemC
 import './style.css';
 
 function getRealTimeClass(estimatedTime, realTime) {
-  return estimatedTime ?
-    (estimatedTime < realTime ? 'red' : 'green')
-    : '';
+  return estimatedTime ? (estimatedTime < realTime ? 'red' : 'green') : '';
 }
 function getRowClass(addedOnTheFly) {
-  return addedOnTheFly ?
-    'addedOnTheFly'
-    : '';
+  return addedOnTheFly ? 'addedOnTheFly' : '';
 }
 
 class ResultRow extends Component {
@@ -22,28 +18,42 @@ class ResultRow extends Component {
     this.initialRealTime = props.realTime;
   }
 
-  handleProblemCategoryValueChange = (selectedOption) => {
+  handleProblemCategoryValueChange = selectedOption => {
     this.props.handleTaskChange(this.props.index, { problemCategory: selectedOption });
   };
 
-  handleProblemsValueChange = (event) => {
+  handleProblemsValueChange = event => {
     this.props.handleTaskChange(this.props.index, { problems: event.target.value });
   };
 
   render() {
-    const { index, addedOnTheFly, description, estimatedTime, realTime, problems, problemCategory} = this.props;
+    const {
+      index,
+      addedOnTheFly,
+      description,
+      estimatedTime,
+      realTime,
+      problems,
+      problemCategory,
+    } = this.props;
     const contentEditableProps = {
       contentEditable: true,
       suppressContentEditableWarning: true,
     };
     return (
       <tr className={getRowClass(addedOnTheFly)}>
-        <td className="editable" {...contentEditableProps}>{description}</td>
+        <td className="editable" {...contentEditableProps}>
+          {description}
+        </td>
         <td
           className="editable"
           {...contentEditableProps}
-          onInput={(event) =>
-            this.props.handleEditTime(index, 'estimatedTime', parseMillisecondFromFormattedTime(event.target.innerHTML))
+          onInput={event =>
+            this.props.handleEditTime(
+              index,
+              'estimatedTime',
+              parseMillisecondFromFormattedTime(event.target.innerHTML),
+            )
           }
         >
           {formatMilliSecondToTime(this.initialEstimatedTime)}
@@ -51,8 +61,12 @@ class ResultRow extends Component {
         <td
           className={`editable ${getRealTimeClass(estimatedTime, realTime)}`}
           {...contentEditableProps}
-          onInput={(event) =>
-            this.props.handleEditTime(index, 'realTime', parseMillisecondFromFormattedTime(event.target.innerHTML))
+          onInput={event =>
+            this.props.handleEditTime(
+              index,
+              'realTime',
+              parseMillisecondFromFormattedTime(event.target.innerHTML),
+            )
           }
         >
           {formatMilliSecondToTime(this.initialRealTime)}
@@ -62,7 +76,7 @@ class ResultRow extends Component {
             multiline
             rowsMax="4"
             value={problems || ''}
-            onChange={(event) => this.handleProblemsValueChange(event)}
+            onChange={event => this.handleProblemsValueChange(event)}
           />
         </td>
         <td>

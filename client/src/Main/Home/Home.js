@@ -9,7 +9,7 @@ import { resetMonitor } from '../Monitor/MonitorActions';
 import BacklogAutocomplete from './BacklogAutocomplete';
 
 class Home extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.isRefreshButtonDisabled = this.isRefreshButtonDisabled.bind(this);
     this.loadCardsFromTrello = this.loadCardsFromTrello.bind(this);
@@ -20,33 +20,37 @@ class Home extends Component {
       cards: [],
     };
     if (this.props.project) {
-      window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists`).then((lists) => {
+      window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists`).then(lists => {
         this.setState({ lists });
       });
     }
     if (this.props.backlog !== '') {
-      window.Trello.get(`/lists/${this.props.backlog}/cards`).then((cards) => {
+      window.Trello.get(`/lists/${this.props.backlog}/cards`).then(cards => {
         this.setState({ cards });
       });
     }
   }
 
-  handleSelectedBacklogChange = (backlogId) => {
+  handleSelectedBacklogChange = backlogId => {
     this.setState({ backlog: backlogId }, () => {
       this.props.saveSettings({
         selectedBacklogId: this.state.backlog,
       });
     });
     this.loadCardsFromTrello(backlogId);
-  }
+  };
   loadCardsFromTrello(backlogId) {
     this.setState({ cards: [] });
-    window.Trello.get(`/lists/${backlogId}/cards`).then((cards) => {
+    window.Trello.get(`/lists/${backlogId}/cards`).then(cards => {
       this.setState({ cards });
     });
   }
   isRefreshButtonDisabled() {
-    const isRefreshButtonDisabled = !this.state.lists || this.state.lists.length === 0 || !this.state.backlog || this.state.lists.map(list => list.id).indexOf(this.state.backlog) === -1;
+    const isRefreshButtonDisabled =
+      !this.state.lists ||
+      this.state.lists.length === 0 ||
+      !this.state.backlog ||
+      this.state.lists.map(list => list.id).indexOf(this.state.backlog) === -1;
     return !!isRefreshButtonDisabled;
   }
   render() {
@@ -54,7 +58,7 @@ class Home extends Component {
       <div className="Home">
         <div className="Home-left-panel">
           <form autoComplete="on">
-            Project : { this.state.project.name }
+            Project : {this.state.project.name}
             <br />
             <FormControl fullWidth>
               <BacklogAutocomplete
@@ -65,24 +69,28 @@ class Home extends Component {
             </FormControl>
             <br />
             <br />
-            <Button onClick={() => this.loadCardsFromTrello(this.state.backlog)} disabled={this.isRefreshButtonDisabled()}>
+            <Button
+              onClick={() => this.loadCardsFromTrello(this.state.backlog)}
+              disabled={this.isRefreshButtonDisabled()}
+            >
               Refresh cards
             </Button>
           </form>
         </div>
         <div className="Home-right-panel">
-          {
-            this.state.cards.length === 0 ?
-              'Select your project and the current backlog'
-              : this.state.cards.map((card, index) =>
+          {this.state.cards.length === 0
+            ? 'Select your project and the current backlog'
+            : this.state.cards.map((card, index) => (
                 <SimpleCard
                   key={index}
                   card={card}
-                  isCurrentTicket={this.props.currentTicket && this.props.currentTicket.id === card.id}
+                  isCurrentTicket={
+                    this.props.currentTicket && this.props.currentTicket.id === card.id
+                  }
                   handleCardStartClick={this.props.handleCardStartClick}
                   handleCardContinueClick={this.props.handleCardContinueClick}
-                ></SimpleCard>)
-          }
+                />
+              ))}
         </div>
       </div>
     );
@@ -92,17 +100,19 @@ class Home extends Component {
 const mapStateToProps = state => {
   return {
     project: state.LoginReducers.currentProject,
-    backlog: state.SettingsReducers.selectedBacklogId ? state.SettingsReducers.selectedBacklogId : '',
+    backlog: state.SettingsReducers.selectedBacklogId
+      ? state.SettingsReducers.selectedBacklogId
+      : '',
     currentTicket: state.MonitorReducers.currentTrelloCard,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    saveSettings: (settings) => {
+    saveSettings: settings => {
       dispatch(saveSettings(settings));
     },
-    handleCardStartClick: (card) => {
+    handleCardStartClick: card => {
       dispatch(resetMonitor(card));
       window.location.hash = '#/monitor';
     },
@@ -112,4 +122,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Home);

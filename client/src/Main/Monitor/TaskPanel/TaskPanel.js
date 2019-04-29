@@ -21,12 +21,12 @@ const problemsTextFieldStyle = {
   borderRight: TEXT_AREA_BORDER,
   borderRadius: '4px 4px 0 0',
   backgroundColor: 'white',
-  width: '100%'
+  width: '100%',
 };
 
 const fullPageHeightStyle = {
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
 class TaskPanel extends Component {
@@ -34,12 +34,13 @@ class TaskPanel extends Component {
     super(props);
     this.state = {
       newTasks: [],
-      currentTaskCheckOK: false
+      currentTaskCheckOK: false,
     };
     this.handleNewTasksValueChange = this.handleNewTasksValueChange.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleProblemCategoryValueChange = this.handleProblemCategoryValueChange.bind(this);
-    if (!this.props.dateLastPause) initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
+    if (!this.props.dateLastPause)
+      initAlarm(props.currentTask.estimatedTime - this.props.taskChrono.elapsedTime);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,7 +54,7 @@ class TaskPanel extends Component {
       initAlarm(nextProps.currentTask.estimatedTime);
       this.setState({
         newTasks: [],
-        currentTaskCheckOK: false
+        currentTaskCheckOK: false,
       });
     }
   }
@@ -63,15 +64,17 @@ class TaskPanel extends Component {
   }
 
   getFormattedTasks(tasks) {
-    return tasks ? filterEmptyTasks(tasks).map(task => ({ ...task, addedOnTheFly: true })) : undefined;
+    return tasks
+      ? filterEmptyTasks(tasks).map(task => ({ ...task, addedOnTheFly: true }))
+      : undefined;
   }
 
   handleTaskPanelChange() {
     this.props.handleTaskPanelChange({
       taskPanelChanges: {
         newTasks: this.getFormattedTasks(this.state.newTasks),
-        currentTaskCheckOK: this.state.currentTaskCheckOK
-      }
+        currentTaskCheckOK: this.state.currentTaskCheckOK,
+      },
     });
   }
 
@@ -116,7 +119,11 @@ class TaskPanel extends Component {
               <h3>Checks :</h3>
               <FormControlLabel
                 control={
-                  <Checkbox checked={this.state.currentTaskCheckOK} onChange={this.handleCheckChange} value="check" />
+                  <Checkbox
+                    checked={this.state.currentTaskCheckOK}
+                    onChange={this.handleCheckChange}
+                    value="check"
+                  />
                 }
                 label={currentTask.check}
               />

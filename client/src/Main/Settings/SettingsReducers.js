@@ -5,7 +5,7 @@ import { SAVE_SETTINGS } from './SettingsActions';
 const initialSettingsState = {
   selectedProjectId: undefined,
   selectedBacklogId: undefined,
-  isAlarmMuted: false
+  isAlarmMuted: false,
 };
 
 const oldState = JSON.parse(localStorage.getItem('settingsState'));
@@ -17,14 +17,14 @@ setMuted(currentInitialState && currentInitialState.isAlarmMuted);
 const SettingsReducers = (state = currentInitialState, action) => {
   let newState = {};
   switch (action.type) {
-  case SAVE_SETTINGS:
-    newState = {
-      ...state,
-      ...action.settings
-    };
-    break;
-  default:
-    newState = state;
+    case SAVE_SETTINGS:
+      newState = {
+        ...state,
+        ...action.settings,
+      };
+      break;
+    default:
+      newState = state;
   }
   localStorage.setItem('settingsState', JSON.stringify(newState));
   return newState;

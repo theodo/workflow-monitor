@@ -49,7 +49,7 @@ export function playOrPauseSession() {
 export function resetMonitor(card) {
   return {
     type: RESET_MONITOR,
-    card
+    card,
   };
 }
 

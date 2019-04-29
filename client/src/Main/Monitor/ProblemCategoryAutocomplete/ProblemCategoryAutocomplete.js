@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { GET_PROBLEM_CATEGORIES } from '../../../Queries/Categories';
 import { Query } from 'react-apollo';
 
-
 /* TODO: Translate and insert values below in database
 const options = [
   { value: 18 , label: 'Compétences / Git commit' },
@@ -105,34 +104,43 @@ const options = [
 ];
 */
 
-const ProblemCategoryAutocompleteContainer = (props) =>(
+const ProblemCategoryAutocompleteContainer = props => (
   <Query query={GET_PROBLEM_CATEGORIES}>
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return 'Unexpected error';
-      const options = data.problemCategories.map(
-        problemCategory => ({value: problemCategory.id, label: problemCategory.description})
-      );
-
+      const options = data.problemCategories.map(problemCategory => ({
+        value: problemCategory.id,
+        label: problemCategory.description,
+      }));
       // Code below allow us to pass eather a classic problemCategory object or a react-select object
       const value = props.value;
-      const realValue = value && value.id ? {
-        value: value.id,
-        label: value.description,
-      } : value;
+      const realValue =
+        value && value.id
+          ? {
+              value: value.id,
+              label: value.description,
+            }
+          : value;
 
       const onChange = props.onChange;
-      const realOnChange = value && value.id ? (newValue) => onChange({
-        id: newValue.value,
-        description: newValue.label
-      }) : onChange;
+      const realOnChange =
+        value && value.id
+          ? newValue =>
+              onChange({
+                id: newValue.value,
+                description: newValue.label,
+              })
+          : onChange;
 
-      return <ProblemCategoryAutocomplete
-        value={realValue}
-        onChange={realOnChange}
-        options={options}
-        placeholder={props.placeholder}
-      />;
+      return (
+        <ProblemCategoryAutocomplete
+          value={realValue}
+          onChange={realOnChange}
+          options={options}
+          placeholder={props.placeholder}
+        />
+      );
     }}
   </Query>
 );
@@ -144,7 +152,7 @@ const customStyle = {
   }),
 };
 
-const ProblemCategoryAutocomplete = (props) => (
+const ProblemCategoryAutocomplete = props => (
   <Select
     value={props.value}
     onChange={props.onChange}

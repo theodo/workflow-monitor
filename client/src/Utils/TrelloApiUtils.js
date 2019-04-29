@@ -2,7 +2,7 @@ import { formatMilliSecondToTime } from './TimeUtils';
 
 const RESULTS_CHECKLIST_LABEL = 'Workflow-monitor results';
 
-export const getOrCreateResultsChecklist = (cardId) => {
+export const getOrCreateResultsChecklist = cardId => {
   return new Promise(function(resolve) {
     window.Trello.get('/cards/' + cardId + '/checklists').then(function(checklists) {
       for (var k = 0; k < checklists.length; k++) {
@@ -11,8 +11,8 @@ export const getOrCreateResultsChecklist = (cardId) => {
         }
       }
       var checklist = {
-        'name': RESULTS_CHECKLIST_LABEL,
-        'idCard': cardId,
+        name: RESULTS_CHECKLIST_LABEL,
+        idCard: cardId,
       };
       window.Trello.post('/checklists/', checklist).then(function(data) {
         resolve(data);
@@ -23,21 +23,16 @@ export const getOrCreateResultsChecklist = (cardId) => {
 
 export const saveResultsInTrello = (cardId, results) => {
   getOrCreateResultsChecklist(cardId).then(function(checklist) {
-
     const myPromise = (checklistId, checkItem) =>
       window.Trello.post('/checklists/' + checklist.id + '/checkItems', checkItem);
 
-    results.reduce(
-      (p, task) => {
-        var realTime = task.realTime ? ' (' + formatMilliSecondToTime(task.realTime) + ')' : '';
-        var problems = task.problems && task.problems.length > 0 ? ' pb : ' + task.problems: '';
-        var checkItem = {
-          'name': task.label + realTime + problems,
-        };
-        return p.then(() => myPromise(checklist.id, checkItem));
-      },
-      Promise.resolve()
-    );
-
+    results.reduce((p, task) => {
+      var realTime = task.realTime ? ' (' + formatMilliSecondToTime(task.realTime) + ')' : '';
+      var problems = task.problems && task.problems.length > 0 ? ' pb : ' + task.problems : '';
+      var checkItem = {
+        name: task.label + realTime + problems,
+      };
+      return p.then(() => myPromise(checklist.id, checkItem));
+    }, Promise.resolve());
   });
 };

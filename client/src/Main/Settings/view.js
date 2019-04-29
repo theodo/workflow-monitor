@@ -14,8 +14,8 @@ import './Settings.css';
 const styles = () => ({
   mv25: {
     marginTop: '25px',
-    marginBottom: '25px'
-  }
+    marginBottom: '25px',
+  },
 });
 
 class Settings extends Component {
@@ -26,7 +26,7 @@ class Settings extends Component {
     this.copyToken = this.copyToken.bind(this);
     this.state = {
       beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [],
-      endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : []
+      endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : [],
     };
   }
 
@@ -37,7 +37,7 @@ class Settings extends Component {
   saveSettings() {
     this.props.saveSettings({
       beginTasks: filterEmptyTasks(this.state.beginTasks),
-      endTasks: filterEmptyTasks(this.state.endTasks)
+      endTasks: filterEmptyTasks(this.state.endTasks),
     });
   }
 
@@ -62,7 +62,10 @@ class Settings extends Component {
               updateTasks={tasks => this.handleTasksChange('beginTasks', tasks)}
             />
             <h3>End tasks</h3>
-            <TaskEditor tasks={this.state.endTasks} updateTasks={tasks => this.handleTasksChange('endTasks', tasks)} />
+            <TaskEditor
+              tasks={this.state.endTasks}
+              updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
+            />
             <Button variant="contained" onClick={this.saveSettings}>
               Sauvegarder
             </Button>

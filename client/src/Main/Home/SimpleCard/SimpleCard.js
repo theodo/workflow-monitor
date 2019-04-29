@@ -33,11 +33,11 @@ function SimpleCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        {
-          props.isCurrentTicket
-            ? <Button onClick={()=> props.handleCardContinueClick(props.card)}>Continue</Button>
-            : <Button onClick={()=> props.handleCardStartClick(props.card)}>Start</Button>
-        }
+        {props.isCurrentTicket ? (
+          <Button onClick={() => props.handleCardContinueClick(props.card)}>Continue</Button>
+        ) : (
+          <Button onClick={() => props.handleCardStartClick(props.card)}>Start</Button>
+        )}
       </CardActions>
     </Card>
   );

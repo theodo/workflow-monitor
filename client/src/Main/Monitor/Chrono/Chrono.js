@@ -8,11 +8,11 @@ class Chrono extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      now: new Date().getTime()
+      now: new Date().getTime(),
     };
     this.interval = setInterval(() => {
       this.setState({
-        now: new Date().getTime()
+        now: new Date().getTime(),
       });
     }, 1000);
   }
@@ -31,7 +31,9 @@ class Chrono extends Component {
   }
   render() {
     const time = this.getTime();
-    return <span className={'Chrono ' + this.getColorClass(time)}>{formatMilliSecondToTime(time)}</span>;
+    return (
+      <span className={'Chrono ' + this.getColorClass(time)}>{formatMilliSecondToTime(time)}</span>
+    );
   }
 }
 

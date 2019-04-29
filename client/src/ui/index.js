@@ -1,3 +1,3 @@
 export const appColors = {
-  darkGrey: '#777777'
+  darkGrey: '#777777',
 };
