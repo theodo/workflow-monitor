@@ -192,8 +192,8 @@ export class Main extends Component {
                 <ListItemText primary="Pareto" />
               </ListItem>
             </Link>
-            <Link to="/settings" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
-              <ListItem selected={isCurrentPage('settings')} disabled={!isProjectSelected} button>
+            <Link to="/settings" class={classes.textDecorationReset}>
+              <ListItem selected={isCurrentPage('settings')} button>
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>
