@@ -5,7 +5,7 @@ import { saveSettings } from './SettingsActions';
 
 const mapStateToProps = state => {
   return {
-    settings: state.SettingsReducers
+    settings: state.SettingsReducers,
   };
 };
 
@@ -13,11 +13,11 @@ const mapDispatchToProps = dispatch => {
   return {
     saveSettings: settings => {
       dispatch(saveSettings(settings));
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Settings);

@@ -7,30 +7,30 @@ import AddProblemCategoryForm from './AddProblemCategoryForm';
 
 const fullPageHeightStyle = {
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
-const ProblemCategoryPage = (props) => (
+const ProblemCategoryPage = props => (
   <Grid container spacing={0} style={fullPageHeightStyle}>
-    <Grid item xs={1} >
-    </Grid>
+    <Grid item xs={1} />
     <Grid item xs={10}>
-      <AddProblemCategoryForm addProblemCategory={props.addProblemCategory}/>
-      <br/>
+      <AddProblemCategoryForm addProblemCategory={props.addProblemCategory} />
+      <br />
       <Divider variant="middle" />
       <div>
         <h3>Pareto of existing problem categories</h3>
         <List>
-          {!props.loading && props.problemCategories.map(problemCategory => (
-            <ListItem key={problemCategory.id}>
-              {problemCategory.description} - {problemCategory.count ? problemCategory.count : 0} occurrences
-            </ListItem>
-          ))}
+          {!props.loading &&
+            props.problemCategories.map(problemCategory => (
+              <ListItem key={problemCategory.id}>
+                {problemCategory.description} - {problemCategory.count ? problemCategory.count : 0}{' '}
+                occurrences
+              </ListItem>
+            ))}
         </List>
       </div>
     </Grid>
-    <Grid item xs={1} >
-    </Grid>
+    <Grid item xs={1} />
   </Grid>
 );
 

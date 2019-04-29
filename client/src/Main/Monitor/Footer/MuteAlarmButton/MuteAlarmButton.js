@@ -9,7 +9,7 @@ import { setMuted } from 'Utils/AlarmUtils';
 import { saveSettings } from '../../../Settings/SettingsActions';
 
 const MuteAlarmButtonStyle = {
-  color: 'white'
+  color: 'white',
 };
 
 const MusicOffIcon = () => (
@@ -26,7 +26,7 @@ class MuteAlarmButton extends Component {
   toggleMute() {
     setMuted(!this.props.isAlarmMuted);
     this.props.saveSettings({
-      isAlarmMuted: !this.props.isAlarmMuted
+      isAlarmMuted: !this.props.isAlarmMuted,
     });
   }
   render() {
@@ -47,7 +47,7 @@ class MuteAlarmButton extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAlarmMuted: state.SettingsReducers.isAlarmMuted
+    isAlarmMuted: state.SettingsReducers.isAlarmMuted,
   };
 };
 
@@ -55,11 +55,11 @@ const mapDispatchToProps = dispatch => {
   return {
     saveSettings: settings => {
       dispatch(saveSettings(settings));
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(MuteAlarmButton);

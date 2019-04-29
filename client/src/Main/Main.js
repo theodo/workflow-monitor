@@ -17,7 +17,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HistoryIcon from '@material-ui/icons/History';
 import IconButton from '@material-ui/core/IconButton';
-import SettingsIcon from '@material-ui/icons/Settings'
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
 import { appColors } from 'ui';
@@ -37,7 +37,7 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   textDecorationReset: {
-    textDecoration: 'none'
+    textDecoration: 'none',
   },
   root: {
     display: 'flex',
@@ -108,18 +108,18 @@ const styles = theme => ({
     position: 'absolute',
     color: 'white',
     right: 24,
-  }
+  },
 });
 
 const isCurrentPage = page => {
   const isHomePage = page === '';
   if (isHomePage) return window.location.hash === '#/';
 
-  return window.location.hash.startsWith(`#/${page}`)
+  return window.location.hash.startsWith(`#/${page}`);
 };
 
 export class Main extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = { open: false };
   }
@@ -132,8 +132,8 @@ export class Main extends Component {
     this.setState({ open: false });
   };
   preventOn = condition => e => {
-    if(condition) e.preventDefault();
-  }
+    if (condition) e.preventDefault();
+  };
   render() {
     const { classes, theme, isTrelloCardSelected, isProjectSelected } = this.props;
     return (
@@ -154,11 +154,18 @@ export class Main extends Component {
             >
               {!this.state.open && <ChevronRightIcon />}
             </IconButton>
-            <img src="./caspr.png" height="50px" alt="logo"/>
+            <img src="./caspr.png" height="50px" alt="logo" />
             <Typography variant="h6" color="inherit" className={classes.title} noWrap>
               Caspr - The Ghost Programming Companion
             </Typography>
-            <a href="https://goo.gl/forms/QEUYWJFubYwcYPrf1" target="_blank" className={classes.feedbackButton} rel="noopener noreferrer">Give feedback</a>
+            <a
+              href="https://goo.gl/forms/QEUYWJFubYwcYPrf1"
+              target="_blank"
+              className={classes.feedbackButton}
+              rel="noopener noreferrer"
+            >
+              Give feedback
+            </a>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -176,23 +183,35 @@ export class Main extends Component {
           </div>
           <Divider />
           <div>
-            <Link to="/" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
+            <Link
+              to="/"
+              onClick={this.preventOn(!isProjectSelected)}
+              class={classes.textDecorationReset}
+            >
               <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
-                  <TrelloBoardIcon size="25px" color={appColors.darkGrey}/>
+                  <TrelloBoardIcon size="25px" color={appColors.darkGrey} />
                 </ListItemIcon>
                 <ListItemText primary="Ticket List" />
               </ListItem>
             </Link>
-            <Link to="/monitor" onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)} class={classes.textDecorationReset}>
-              <ListItem selected={isCurrentPage('monitor')} disabled={!isProjectSelected || !isTrelloCardSelected} button>
+            <Link
+              to="/monitor"
+              onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)}
+              class={classes.textDecorationReset}
+            >
+              <ListItem
+                selected={isCurrentPage('monitor')}
+                disabled={!isProjectSelected || !isTrelloCardSelected}
+                button
+              >
                 <ListItemIcon>
-                  <ChecklistIcon size="25px" color={appColors.darkGrey}/>
+                  <ChecklistIcon size="25px" color={appColors.darkGrey} />
                 </ListItemIcon>
                 <ListItemText primary="Current Ticket" />
               </ListItem>
             </Link>
-            <Link to="/history" onClick={this.preventOn(!isProjectSelected)} >
+            <Link to="/history" onClick={this.preventOn(!isProjectSelected)}>
               <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <HistoryIcon />
@@ -200,10 +219,18 @@ export class Main extends Component {
                 <ListItemText primary="History" />
               </ListItem>
             </Link>
-            <Link to="/problem-categories" onClick={this.preventOn(!isProjectSelected)} class={classes.textDecorationReset}>
-              <ListItem selected={isCurrentPage('problem-categories')} disabled={!isProjectSelected} button>
+            <Link
+              to="/problem-categories"
+              onClick={this.preventOn(!isProjectSelected)}
+              class={classes.textDecorationReset}
+            >
+              <ListItem
+                selected={isCurrentPage('problem-categories')}
+                disabled={!isProjectSelected}
+                button
+              >
                 <ListItemIcon>
-                  <LineChartIcon size="25px" color={appColors.darkGrey}/>
+                  <LineChartIcon size="25px" color={appColors.darkGrey} />
                 </ListItemIcon>
                 <ListItemText primary="Pareto" />
               </ListItem>
@@ -221,14 +248,14 @@ export class Main extends Component {
         </Drawer>
         <main className={classes.content}>
           <div className={'no-print ' + classes.toolbar} />
-          <div className={classes.mainContent} >
+          <div className={classes.mainContent}>
             <Switch>
-              <Route exact path="/" component={Home}/>
-              <Route path="/monitor" component={Monitor}/>
-              <Route path="/history/:ticketId" component={TicketPage}/>
-              <Route path="/history" component={ProjectHistoryPage}/>
-              <Route path="/settings" component={Settings}/>
-              <Route path="/problem-categories" component={ProblemCategoryPage}/>
+              <Route exact path="/" component={Home} />
+              <Route path="/monitor" component={Monitor} />
+              <Route path="/history/:ticketId" component={TicketPage} />
+              <Route path="/history" component={ProjectHistoryPage} />
+              <Route path="/settings" component={Settings} />
+              <Route path="/problem-categories" component={ProblemCategoryPage} />
             </Switch>
           </div>
         </main>
@@ -241,7 +268,6 @@ Main.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
-
 
 const mapStateToProps = state => ({
   isProjectSelected: !!state.LoginReducers.currentProject,

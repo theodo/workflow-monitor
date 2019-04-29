@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: ['eslint:recommended', 'react-app', 'prettier', 'prettier/react'],
   parserOptions: {
+		ecmaVersion: 2019,
     es6: true,
     sourceType: 'module',
     node: true

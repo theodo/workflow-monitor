@@ -7,7 +7,7 @@ import { saveSettings } from '../SettingsActions';
 
 const mapStateToProps = state => {
   return {
-    project: state.LoginReducers.currentProject
+    project: state.LoginReducers.currentProject,
   };
 };
 
@@ -18,11 +18,11 @@ const mapDispatchToProps = dispatch => {
       dispatch(saveSettings({ selectedBacklogId: undefined }));
       dispatch(selectProject(project));
       window.location.hash = '#/';
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Project);

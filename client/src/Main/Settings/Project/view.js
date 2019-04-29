@@ -8,8 +8,8 @@ import { gqlClient } from 'Utils/Graphql';
 
 const styles = () => ({
   mt10: {
-    marginTop: '10px'
-  }
+    marginTop: '10px',
+  },
 });
 
 class Projects extends Component {
@@ -19,7 +19,7 @@ class Projects extends Component {
       boards: {},
       selectedProject: this.props.project
         ? { value: this.props.project.thirdPartyId, label: this.props.project.name }
-        : null
+        : null,
     };
     this.selectProject = this.selectProject.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -28,7 +28,7 @@ class Projects extends Component {
         boards: boards.reduce((acc, board) => {
           acc[board.id] = board;
           return acc;
-        }, {})
+        }, {}),
       });
     });
   }
@@ -39,7 +39,7 @@ class Projects extends Component {
     const selectedProject = this.state.selectedProject;
     const graphqlProject = {
       name: selectedProject.label,
-      thirdPartyId: selectedProject.value
+      thirdPartyId: selectedProject.value,
     };
 
     gqlClient
@@ -54,8 +54,8 @@ class Projects extends Component {
           }
         `,
         variables: {
-          project: graphqlProject
-        }
+          project: graphqlProject,
+        },
       })
       .then(result => this.props.selectProject(result.data.selectProject));
   }

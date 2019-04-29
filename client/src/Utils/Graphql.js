@@ -16,15 +16,14 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       Authentication: token ? `Bearer ${token}` : '',
-    }
+    },
   };
 });
 
 export const gqlClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
-
 
 const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 const WS_API_URL = dev ? 'ws://localhost:4000/' : `wss://${window.location.hostname}/api/`;

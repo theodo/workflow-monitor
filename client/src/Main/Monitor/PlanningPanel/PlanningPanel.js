@@ -20,34 +20,41 @@ const planningMaxTime = 600000;
 
 const TaskList = ({ tasks }) => (
   <ul className="TaskList">
-    {tasks.map((task) =>
-      <li key={task.id}>{task.label}{task.estimatedTime ? ' ('+task.estimatedTime/60000+')' : ''}</li>)}
+    {tasks.map(task => (
+      <li key={task.id}>
+        {task.label}
+        {task.estimatedTime ? ' (' + task.estimatedTime / 60000 + ')' : ''}
+      </li>
+    ))}
   </ul>
 );
 
 class PlanningPanel extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.handleTasksDefinitionChange = this.handleTasksDefinitionChange.bind(this);
     this.handleTrelloChecklistSelection = this.handleTrelloChecklistSelection.bind(this);
     this.buildAllTasks = this.buildAllTasks.bind(this);
     this.savePlanningTask = this.savePlanningTask.bind(this);
     this.savePlanningTask = debounce(1000, this.savePlanningTask);
-    const tasks = localStorage.getItem('planningTasks') ? JSON.parse(localStorage.getItem('planningTasks')) : [];
+    const tasks = localStorage.getItem('planningTasks')
+      ? JSON.parse(localStorage.getItem('planningTasks'))
+      : [];
     this.state = {
       tasks,
       checklists: [],
       selectedChecklist: '',
     };
-    if(!this.props.dateLastPause) initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
-    window.Trello.get(`/cards/${this.props.currentTrelloCard.id}/checklists`).then((checklists) => {
+    if (!this.props.dateLastPause)
+      initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
+    window.Trello.get(`/cards/${this.props.currentTrelloCard.id}/checklists`).then(checklists => {
       this.setState({ checklists });
     });
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.dateLastPause && !this.props.dateLastPause){
+    if (nextProps.dateLastPause && !this.props.dateLastPause) {
       cancelAlarm();
-    } else if (!nextProps.dateLastPause && this.props.dateLastPause){
+    } else if (!nextProps.dateLastPause && this.props.dateLastPause) {
       initAlarm(planningMaxTime - nextProps.taskChrono.elapsedTime, false);
     }
   }
@@ -61,31 +68,30 @@ class PlanningPanel extends Component {
   }
   handleTrelloChecklistSelection(event) {
     this.setState({ selectedChecklist: event.target.value });
-    window.Trello.get(`/checklists/${event.target.value}/checkItems`).then((checklist) => {
+    window.Trello.get(`/checklists/${event.target.value}/checkItems`).then(checklist => {
       let tasksAsString = '';
       checklist
-        .sort((a, b)=> a.pos < b.pos ? -1 : 1)
-        .forEach((task) => {
+        .sort((a, b) => (a.pos < b.pos ? -1 : 1))
+        .forEach(task => {
           tasksAsString += `${task.name}\n`;
         });
       this.handleTasksDefinitionChange(formatStringToTasks(tasksAsString));
     });
   }
-  buildAllTasks(tasks){
+  buildAllTasks(tasks) {
     return [...this.props.beginTasks, ...filterEmptyTasks(tasks), ...this.props.endTasks];
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     cancelAlarm();
   }
-  savePlanningTask(){
+  savePlanningTask() {
     localStorage.setItem('planningTasks', JSON.stringify(this.state.tasks));
   }
   render() {
     return (
       <div className="PlanningPanel">
         <Grid container spacing={24}>
-          <Grid item xs={1} lg={2}>
-          </Grid>
+          <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <div className="PlanningPanel-content">
               <Grid container spacing={0}>
@@ -93,11 +99,13 @@ class PlanningPanel extends Component {
                   <h2>Task list :</h2>
                 </Grid>
                 <Grid item xs={4} className="PlanningPanel-save-button-container">
-                  <Button variant="contained" color="primary" component={Link} to="/settings">Edit default tasks</Button>
-                  <FormControl style={{marginTop: 8}}>
+                  <Button variant="contained" color="primary" component={Link} to="/settings">
+                    Edit default tasks
+                  </Button>
+                  <FormControl style={{ marginTop: 8 }}>
                     <InputLabel htmlFor="selected-checklist">Import trello checklist</InputLabel>
                     <Select
-                      style={{width:200}}
+                      style={{ width: 200 }}
                       value={this.state.selectedChecklist}
                       onChange={this.handleTrelloChecklistSelection}
                       inputProps={{
@@ -105,15 +113,24 @@ class PlanningPanel extends Component {
                         id: 'selected-checklist',
                       }}
                     >
-                      { this.state.checklists.map(checklist => <MenuItem key={checklist.id} value={checklist.id}>{checklist.name}</MenuItem>) }
+                      {this.state.checklists.map(checklist => (
+                        <MenuItem key={checklist.id} value={checklist.id}>
+                          {checklist.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
               </Grid>
               <TaskList tasks={this.props.beginTasks} />
-              <TaskEditor tasks={this.state.tasks} updateTasks={this.handleTasksDefinitionChange}/>
+              <TaskEditor tasks={this.state.tasks} updateTasks={this.handleTasksDefinitionChange} />
               <TaskList tasks={this.props.endTasks} />
-              <p>Total estimated time : { this.state.tasks ? getTotalTime(this.buildAllTasks(this.state.tasks), 'estimatedTime') : '' }</p>
+              <p>
+                Total estimated time :{' '}
+                {this.state.tasks
+                  ? getTotalTime(this.buildAllTasks(this.state.tasks), 'estimatedTime')
+                  : ''}
+              </p>
             </div>
           </Grid>
         </Grid>

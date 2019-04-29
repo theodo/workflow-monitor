@@ -22,7 +22,7 @@ import {
   update,
   backToPlanning,
   setCurrentTaskFields,
-  setTicketId
+  setTicketId,
 } from './MonitorActions';
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
@@ -38,7 +38,7 @@ export const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
   PLANNING: 'PLANNING',
   WORKFLOW: 'WORKFLOW',
-  RESULTS: 'RESULTS'
+  RESULTS: 'RESULTS',
 };
 
 function findAncestorWithClass(el, cls) {
@@ -69,7 +69,8 @@ class Footer extends Component {
     this.props.onPreviousClick();
   }
   renderPlayPauseButton() {
-    return this.props.step === MONITOR_STEPS.PLANNING || this.props.step === MONITOR_STEPS.WORKFLOW ? (
+    return this.props.step === MONITOR_STEPS.PLANNING ||
+      this.props.step === MONITOR_STEPS.WORKFLOW ? (
       <IconButton
         className="Monitor-footer-button"
         aria-label="play/pause"
@@ -126,12 +127,12 @@ class Monitor extends Component {
     document.onkeypress = this.handleKeyPress;
     this.state = {
       planningPanelChanges: {
-        tasks: []
+        tasks: [],
       },
       taskPanelChanges: {
         newTasks: [],
-        currentTaskCheckOK: false
-      }
+        currentTaskCheckOK: false,
+      },
     };
     subscriptionClient
       .subscribe({
@@ -140,46 +141,46 @@ class Monitor extends Component {
             state
           }
         `,
-        variables: {}
+        variables: {},
       })
       .subscribe(
         {
           next(data) {
             props.update(JSON.parse(data.state));
-          }
+          },
         },
-        () => console.log('error')
+        () => console.log('error'),
       );
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.step === MONITOR_STEPS.WORKFLOW && this.props.step === MONITOR_STEPS.RESULTS) {
       gqlClient
-      .mutate({
-      mutation: gql`
+        .mutate({
+          mutation: gql`
         mutation {
           saveTicket(state:${JSON.stringify(JSON.stringify(this.props.monitorState))})
         }
         `,
-    })
-      .then((result) => {
-        this.props.setTicketId(result.data.saveTicket)
-      });
+        })
+        .then(result => {
+          this.props.setTicketId(result.data.saveTicket);
+        });
     }
   }
 
   getProgressPercentage() {
     switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      return 0;
-    case MONITOR_STEPS.PLANNING:
-      return 0;
-    case MONITOR_STEPS.WORKFLOW:
-      return (this.props.currentTaskIndex * 100) / this.props.tasks.length;
-    case MONITOR_STEPS.RESULTS:
-      return 100;
-    default:
-      break;
+      case MONITOR_STEPS.WELCOME:
+        return 0;
+      case MONITOR_STEPS.PLANNING:
+        return 0;
+      case MONITOR_STEPS.WORKFLOW:
+        return (this.props.currentTaskIndex * 100) / this.props.tasks.length;
+      case MONITOR_STEPS.RESULTS:
+        return 100;
+      default:
+        break;
     }
   }
   areTasksValid(tasks) {
@@ -201,26 +202,30 @@ class Monitor extends Component {
     if (this.isNextButtonDisabled()) return;
 
     switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      this.initSession();
-      break;
-    case MONITOR_STEPS.PLANNING:
-      if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
-      break;
-    case MONITOR_STEPS.WORKFLOW:
-      this.goToNextTask();
-      break;
-    case MONITOR_STEPS.RESULTS:
-      this.goToHome();
-      break;
-    default:
-      break;
+      case MONITOR_STEPS.WELCOME:
+        this.initSession();
+        break;
+      case MONITOR_STEPS.PLANNING:
+        if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
+        break;
+      case MONITOR_STEPS.WORKFLOW:
+        this.goToNextTask();
+        break;
+      case MONITOR_STEPS.RESULTS:
+        this.goToHome();
+        break;
+      default:
+        break;
     }
   }
   handleClickPreviousButton() {
     if (this.isPreviousButtonDisabled()) return;
     if (this.props.currentTaskIndex === 1) {
-      if (window.confirm('Are you sure you want to go back to planning ? Your current session will be deleted.'))
+      if (
+        window.confirm(
+          'Are you sure you want to go back to planning ? Your current session will be deleted.',
+        )
+      )
         this.props.backToPlanning();
     } else this.goToPreviousTask();
   }
@@ -231,8 +236,8 @@ class Monitor extends Component {
     this.setState({
       taskPanelChanges: {
         newTasks: [],
-        currentTaskCheckOK: false
-      }
+        currentTaskCheckOK: false,
+      },
     });
   }
   startSession() {
@@ -243,12 +248,15 @@ class Monitor extends Component {
     this.props.nextTask(
       this.state.taskPanelChanges.newTasks,
       this.state.taskPanelChanges.problems,
-      this.props.projectId
+      this.props.projectId,
     );
     this.startTask();
   }
   goToPreviousTask() {
-    this.props.previousTask(this.state.taskPanelChanges.newTasks, this.state.taskPanelChanges.problems);
+    this.props.previousTask(
+      this.state.taskPanelChanges.newTasks,
+      this.state.taskPanelChanges.problems,
+    );
     this.startTask();
   }
   goToHome() {
@@ -256,23 +264,28 @@ class Monitor extends Component {
   }
   updateMonitorState(fieldsToUpdate) {
     this.setState({
-      ...fieldsToUpdate
+      ...fieldsToUpdate,
     });
   }
   isNextButtonDisabled() {
     switch (this.props.step) {
-    case MONITOR_STEPS.PLANNING:
-      return !this.areTasksValid(this.state.planningPanelChanges.tasks) || this.props.dateLastPause !== undefined;
-    case MONITOR_STEPS.WORKFLOW: {
-      const { currentTask } = this.props;
+      case MONITOR_STEPS.PLANNING:
+        return (
+          !this.areTasksValid(this.state.planningPanelChanges.tasks) ||
+          this.props.dateLastPause !== undefined
+        );
+      case MONITOR_STEPS.WORKFLOW: {
+        const { currentTask } = this.props;
 
-      return (
-        this.props.dateLastPause !== undefined ||
-          (currentTask.check && currentTask.check.length > 0 && !this.state.taskPanelChanges.currentTaskCheckOK)
-      );
-    }
-    default:
-      return false;
+        return (
+          this.props.dateLastPause !== undefined ||
+          (currentTask.check &&
+            currentTask.check.length > 0 &&
+            !this.state.taskPanelChanges.currentTaskCheckOK)
+        );
+      }
+      default:
+        return false;
     }
   }
   isPreviousButtonDisabled() {
@@ -281,43 +294,43 @@ class Monitor extends Component {
   }
   renderPanel() {
     switch (this.props.step) {
-    case MONITOR_STEPS.WELCOME:
-      return <TicketStartPanel />;
-    case MONITOR_STEPS.PLANNING:
-      return (
-        <PlanningPanel
-          dateLastPause={this.props.dateLastPause}
-          taskChrono={this.props.taskChrono}
-          currentTrelloCard={this.props.currentTrelloCard}
-          handlePlanningPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
-        />
-      );
-    case MONITOR_STEPS.WORKFLOW:
-      return (
-        <Grid className="Monitor-task-container" container spacing={0}>
-          <Grid item xs={8} lg={9} className="Monitor-FullHeightPanel">
-            <TaskPanel
-              dateLastPause={this.props.dateLastPause}
-              taskChrono={this.props.taskChrono}
-              currentTask={this.props.currentTask}
-              handleCurrentTaskChange={this.props.handleCurrentTaskChange}
-              handleTaskPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
-            />
+      case MONITOR_STEPS.WELCOME:
+        return <TicketStartPanel />;
+      case MONITOR_STEPS.PLANNING:
+        return (
+          <PlanningPanel
+            dateLastPause={this.props.dateLastPause}
+            taskChrono={this.props.taskChrono}
+            currentTrelloCard={this.props.currentTrelloCard}
+            handlePlanningPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
+          />
+        );
+      case MONITOR_STEPS.WORKFLOW:
+        return (
+          <Grid className="Monitor-task-container" container spacing={0}>
+            <Grid item xs={8} lg={9} className="Monitor-FullHeightPanel">
+              <TaskPanel
+                dateLastPause={this.props.dateLastPause}
+                taskChrono={this.props.taskChrono}
+                currentTask={this.props.currentTask}
+                handleCurrentTaskChange={this.props.handleCurrentTaskChange}
+                handleTaskPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
+              />
+            </Grid>
+            <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
+              <TasksLateralPanel
+                tasks={this.props.tasks}
+                currentTaskIndex={this.props.currentTaskIndex}
+                taskChrono={this.props.taskChrono}
+                dateLastPause={this.props.dateLastPause}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
-            <TasksLateralPanel
-              tasks={this.props.tasks}
-              currentTaskIndex={this.props.currentTaskIndex}
-              taskChrono={this.props.taskChrono}
-              dateLastPause={this.props.dateLastPause}
-            />
-          </Grid>
-        </Grid>
-      );
-    case MONITOR_STEPS.RESULTS:
-      return <ResultPanel currentTrelloCard={this.props.currentTrelloCard} />;
-    default:
-      break;
+        );
+      case MONITOR_STEPS.RESULTS:
+        return <ResultPanel currentTrelloCard={this.props.currentTrelloCard} />;
+      default:
+        break;
     }
   }
   render() {
@@ -333,7 +346,8 @@ class Monitor extends Component {
                   rel="noopener noreferrer"
                   className="Monitor-header-link"
                 >
-                  #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name} <LinkIcon />
+                  #{this.props.currentTrelloCard.idShort} {this.props.currentTrelloCard.name}{' '}
+                  <LinkIcon />
                 </a>
               ) : (
                 ''
@@ -342,7 +356,8 @@ class Monitor extends Component {
             <Grid item xs={4} lg={3} className="Monitor-header-centered-text">
               <span>
                 {'TOTAL '}
-                <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause} />"
+                <Chrono chrono={this.props.globalChrono} dateLastPause={this.props.dateLastPause} />
+                "
               </span>
             </Grid>
           </Grid>
@@ -377,7 +392,9 @@ const mapStateToProps = state => {
     globalChrono: state.MonitorReducers.globalChrono,
     dateLastPause: state.MonitorReducers.dateLastPause,
     currentTrelloCard: state.MonitorReducers.currentTrelloCard,
-    projectId: state.SettingsReducers.selectedProjectId ? state.SettingsReducers.selectedProjectId : ''
+    projectId: state.SettingsReducers.selectedProjectId
+      ? state.SettingsReducers.selectedProjectId
+      : '',
   };
 };
 
@@ -410,13 +427,13 @@ const mapDispatchToProps = dispatch => {
     goToHome: () => {
       window.location.hash = '#/';
     },
-    setTicketId: (ticketId) => {
+    setTicketId: ticketId => {
       dispatch(setTicketId(ticketId));
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Monitor);

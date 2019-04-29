@@ -4,8 +4,8 @@ import TicketResultsTable from 'Main/TicketResultsTable';
 
 const styles = () => ({
   resultPanel: {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 class ResultPanel extends Component {

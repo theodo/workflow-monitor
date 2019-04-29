@@ -85,26 +85,23 @@ const cardTarget = {
 };
 
 class TaskField extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state= {check: props.task.check !== undefined};
+    this.state = { check: props.task.check !== undefined };
     this.toggleCheck = this.toggleCheck.bind(this);
     this.handleInputKeyPress = this.handleInputKeyPress.bind(this);
     this.resizeDescriptionField = this.resizeDescriptionField.bind(this);
   }
   toggleCheck() {
-    const {
-      task,
-      updateTask,
-    } = this.props;
+    const { task, updateTask } = this.props;
     if (this.state.check) {
       updateTask(task.id, 'check', undefined);
-      this.setState({check: false});
+      this.setState({ check: false });
     } else {
-      this.setState({check: true});
+      this.setState({ check: true });
     }
   }
-  handleInputKeyPress(event, addNewTask = false){
+  handleInputKeyPress(event, addNewTask = false) {
     if (event.which === 13) {
       event.preventDefault();
       if (addNewTask) this.props.addNewTask();
@@ -116,19 +113,21 @@ class TaskField extends Component {
       this.resizeDescriptionField();
     }
   }
-  componentDidMount(){
+  componentDidMount() {
     this.resizeDescriptionField();
   }
   shouldComponentUpdate(nextProps, prevState) {
-    if (nextProps.task.label === this.props.task.label
-        && nextProps.task.estimatedTimeText === this.props.task.estimatedTimeText
-        && prevState.check === this.state.check)
+    if (
+      nextProps.task.label === this.props.task.label &&
+      nextProps.task.estimatedTimeText === this.props.task.estimatedTimeText &&
+      prevState.check === this.state.check
+    )
       return false;
     return true;
   }
-  resizeDescriptionField(){
+  resizeDescriptionField() {
     this.descriptionField.style.height = '5px';
-    this.descriptionField.style.height = (this.descriptionField.scrollHeight)+'px';
+    this.descriptionField.style.height = this.descriptionField.scrollHeight + 'px';
   }
   render() {
     const {
@@ -142,53 +141,56 @@ class TaskField extends Component {
     } = this.props;
     const opacity = isDragging ? 0 : 1;
 
-    return connectDragPreview(connectDropTarget(
-      <div style={{ ...dashedBlocStyle, ...taskFieldStyle, opacity }}>
-        {connectDragSource(
-          <div className="TaskField_dragPoint">
-            <IconButton disableRipple={true} style={{height: 36, width: 36, cursor: 'move'}} tabIndex="-1">
-              <DragHandleIcon />
-            </IconButton>
-          </div>
-        )}
-        <div className="TaskField_mainContainer">
-          <div className="TaskField_mainContainer_top">
-            <textarea
-              ref={(ref) => this.descriptionField = ref}
-              autoFocus={!task.label}
-              className="TaskField_input TaskField_description"
-              type="text"
-              value={task.label}
-              placeholder="Description"
-              onChange={(event) => updateTask(task.id, 'label', event.target.value)}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-              onTouchStart={(event) => event.stopPropagation()}
-              onKeyPress={this.handleInputKeyPress}
-            />
-            <input
-              ref={(ref) => this.estimatedTimeRef = ref}
-              className="TaskField_input TaskField_estimatedTime"
-              type="number"
-              value={task.estimatedTimeText}
-              placeholder="Estimated time"
-              onChange={(event) => updateTask(task.id, 'estimatedTimeText', event.target.value)}
-              onKeyPress={(event) => this.handleInputKeyPress(event, true)}
-            />
-            <div className="TaskField_buttonsBloc">
-              {
-                !this.state.check &&
+    return connectDragPreview(
+      connectDropTarget(
+        <div style={{ ...dashedBlocStyle, ...taskFieldStyle, opacity }}>
+          {connectDragSource(
+            <div className="TaskField_dragPoint">
+              <IconButton
+                disableRipple={true}
+                style={{ height: 36, width: 36, cursor: 'move' }}
+                tabIndex="-1"
+              >
+                <DragHandleIcon />
+              </IconButton>
+            </div>,
+          )}
+          <div className="TaskField_mainContainer">
+            <div className="TaskField_mainContainer_top">
+              <textarea
+                ref={ref => (this.descriptionField = ref)}
+                autoFocus={!task.label}
+                className="TaskField_input TaskField_description"
+                type="text"
+                value={task.label}
+                placeholder="Description"
+                onChange={event => updateTask(task.id, 'label', event.target.value)}
+                onClick={event => event.stopPropagation()}
+                onMouseDown={event => event.stopPropagation()}
+                onTouchStart={event => event.stopPropagation()}
+                onKeyPress={this.handleInputKeyPress}
+              />
+              <input
+                ref={ref => (this.estimatedTimeRef = ref)}
+                className="TaskField_input TaskField_estimatedTime"
+                type="number"
+                value={task.estimatedTimeText}
+                placeholder="Estimated time"
+                onChange={event => updateTask(task.id, 'estimatedTimeText', event.target.value)}
+                onKeyPress={event => this.handleInputKeyPress(event, true)}
+              />
+              <div className="TaskField_buttonsBloc">
+                {!this.state.check && (
                   <Button onClick={() => this.toggleCheck()} tabIndex="-1">
                     <CheckBoxIcon className="TaskField_addCheckIcon" />
                   </Button>
-              }
-              <Button onClick={() => removeTask(task.id)} tabIndex="-1">
-                <DeleteForeverIcon className="TaskField_deleteIcon" />
-              </Button>
+                )}
+                <Button onClick={() => removeTask(task.id)} tabIndex="-1">
+                  <DeleteForeverIcon className="TaskField_deleteIcon" />
+                </Button>
+              </div>
             </div>
-          </div>
-          {
-            this.state.check &&
+            {this.state.check && (
               <div className="TaskField_mainContainer_bottom">
                 <input
                   placeholder="Check"
@@ -196,15 +198,19 @@ class TaskField extends Component {
                   className="TaskField_input TaskField_check"
                   type="text"
                   value={task.check}
-                  onChange={(event) => updateTask(task.id, 'check', event.target.value)} />
+                  onChange={event => updateTask(task.id, 'check', event.target.value)}
+                />
                 <div>
-                  <button onClick={() => this.toggleCheck()} tabIndex="-1">Delete check</button>
+                  <button onClick={() => this.toggleCheck()} tabIndex="-1">
+                    Delete check
+                  </button>
                 </div>
               </div>
-          }
-        </div>
-      </div>
-    ));
+            )}
+          </div>
+        </div>,
+      ),
+    );
   }
 }
 
@@ -220,13 +226,18 @@ TaskField.propTypes = {
   addNewTask: PropTypes.func.isRequired,
 };
 
-
-const TaskFieldWrapper = DropTarget('card', cardTarget, connect => ({connectDropTarget: connect.dropTarget()}))(
-  DragSource('card', cardSource, (connect, monitor) => ({connectDragPreview: connect.dragPreview(),connectDragSource: connect.dragSource(),isDragging: monitor.isDragging()}))(TaskField)
+const TaskFieldWrapper = DropTarget('card', cardTarget, connect => ({
+  connectDropTarget: connect.dropTarget(),
+}))(
+  DragSource('card', cardSource, (connect, monitor) => ({
+    connectDragPreview: connect.dragPreview(),
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging(),
+  }))(TaskField),
 );
 
 class TaskEditor extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.updateTasks = this.updateTasks.bind(this);
     this.moveCard = this.moveCard.bind(this);
@@ -234,7 +245,7 @@ class TaskEditor extends Component {
     this.updateTask = this.updateTask.bind(this);
     this.removeTask = this.removeTask.bind(this);
   }
-  updateTasks(tasks){
+  updateTasks(tasks) {
     this.props.updateTasks(tasks);
   }
   moveCard(dragIndex, hoverIndex) {
@@ -246,20 +257,25 @@ class TaskEditor extends Component {
     this.updateTasks(newTasks);
   }
   addTask() {
-    this.updateTasks([...this.props.tasks, {id:uuid(), label:'', problems: '', estimatedTimeText: '', checks:['mon check']}]);
+    this.updateTasks([
+      ...this.props.tasks,
+      { id: uuid(), label: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
+    ]);
   }
   removeTask(taskId) {
-    this.updateTasks([...this.props.tasks.filter((task) => taskId !== task.id)]);
+    this.updateTasks([...this.props.tasks.filter(task => taskId !== task.id)]);
   }
   updateTask(taskId, fieldName, value) {
-    const fieldsToAdd = {[fieldName]: value };
-    if(fieldName === 'estimatedTimeText')
+    const fieldsToAdd = { [fieldName]: value };
+    if (fieldName === 'estimatedTimeText')
       fieldsToAdd.estimatedTime = value && value.length > 0 ? value * 60 * 1000 : undefined;
 
-    this.updateTasks([...this.props.tasks.map((task)=> {
-      if (task.id===taskId) return { ...task, ...fieldsToAdd };
-      return task;
-    })]);
+    this.updateTasks([
+      ...this.props.tasks.map(task => {
+        if (task.id === taskId) return { ...task, ...fieldsToAdd };
+        return task;
+      }),
+    ]);
   }
   render() {
     return (
@@ -277,7 +293,9 @@ class TaskEditor extends Component {
             />
           ))}
         </div>
-        <div style={{ ...dashedBlocStyle, ...addTaskButtonStyle }} onClick={this.addTask}>Add task</div>
+        <div style={{ ...dashedBlocStyle, ...addTaskButtonStyle }} onClick={this.addTask}>
+          Add task
+        </div>
       </div>
     );
   }

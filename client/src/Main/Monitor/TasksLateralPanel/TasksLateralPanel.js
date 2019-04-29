@@ -10,7 +10,8 @@ class TaskRow extends PureComponent {
     return (this.props.isDone ? 'done' : '') + ' ' + (this.props.isCurrent ? 'current' : '');
   }
   getRealTimeClass() {
-    if (this.props.isDone) return this.props.task.realTime > this.props.task.estimatedTime ? 'red' : 'green';
+    if (this.props.isDone)
+      return this.props.task.realTime > this.props.task.estimatedTime ? 'red' : 'green';
     return '';
   }
   render() {
@@ -31,7 +32,9 @@ class TaskRow extends PureComponent {
               )}
             </div>
             {this.props.isCurrent && (
-              <div className="TaskRow-estimated-time">{formatMilliSecondToTime(this.props.task.estimatedTime)}</div>
+              <div className="TaskRow-estimated-time">
+                {formatMilliSecondToTime(this.props.task.estimatedTime)}
+              </div>
             )}
           </div>
         </div>

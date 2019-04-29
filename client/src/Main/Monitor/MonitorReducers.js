@@ -29,17 +29,18 @@ const calculateCurrentTaskTime = (taskChrono, now) => {
 };
 
 const saveAnalytics = (tasks, projectId) => {
-  sendEvent('Ticket','finish',`${projectId}`);
+  sendEvent('Ticket', 'finish', `${projectId}`);
 
   const allTasks = tasks ? tasks : [];
-  const problemCounter = allTasks.filter(task => task.problems && task.problems.length > 0 ).length;
-  if(problemCounter > 0) sendEvent('Problems','detect',`${projectId}`, problemCounter);
+  const problemCounter = allTasks.filter(task => task.problems && task.problems.length > 0).length;
+  if (problemCounter > 0) sendEvent('Problems', 'detect', `${projectId}`, problemCounter);
 
-  const planningErrorCounter = allTasks.filter(task => task.addedOnTheFly ).length;
-  if(planningErrorCounter > 0) sendEvent('Planning','error',`${projectId}`, planningErrorCounter);
+  const planningErrorCounter = allTasks.filter(task => task.addedOnTheFly).length;
+  if (planningErrorCounter > 0)
+    sendEvent('Planning', 'error', `${projectId}`, planningErrorCounter);
 
-  const checkCounter = allTasks.filter(task => task.check && task.check.length > 0 ).length;
-  if(checkCounter > 0) sendEvent('Check','add',`${projectId}`, checkCounter);
+  const checkCounter = allTasks.filter(task => task.check && task.check.length > 0).length;
+  if (checkCounter > 0) sendEvent('Check', 'add', `${projectId}`, checkCounter);
 };
 
 const initialMonitorState = {
@@ -59,7 +60,7 @@ const initialMonitorState = {
   currentTrelloCard: undefined,
 };
 
-const oldState = (JSON.parse(localStorage.getItem('monitorState')));
+const oldState = JSON.parse(localStorage.getItem('monitorState'));
 
 const currentInitialState = localStorage.getItem('monitorState') ? oldState : initialMonitorState;
 
@@ -78,11 +79,11 @@ const updateTask = (state, taskIndex, newFields) => {
     ...state,
     tasks,
   };
-}
+};
 
 const MonitorReducers = (state = currentInitialState, action) => {
   let newState = {};
-  const now = (new Date()).getTime();
+  const now = new Date().getTime();
   switch (action.type) {
     case INIT_SESSION:
       localStorage.removeItem('planningTasks');
@@ -99,14 +100,21 @@ const MonitorReducers = (state = currentInitialState, action) => {
         globalChrono: {
           dateLastStart: now,
           elapsedTime: 0,
-        }
+        },
       };
       break;
     case START_SESSION:
       newState = {
         ...state,
         currentStep: MONITOR_STEPS.WORKFLOW,
-        tasks: [{id: uuid(), label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
+        tasks: [
+          {
+            id: uuid(),
+            label: 'Planning',
+            realTime: calculateCurrentTaskTime(state.taskChrono, now),
+          },
+          ...action.tasks,
+        ],
         currentTaskIndex: 1,
         taskChrono: {
           dateLastStart: now,
@@ -118,7 +126,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       newState = {
         ...state,
         currentStep: MONITOR_STEPS.PLANNING,
-        tasks: state.tasks.map((task) => task),
+        tasks: state.tasks.map(task => task),
         currentTaskIndex: 0,
       };
       break;
@@ -143,19 +151,21 @@ const MonitorReducers = (state = currentInitialState, action) => {
 
       if (action.newTasks && action.newTasks.length > 0) {
         newStateForNextTask.tasks = [
-          ...state.tasks.slice(0,state.currentTaskIndex+1),
+          ...state.tasks.slice(0, state.currentTaskIndex + 1),
           ...action.newTasks,
-          ...state.tasks.slice(state.currentTaskIndex+1),
+          ...state.tasks.slice(state.currentTaskIndex + 1),
         ];
       }
-      if((!action.newTasks || action.newTasks.length === 0)
-          && state.currentTaskIndex >= state.tasks.length - 1) {
+      if (
+        (!action.newTasks || action.newTasks.length === 0) &&
+        state.currentTaskIndex >= state.tasks.length - 1
+      ) {
         saveAnalytics(newStateForNextTask.tasks, action.projectId);
         newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
         newStateForNextTask.dateLastPause = now;
       } else {
         const nextStepRealTime = newStateForNextTask.tasks[state.currentTaskIndex + 1].realTime;
-        newStateForNextTask.taskChrono.elapsedTime =  nextStepRealTime || 0;
+        newStateForNextTask.taskChrono.elapsedTime = nextStepRealTime || 0;
       }
       newState = newStateForNextTask;
       break;
@@ -170,7 +180,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
         },
       };
 
-      if (state.currentStep === MONITOR_STEPS.WORKFLOW){
+      if (state.currentStep === MONITOR_STEPS.WORKFLOW) {
         const result = {
           ...state.tasks[state.currentTaskIndex],
           realTime: calculateCurrentTaskTime(state.taskChrono, now),
@@ -186,13 +196,13 @@ const MonitorReducers = (state = currentInitialState, action) => {
 
         if (action.newTasks && action.newTasks.length > 0) {
           newStateForPreviousTask.tasks = [
-            ...state.tasks.slice(0,state.currentTaskIndex+1),
+            ...state.tasks.slice(0, state.currentTaskIndex + 1),
             ...action.newTasks,
-            ...state.tasks.slice(state.currentTaskIndex+1),
+            ...state.tasks.slice(state.currentTaskIndex + 1),
           ];
         }
       }
-      if (state.currentStep === MONITOR_STEPS.RESULTS){
+      if (state.currentStep === MONITOR_STEPS.RESULTS) {
         newStateForPreviousTask = {
           ...newStateForPreviousTask,
           currentStep: MONITOR_STEPS.WORKFLOW,
@@ -224,7 +234,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
           globalChrono: {
             dateLastStart: now,
             elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
-          }
+          },
         };
       } else {
         newState = {
@@ -237,7 +247,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
           globalChrono: {
             dateLastStart: state.globalChrono.dateLastStart,
             elapsedTime: state.globalChrono.elapsedTime,
-          }
+          },
         };
       }
       break;
@@ -263,7 +273,11 @@ const MonitorReducers = (state = currentInitialState, action) => {
       newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
-  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS && action.type !== SET_TASK_FIELDS) {
+  if (
+    action.type !== UPDATE &&
+    action.type !== SET_CURRENT_TASK_FIELDS &&
+    action.type !== SET_TASK_FIELDS
+  ) {
     gqlClient
       .mutate({
         mutation: gql`

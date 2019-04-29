@@ -6,21 +6,21 @@ import { setFavicon } from 'Utils/FaviconUtils';
 
 const styles = () => ({
   redText: {
-    color: '#BF0712'
-  }
+    color: '#BF0712',
+  },
 });
 
 class ReverseChrono extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      now: new Date().getTime()
+      now: new Date().getTime(),
     };
     this.interval = setInterval(() => {
       this.updateDocumentTitle();
       setFavicon(this.isTimeOver() ? 'red-light' : 'green-light');
       this.setState({
-        now: new Date().getTime()
+        now: new Date().getTime(),
       });
     }, 1000);
   }
@@ -34,13 +34,16 @@ class ReverseChrono extends Component {
   }
 
   updateDocumentTitle() {
-    document.title = this.isTimeOver() ? formatMilliSecondToSentence(this.getTime()) : this.props.currentTaskLabel;
+    document.title = this.isTimeOver()
+      ? formatMilliSecondToSentence(this.getTime())
+      : this.props.currentTaskLabel;
   }
 
   getRealElapsedTime() {
     if (!this.props.taskChrono.dateLastStart) return 0;
     return this.props.dateLastPause
-      ? this.props.taskChrono.elapsedTime + (this.props.dateLastPause - this.props.taskChrono.dateLastStart)
+      ? this.props.taskChrono.elapsedTime +
+          (this.props.dateLastPause - this.props.taskChrono.dateLastStart)
       : this.props.taskChrono.elapsedTime + (this.state.now - this.props.taskChrono.dateLastStart);
   }
 

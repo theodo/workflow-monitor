@@ -1,4 +1,3 @@
-
 let timeOverTimer;
 
 let audio;
@@ -13,13 +12,13 @@ export const initAlarm = (timeInMilliSecond, withSound = true) => {
         audio.muted = isAlarmMuted;
         audio.play();
       }
-    }, (timeInMilliSecond));
+    }, timeInMilliSecond);
   }
 };
 
-export const setMuted = (isMuted) => {
+export const setMuted = isMuted => {
   isAlarmMuted = isMuted;
-  if(audio) audio.muted = isMuted;
+  if (audio) audio.muted = isMuted;
 };
 
 export const cancelAlarm = () => {
