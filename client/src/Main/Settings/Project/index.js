@@ -17,7 +17,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(initSession());
       dispatch(saveSettings({ selectedBacklogId: undefined }));
       dispatch(selectProject(project));
-      window.location.hash = '#/';
     },
   };
 };
