@@ -24,11 +24,22 @@ const DurationEditCell = ({ value, onValueChange }) => (
   </TableCell>
 );
 
+const NormalEditCell = ({ value, onValueChange, ...props }) => (
+  <TableCell>
+    <TextField
+      type="text"
+      {...props}
+      value={value}
+      onChange={event => onValueChange(event.target.value)}
+    />
+  </TableCell>
+);
+
 export const EditCell = props => {
   if (props.column.name === 'problemCategory') {
     return <ProblemCategoryEditCell {...props} />;
   } else if (props.column.name === 'estimatedTime' || props.column.name === 'realTime') {
     return <DurationEditCell {...props} />;
   }
-  return <TableEditRow.Cell {...props} />;
+  return <NormalEditCell multiline {...props} />;
 };
