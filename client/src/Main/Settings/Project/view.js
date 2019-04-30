@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import gql from 'graphql-tag';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
 import { gqlClient } from 'Utils/Graphql';
@@ -32,9 +31,12 @@ class Projects extends Component {
       });
     });
   }
-  handleChange(selectedProject) {
-    this.setState({ selectedProject });
+
+  async handleChange(selectedProject) {
+    await this.setState({ selectedProject });
+    this.selectProject();
   }
+
   selectProject() {
     const selectedProject = this.state.selectedProject;
     const graphqlProject = {
@@ -61,7 +63,6 @@ class Projects extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <div className="Project">
         <h2>Select your project :</h2>
@@ -73,9 +74,6 @@ class Projects extends Component {
             .map(board => ({ value: board.id, label: board.name }))}
           placeholder="Select project"
         />
-        <Button variant="contained" className={classes.mt10} onClick={this.selectProject}>
-          Select
-        </Button>
       </div>
     );
   }
