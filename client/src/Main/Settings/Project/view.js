@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import gql from 'graphql-tag';
 import { withStyles } from '@material-ui/core/styles';
+import { withSnackbar } from 'notistack';
 
 import { gqlClient } from 'Utils/Graphql';
 
@@ -59,7 +60,12 @@ class Projects extends Component {
           project: graphqlProject,
         },
       })
-      .then(result => this.props.selectProject(result.data.selectProject));
+      .then(result => {
+        this.props.selectProject(result.data.selectProject);
+        this.props.enqueueSnackbar('Project changed to ' + this.state.selectedProject.label, {
+          variant: 'success',
+        });
+      });
   }
 
   render() {
@@ -79,4 +85,4 @@ class Projects extends Component {
   }
 }
 
-export default withStyles(styles)(Projects);
+export default withStyles(styles)(withSnackbar(Projects));
