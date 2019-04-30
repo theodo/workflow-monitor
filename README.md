@@ -6,9 +6,9 @@ The ultimate lean digital tool to develop faster and better.
 
 Run `npm install` in client and backend folders.
 
-Run `docker-compose up`.
+Run `docker-compose up` in the root folder.
 
-Run migrations : `node_modules/.bin/sequelize db:migrate --env=local`.
+Run migrations in the backend folder: `node_modules/.bin/sequelize db:migrate --env=local`.
 
 You're all set! Go to http://localhost to access to Caspr.
 
