@@ -22,7 +22,6 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.handleTasksChange = this.handleTasksChange.bind(this);
-    this.saveSettings = this.saveSettings.bind(this);
     this.copyToken = this.copyToken.bind(this);
     this.state = {
       beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [],
@@ -30,11 +29,8 @@ class Settings extends Component {
     };
   }
 
-  handleTasksChange(taskCategory, tasks) {
-    this.setState({ [taskCategory]: tasks });
-  }
-
-  saveSettings() {
+  async handleTasksChange(taskCategory, tasks) {
+    await this.setState({ [taskCategory]: tasks });
     this.props.saveSettings({
       beginTasks: filterEmptyTasks(this.state.beginTasks),
       endTasks: filterEmptyTasks(this.state.endTasks),
@@ -66,9 +62,6 @@ class Settings extends Component {
               tasks={this.state.endTasks}
               updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
             />
-            <Button variant="contained" onClick={this.saveSettings}>
-              Sauvegarder
-            </Button>
             <Divider variant="middle" className={classes.mv25} />
             <h2>Copy CLI token :</h2>
             <Button variant="contained" onClick={this.copyToken}>
