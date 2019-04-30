@@ -23,8 +23,10 @@ export const Cell = props => {
   const style = row.addedOnTheFly
     ? {
         backgroundColor: '#ffe6e6',
+        whiteSpace: 'normal',
+        wordWrap: 'break-word',
       }
-    : {};
+    : { whiteSpace: 'normal', wordWrap: 'break-word' };
   if (column.name === 'problemCategory') {
     return <ProblemCategoryCell {...props} style={style} />;
   } else if (column.name === 'estimatedTime' || column.name === 'realTime') {
