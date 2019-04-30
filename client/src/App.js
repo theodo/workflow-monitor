@@ -6,6 +6,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from 'react-apollo';
 import { Route, Switch } from 'react-router';
 import { HashRouter } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 import { gqlClient } from 'Utils/Graphql';
 import AppReducer from 'AppReducer';
@@ -25,14 +26,16 @@ class App extends Component {
     return (
       <Provider store={store}>
         <ApolloProvider client={gqlClient}>
-          <HashRouter>
-            <div className="App">
-              <Switch>
-                <Route exact path="/login" component={Login} />
-                <Route path="/" component={Main} />
-              </Switch>
-            </div>
-          </HashRouter>
+          <SnackbarProvider maxSnack={3}>
+            <HashRouter>
+              <div className="App">
+                <Switch>
+                  <Route exact path="/login" component={Login} />
+                  <Route path="/" component={Main} />
+                </Switch>
+              </div>
+            </HashRouter>
+          </SnackbarProvider>
         </ApolloProvider>
       </Provider>
     );
