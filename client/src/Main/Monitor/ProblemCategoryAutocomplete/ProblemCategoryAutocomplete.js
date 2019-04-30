@@ -159,6 +159,8 @@ const ProblemCategoryAutocomplete = props => (
     options={props.options}
     placeholder={props.placeholder}
     styles={customStyle}
+    menuPlacement="auto"
+    menuPosition="fixed"
   />
 );
 
