@@ -1,7 +1,6 @@
 import React from 'react';
 import { TableCell, TextField } from '@material-ui/core';
 import ProblemCategoryAutocomplete from '../Monitor/ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
-import { TableEditRow } from '@devexpress/dx-react-grid-material-ui';
 import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from 'Utils/TimeUtils';
 
 const ProblemCategoryEditCell = ({ value, onValueChange }) => (
@@ -24,13 +23,14 @@ const DurationEditCell = ({ value, onValueChange }) => (
   </TableCell>
 );
 
-const NormalEditCell = ({ value, onValueChange, ...props }) => (
+const MultilineEditCell = ({ value, onValueChange, ...props }) => (
   <TableCell>
     <TextField
-      type="text"
       {...props}
-      value={value}
+      multiline
       onChange={event => onValueChange(event.target.value)}
+      type="text"
+      value={value}
     />
   </TableCell>
 );
@@ -41,5 +41,5 @@ export const EditCell = props => {
   } else if (props.column.name === 'estimatedTime' || props.column.name === 'realTime') {
     return <DurationEditCell {...props} />;
   }
-  return <NormalEditCell multiline {...props} />;
+  return <MultilineEditCell {...props} />;
 };
