@@ -44,14 +44,22 @@ export const formatMilliSecondToSentence = timeInMilliSecond => {
   return sentence;
 };
 
-export const parseMillisecondFromFormattedTime = timeString => {
+export const parseSecondFromFormattedTime = timeString => {
   const splittedTimeString = timeString.split(':');
   if (splittedTimeString.length === 3) {
     const [hh, mm, ss] = splittedTimeString;
-    return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)) + parseInt(ss, 10));
+    return 60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)) + parseInt(ss, 10);
   } else if (splittedTimeString.length === 2) {
     const [hh, mm] = splittedTimeString;
-    return 1000 * (60 * (60 * parseInt(hh, 10) + parseInt(mm, 10)));
+    return 60 * (60 * parseInt(hh, 10) + parseInt(mm, 10));
   }
   return NaN;
+};
+
+export const parseMillisecondFromFormattedTime = timeString => {
+  return parseSecondFromFormattedTime(timeString) * 1000;
+};
+
+export const formatSecondToTime = timeInSecond => {
+  return formatMilliSecondToTime(timeInSecond * 1000);
 };

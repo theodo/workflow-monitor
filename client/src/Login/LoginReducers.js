@@ -1,4 +1,4 @@
-import { LOGIN, SELECT_PROJECT } from './LoginActions';
+import { LOGIN, SELECT_PROJECT, SAVE_PROJECT_SPEED_SETTINGS } from './LoginActions';
 
 const initialLoginState = {
   user: undefined,
@@ -17,6 +17,15 @@ const LoginReducers = (state = initialLoginState, action) => {
       newState = {
         ...state,
         currentProject: action.project,
+      };
+      break;
+    case SAVE_PROJECT_SPEED_SETTINGS:
+      newState = {
+        ...state,
+        currentProject: {
+          ...state.currentProject,
+          ...action.settings,
+        },
       };
       break;
     default:
