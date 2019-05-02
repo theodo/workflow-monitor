@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { sequelize } = require('../models');
 const { formatFullTicket, formatTasks } = require('./formatters');
 const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
+const getAllocatedTimeFromPointsAndCelerity = require('./helpers');
 const {
   authenticationMiddleware,
   loginRoute,
@@ -162,7 +163,12 @@ const resolvers = {
       const jsState = JSON.parse(state);
 
       const project = user.get('currentProject');
-      const formattedTicket = formatFullTicket(jsState, project, user);
+      const allocatedTime = getAllocatedTimeFromPointsAndCelerity(
+        jsState.currentTrelloCard.ticketPoints,
+        project.celerity,
+        project.dailyDevelopmentTime,
+      );
+      const formattedTicket = formatFullTicket(jsState, project, user, allocatedTime);
       const ticket = await upsert(Ticket, formattedTicket, {
         thirdPartyId: formattedTicket.thirdPartyId,
       });
