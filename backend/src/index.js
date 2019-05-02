@@ -54,6 +54,7 @@ const typeDefs = `
     complexity: Int
     status: String
     tasks: [Task]
+    allocatedTime: Int
   }
   type Task {
     id: Int
@@ -155,6 +156,7 @@ const resolvers = {
         limit,
         order: [['createdAt', 'DESC']],
         offset,
+        include: { model: Task, as: 'tasks', attributes: ['realTime'] },
       });
     },
   },

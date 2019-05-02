@@ -9,6 +9,10 @@ export const GET_TICKETS_HISTORY = gql`
         thirdPartyId
         complexity
         status
+        allocatedTime
+        tasks {
+          realTime
+        }
       }
       count
     }
