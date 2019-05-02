@@ -21,11 +21,6 @@ const styles = () => ({
   w40: {
     width: '40px',
   },
-  noAmPM: {
-    '*::-webkit-datetime-edit-ampm-field': {
-      display: 'none',
-    },
-  },
 });
 
 class ProjectSpeed extends Component {
@@ -82,7 +77,7 @@ class ProjectSpeed extends Component {
           <span>Work hours per day :</span>
         </label>
         <TextField
-          className={`${this.props.classes.mr40} ${this.props.classes.noAmPM}`}
+          className={this.props.classes.mr40}
           id="project-work-hours-per-day"
           name="project-work-hours-per-day"
           type="time"
