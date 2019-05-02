@@ -113,7 +113,7 @@ const typeDefs = `
     selectProject(project: ProjectInput): Project,
     addProblemCategory(problemCategoryDescription: String): ProblemCategory,
     setTicketThirdPartyId(ticketId: Int!, idShort: String!): Int
-    setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput): Int
+    setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput!): Int
   }
   type Subscription {
     state: String!
