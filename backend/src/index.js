@@ -37,6 +37,8 @@ const typeDefs = `
   type Project {
     id: Int
     name: String
+    dailyDevelopmentTime: Int
+    celerity: Int
     thirdPartyType: String
     thirdPartyId: String
   }
@@ -95,6 +97,10 @@ const typeDefs = `
     name: String
     thirdPartyId: String
   }
+  input ProjectSpeedInput {
+    celerity: Int
+    dailyDevelopmentTime: Int
+  }
   input PaginationInput {
     limit: Int = 0
     offset: Int = 0
@@ -106,6 +112,7 @@ const typeDefs = `
     selectProject(project: ProjectInput): Project,
     addProblemCategory(problemCategoryDescription: String): ProblemCategory,
     setTicketThirdPartyId(ticketId: Int!, idShort: String!): Int
+    setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput): Int
   }
   type Subscription {
     state: String!
@@ -219,6 +226,17 @@ const resolvers = {
     },
     setTicketThirdPartyId: async (_, { ticketId, idShort }) => {
       Ticket.update({ thirdPartyId: idShort }, { where: { id: ticketId } });
+      return 1;
+    },
+    setCurrentProjectSpeed: async (_, { projectSpeed }, { user }) => {
+      const project = user.get('currentProject');
+      Project.update(
+        {
+          celerity: projectSpeed.celerity,
+          dailyDevelopmentTime: projectSpeed.dailyDevelopmentTime,
+        },
+        { where: { id: project.id } },
+      );
       return 1;
     },
   },
