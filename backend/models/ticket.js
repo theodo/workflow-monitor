@@ -4,7 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     description: { type: DataTypes.STRING, allowNull: false },
     thirdPartyId: DataTypes.STRING,
     complexity: DataTypes.INTEGER,
-    status: { type: DataTypes.ENUM('PLANNING', 'DONE'), allowNull: false }
+    status: { type: DataTypes.ENUM('PLANNING', 'DONE'), allowNull: false },
+    points: DataTypes.INTEGER,
+    celerity: DataTypes.INTEGER,
+    dailyDevelopmentTime: DataTypes.INTEGER,
+    allocatedTime: DataTypes.INTEGER,
   }, {});
   ticket.associate = function(models) {
     ticket.belongsTo(models.project, {as: 'project'});
