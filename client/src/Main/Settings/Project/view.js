@@ -3,6 +3,7 @@ import Select from 'react-select';
 import gql from 'graphql-tag';
 import { withStyles } from '@material-ui/core/styles';
 import { withSnackbar } from 'notistack';
+import ProjectSpeed from './ProjectSpeed';
 
 import { gqlClient } from 'Utils/Graphql';
 
@@ -79,14 +80,6 @@ class Projects extends Component {
       });
   }
 
-  onSelectedProjectCelerityChange = value => {
-    this.setState(previousState => ({ ...previousState, selectedProjectCelerity: value }));
-  };
-
-  onSelectedProjectWorkHoursPerDayChange = value => {
-    this.setState(previousState => ({ ...previousState, selectedProjectWorkHoursPerDay: value }));
-  };
-
   render() {
     return (
       <div className="Project">
@@ -100,33 +93,7 @@ class Projects extends Component {
             .map(board => ({ value: board.id, label: board.name }))}
           placeholder="Select project"
         />
-        <label for="project-celerity" className={this.props.classes.mr20}>
-          <span>Project celerity :</span>
-        </label>
-        <Input
-          className={`${this.props.classes.mr40} ${this.props.classes.w40}`}
-          id="project-celerity"
-          name="project-celerity"
-          type="number"
-          min="0"
-          step="0.1"
-          value={this.state.selectedProjectCelerity}
-          onChange={event => this.onSelectedProjectCelerityChange(event.target.value)}
-        />
-        <label for="project-work-hours-per-day" className={this.props.classes.mr20}>
-          <span>Work hours per day :</span>
-        </label>
-        <Input
-          className={this.props.classes.mr40}
-          id="project-work-hours-per-day"
-          name="project-work-hours-per-day"
-          type="time"
-          value={this.state.selectedProjectWorkHoursPerDay}
-          onChange={event => this.onSelectedProjectWorkHoursPerDayChange(event.target.value)}
-        />
-        <Button variant="contained" onClick={this.props.updateSelectedProjectSettings}>
-          Save
-        </Button>
+        <ProjectSpeed />
       </div>
     );
   }
