@@ -1,6 +1,6 @@
-const formatFullTicket = (state, project, user) => {
+const formatFullTicket = (state, project, user, allocatedTime) => {
   const {
-    currentTrelloCard: { idShort: thirdPartyId, name: description },
+    currentTrelloCard: { idShort: thirdPartyId, name: description, ticketPoints: points },
   } = state;
   const { id: projectId } = project;
   const { id: userId } = user;
@@ -11,6 +11,10 @@ const formatFullTicket = (state, project, user) => {
     status: 'DONE',
     userId,
     projectId,
+    points,
+    celerity: project.celerity,
+    dailyDevelopmentTime: project.dailyDevelopmentTime,
+    allocatedTime,
   };
 };
 

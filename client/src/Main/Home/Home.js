@@ -8,17 +8,22 @@ import { saveSettings } from '../Settings/SettingsActions';
 import { resetMonitor } from '../Monitor/MonitorActions';
 import BacklogAutocomplete from './BacklogAutocomplete';
 
+const getTicketPointsFromName = name => {
+  const regex = /\((\?|\d+\.?,?\d*)\)/m;
+  const points = regex.exec(name);
+
+  return points ? parseInt(points[1]) : 0;
+};
+
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.isRefreshButtonDisabled = this.isRefreshButtonDisabled.bind(this);
-    this.loadCardsFromTrello = this.loadCardsFromTrello.bind(this);
-    this.state = {
-      project: this.props.project,
-      lists: [],
-      backlog: this.props.backlog,
-      cards: [],
-    };
+  state = {
+    project: this.props.project,
+    lists: [],
+    backlog: this.props.backlog,
+    cards: [],
+  };
+
+  componentDidMount() {
     if (this.props.project) {
       window.Trello.get(`/boards/${this.props.project.thirdPartyId}/lists`).then(lists => {
         this.setState({ lists });
@@ -39,20 +44,26 @@ class Home extends Component {
     });
     this.loadCardsFromTrello(backlogId);
   };
-  loadCardsFromTrello(backlogId) {
+
+  handleCardStartClick = card => {
+    card.ticketPoints = getTicketPointsFromName(card.name);
+    this.props.resetMonitor(card);
+  };
+
+  loadCardsFromTrello = backlogId => {
     this.setState({ cards: [] });
     window.Trello.get(`/lists/${backlogId}/cards`).then(cards => {
       this.setState({ cards });
     });
-  }
-  isRefreshButtonDisabled() {
+  };
+  isRefreshButtonDisabled = () => {
     const isRefreshButtonDisabled =
       !this.state.lists ||
       this.state.lists.length === 0 ||
       !this.state.backlog ||
       this.state.lists.map(list => list.id).indexOf(this.state.backlog) === -1;
     return !!isRefreshButtonDisabled;
-  }
+  };
   render() {
     return (
       <div className="Home">
@@ -87,7 +98,7 @@ class Home extends Component {
                   isCurrentTicket={
                     this.props.currentTicket && this.props.currentTicket.id === card.id
                   }
-                  handleCardStartClick={this.props.handleCardStartClick}
+                  handleCardStartClick={this.handleCardStartClick}
                   handleCardContinueClick={this.props.handleCardContinueClick}
                 />
               ))}
@@ -112,7 +123,7 @@ const mapDispatchToProps = dispatch => {
     saveSettings: settings => {
       dispatch(saveSettings(settings));
     },
-    handleCardStartClick: card => {
+    resetMonitor: card => {
       dispatch(resetMonitor(card));
       window.location.hash = '#/monitor';
     },
