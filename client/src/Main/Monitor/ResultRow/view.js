@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from 'Utils/TimeUtils';
+import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
 import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './style.css';
 
@@ -52,7 +52,7 @@ class ResultRow extends Component {
             this.props.handleEditTime(
               index,
               'estimatedTime',
-              parseMillisecondFromFormattedTime(event.target.innerHTML),
+              parseMilliSecondFromFormattedTime(event.target.innerHTML),
             )
           }
         >
@@ -65,7 +65,7 @@ class ResultRow extends Component {
             this.props.handleEditTime(
               index,
               'realTime',
-              parseMillisecondFromFormattedTime(event.target.innerHTML),
+              parseMilliSecondFromFormattedTime(event.target.innerHTML),
             )
           }
         >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableCell, TextField } from '@material-ui/core';
 import ProblemCategoryAutocomplete from '../Monitor/ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
-import { formatMilliSecondToTime, parseMillisecondFromFormattedTime } from 'Utils/TimeUtils';
+import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
 
 const ProblemCategoryEditCell = ({ value, onValueChange }) => (
   <TableCell>
@@ -15,7 +15,7 @@ const DurationEditCell = ({ value, onValueChange }) => (
       id="time"
       type="time"
       value={formatMilliSecondToTime(value)}
-      onChange={event => onValueChange(parseMillisecondFromFormattedTime(event.target.value))}
+      onChange={event => onValueChange(parseMilliSecondFromFormattedTime(event.target.value))}
       inputProps={{
         step: 1,
       }}
