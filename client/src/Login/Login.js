@@ -17,9 +17,6 @@ const trelloAuthParams = {
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.trelloAuthenticationFailure = this.trelloAuthenticationFailure.bind(this);
-    this.trelloAuthenticationSuccess = this.trelloAuthenticationSuccess.bind(this);
-    this.handleLoginButtonClick = this.handleLoginButtonClick.bind(this);
     if (localStorage.getItem('trello_token')) {
       window.Trello.authorize({
         ...trelloAuthParams,
@@ -29,7 +26,7 @@ class Login extends Component {
       });
     }
   }
-  trelloAuthenticationSuccess() {
+  trelloAuthenticationSuccess = () => {
     axios
       .post('/api/login', {
         trelloToken: localStorage.getItem('trello_token'),
@@ -38,15 +35,15 @@ class Login extends Component {
         this.props.login(response.data.user, response.data.jwt);
       })
       .catch(() => {});
-  }
-  trelloAuthenticationFailure() {}
-  handleLoginButtonClick() {
+  };
+  trelloAuthenticationFailure = () => {};
+  handleLoginButtonClick = () => {
     window.Trello.authorize({
       ...trelloAuthParams,
       success: this.trelloAuthenticationSuccess,
       error: this.trelloAuthenticationFailure,
     });
-  }
+  };
   render() {
     return (
       <div className="Login">
