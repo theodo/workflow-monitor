@@ -93,7 +93,7 @@ class Projects extends Component {
             .map(board => ({ value: board.id, label: board.name }))}
           placeholder="Select project"
         />
-        <ProjectSpeed />
+        {this.state.selectedProject && <ProjectSpeed />}
       </div>
     );
   }
