@@ -211,7 +211,11 @@ export class Main extends Component {
                 <ListItemText primary="Current Ticket" />
               </ListItem>
             </Link>
-            <Link to="/history" onClick={this.preventOn(!isProjectSelected)}>
+            <Link
+              to="/history"
+              onClick={this.preventOn(!isProjectSelected)}
+              class={classes.textDecorationReset}
+            >
               <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
                   <HistoryIcon />
