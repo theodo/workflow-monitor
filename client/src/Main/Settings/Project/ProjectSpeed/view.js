@@ -3,7 +3,7 @@ import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Util
 import { Input, withStyles, Button, TextField } from '@material-ui/core';
 import { gqlClient } from 'Utils/Graphql';
 import { withSnackbar } from 'notistack';
-import { SET_PROJECT_SPEED } from '../../../../Queries/Projects';
+import { SET_PROJECT_SPEED } from 'Apollo/Queries/Projects';
 
 const styles = () => ({
   mt10: {

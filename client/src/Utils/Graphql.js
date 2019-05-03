@@ -3,6 +3,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
+import resolvers from '../Apollo/resolvers';
 
 const httpLink = createHttpLink({
   uri: '/api/',
@@ -23,6 +24,7 @@ const authLink = setContext((_, { headers }) => {
 export const gqlClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
+  resolvers,
 });
 
 const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';

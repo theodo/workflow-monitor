@@ -2,6 +2,27 @@ import { formatMilliSecondToTime } from './TimeUtils';
 
 const RESULTS_CHECKLIST_LABEL = 'Workflow-monitor results';
 
+const trelloAuthParams = {
+  type: 'popup',
+  name: 'Workflow Monitor',
+  scope: {
+    read: 'true',
+    write: 'true',
+  },
+  expiration: 'never',
+};
+
+export const authenticateTrello = (interactive = false) => {
+  return new Promise((resolve, reject) => {
+    window.Trello.authorize({
+      ...trelloAuthParams,
+      interactive: interactive,
+      success: resolve,
+      error: reject,
+    });
+  });
+};
+
 export const getOrCreateResultsChecklist = cardId => {
   return new Promise(function(resolve) {
     window.Trello.get('/cards/' + cardId + '/checklists').then(function(checklists) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { GET_TICKET } from '../../Queries/Tickets';
+import { GET_TICKET } from 'Apollo/Queries/Tickets';
 
 const flattenTasks = tasks =>
   tasks.map(task =>

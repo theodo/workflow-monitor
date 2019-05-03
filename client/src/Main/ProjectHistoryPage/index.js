@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
+import { GET_TICKETS_HISTORY } from 'Apollo/Queries/Tickets';
 import ProjectHistoryPage from './view';
 
 class ProjectHistoryPageContainer extends Component {
