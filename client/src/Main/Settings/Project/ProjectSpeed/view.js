@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatSecondToTime, parseSecondFromFormattedTime } from '../../../../Utils/TimeUtils';
+import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
 import { Input, withStyles, Button, TextField } from '@material-ui/core';
 import { gqlClient } from 'Utils/Graphql';
 import { withSnackbar } from 'notistack';
@@ -81,10 +81,10 @@ class ProjectSpeed extends Component {
           id="project-work-hours-per-day"
           name="project-work-hours-per-day"
           type="time"
-          value={formatSecondToTime(this.state.dailyDevelopmentTime)}
+          value={formatMilliSecondToTime(this.state.dailyDevelopmentTime)}
           onChange={event =>
             this.onSelectedProjectDailyDevelopmentTimeChange(
-              parseSecondFromFormattedTime(event.target.value),
+              parseMilliSecondFromFormattedTime(event.target.value),
             )
           }
         />
