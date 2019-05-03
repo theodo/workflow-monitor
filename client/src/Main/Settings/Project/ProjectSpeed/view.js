@@ -25,8 +25,8 @@ const styles = () => ({
 
 class ProjectSpeed extends Component {
   state = {
-    celerity: this.props.project.celerity,
-    dailyDevelopmentTime: this.props.project.dailyDevelopmentTime,
+    celerity: this.props.project ? this.props.project.celerity : null,
+    dailyDevelopmentTime: this.props.project ? this.props.project.dailyDevelopmentTime : null,
   };
 
   updateProjectSpeed = () => {
