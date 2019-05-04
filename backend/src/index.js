@@ -3,7 +3,11 @@ const { GraphQLServer, PubSub } = require('graphql-yoga');
 const bodyParser = require('body-parser');
 const { sequelize } = require('../models');
 const { formatFullTicket, formatTasks } = require('./formatters');
-const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
+const {
+  upsert,
+  SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
+  SELECT_DAILY_PERFORMANCE_HISTORY_QUERY,
+} = require('./dbUtils');
 const getAllocatedTimeFromPointsAndCelerity = require('./helpers');
 const {
   authenticationMiddleware,
@@ -23,10 +27,15 @@ const typeDefs = `
   type Query {
     hello: String!
     currentUser: User
+    dailyPerformanceHistory(startDate: String, endDate: String): [DailyTicketPerformance]
     problemCategories: [ProblemCategory]
     problemCategoriesWithCount: [ProblemCategoryWithCount]
     tickets(pagination: PaginationInput): TicketList
     ticket(ticketId: Int): Ticket
+  }
+  type DailyTicketPerformance {
+    creationDay: String,
+    failedTicketsCount: Int
   }
   type User {
     id: String,
@@ -125,6 +134,13 @@ const resolvers = {
   Query: {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
+    dailyPerformanceHistory: (_, { startDate, endDate }, { user }) => {
+      const projectId = user.get('currentProjectId');
+      return sequelize.query(SELECT_DAILY_PERFORMANCE_HISTORY_QUERY, {
+        replacements: { projectId: projectId, startDate: startDate, endDate: endDate },
+        type: sequelize.QueryTypes.SELECT,
+      });
+    },
     problemCategories: () => ProblemCategory.findAll(),
     problemCategoriesWithCount: (_, args, { user }) => {
       const projectId = user.currentProject.id;

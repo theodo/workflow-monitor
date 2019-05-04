@@ -19,4 +19,28 @@ const SELECT_PROBLEM_CATEGORY_COUNT_QUERY = `
   ON ("problemCategories".id = "currentProjectCategoriesCount"."problemCategoryId");
 `;
 
-module.exports = { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY };
+const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
+  SELECT date("ticketsTime"."createdAt") as "creationDay", count(*) AS "failedTicketsCount"
+  FROM(
+      SELECT "ticketsTasks"."id", "ticketsTasks"."createdAt", "ticketsTasks"."allocatedTime", sum("ticketsTasks"."realTime") AS "developmentTime"
+      FROM(
+          SELECT "tickets"."id", "tickets"."createdAt", "allocatedTime", "realTime"
+          FROM tickets
+          INNER JOIN tasks ON "tasks"."ticketId"="tickets"."id"
+          WHERE(
+              ("tickets"."createdAt" BETWEEN :startDate AND :endDate)
+              AND ("allocatedTime" IS NOT NULL)
+              AND "tickets"."projectId"=:projectId
+          )
+      ) AS "ticketsTasks"
+      GROUP BY "ticketsTasks"."id", "ticketsTasks"."createdAt", "ticketsTasks"."allocatedTime"
+  ) AS "ticketsTime"
+  GROUP BY date("ticketsTime"."createdAt")
+  ORDER BY "creationDay" ASC;
+`;
+
+module.exports = {
+  upsert,
+  SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
+  SELECT_DAILY_PERFORMANCE_HISTORY_QUERY,
+};
