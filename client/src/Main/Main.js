@@ -19,13 +19,14 @@ import HistoryIcon from '@material-ui/icons/History';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import { ChecklistIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
+import { ChecklistIcon, KaizenIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
 import { appColors } from 'ui';
 
 import Monitor from './Monitor/Monitor';
 import Home from './Home/Home';
 import Settings from './Settings';
 import ProblemCategoryPage from './ProblemCategoryPage';
+import PerformancePage from './PerformancePage';
 import ProjectHistoryPage from './ProjectHistoryPage';
 import TicketPage from './TicketPage';
 
@@ -247,6 +248,18 @@ export class Main extends Component {
                 <ListItemText primary="Settings" />
               </ListItem>
             </Link>
+            <Link
+              to="/performance"
+              onClick={this.preventOn(true)}
+              class={classes.textDecorationReset}
+            >
+              <ListItem selected={isCurrentPage('performance')} button>
+                <ListItemIcon>
+                  <KaizenIcon color={appColors.lightBlack} />
+                </ListItemIcon>
+                <ListItemText primary="Performance" />
+              </ListItem>
+            </Link>
           </div>
           <Divider />
         </Drawer>
@@ -260,6 +273,7 @@ export class Main extends Component {
               <Route path="/history" component={ProjectHistoryPage} />
               <Route path="/settings" component={Settings} />
               <Route path="/problem-categories" component={ProblemCategoryPage} />
+              <Route path="/performance" component={PerformancePage} />
             </Switch>
           </div>
         </main>
