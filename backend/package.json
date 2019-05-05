@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "nodemon src/index.js",
+    "debug": "nodemon --inspect=0.0.0.0:9229 src/index.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix"
   }
