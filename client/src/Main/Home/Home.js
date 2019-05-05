@@ -7,6 +7,8 @@ import SimpleCard from './SimpleCard/SimpleCard';
 import { saveSettings } from '../Settings/SettingsActions';
 import { resetMonitor } from '../Monitor/MonitorActions';
 import BacklogAutocomplete from './BacklogAutocomplete';
+import { Query } from 'react-apollo';
+import { GET_CURRENT_PROJECT } from '../../Apollo/Queries/Projects';
 
 const getTicketPointsFromName = name => {
   const regex = /\((\?|\d+\.?,?\d*)\)/m;
@@ -66,51 +68,54 @@ class Home extends Component {
   };
   render() {
     return (
-      <div className="Home">
-        <div className="Home-left-panel">
-          <form autoComplete="on">
-            Project : {this.state.project.name}
-            <br />
-            <FormControl fullWidth>
-              <BacklogAutocomplete
-                value={this.state.backlog}
-                onChange={this.handleSelectedBacklogChange}
-                lists={this.state.lists}
-              />
-            </FormControl>
-            <br />
-            <br />
-            <Button
-              onClick={() => this.loadCardsFromTrello(this.state.backlog)}
-              disabled={this.isRefreshButtonDisabled()}
-            >
-              Refresh cards
-            </Button>
-          </form>
-        </div>
-        <div className="Home-right-panel">
-          {this.state.cards.length === 0
-            ? 'Select your project and the current backlog'
-            : this.state.cards.map((card, index) => (
-                <SimpleCard
-                  key={index}
-                  card={card}
-                  isCurrentTicket={
-                    this.props.currentTicket && this.props.currentTicket.id === card.id
-                  }
-                  handleCardStartClick={this.handleCardStartClick}
-                  handleCardContinueClick={this.props.handleCardContinueClick}
-                />
-              ))}
-        </div>
-      </div>
+      <Query query={GET_CURRENT_PROJECT}>
+        {project => (
+          <div className="Home">
+            <div className="Home-left-panel">
+              <form autoComplete="on">
+                Project : {project.name}
+                <br />
+                <FormControl fullWidth>
+                  <BacklogAutocomplete
+                    value={this.state.backlog}
+                    onChange={this.handleSelectedBacklogChange}
+                    lists={this.state.lists}
+                  />
+                </FormControl>
+                <br />
+                <br />
+                <Button
+                  onClick={() => this.loadCardsFromTrello(this.state.backlog)}
+                  disabled={this.isRefreshButtonDisabled()}
+                >
+                  Refresh cards
+                </Button>
+              </form>
+            </div>
+            <div className="Home-right-panel">
+              {this.state.cards.length === 0
+                ? 'Select your project and the current backlog'
+                : this.state.cards.map((card, index) => (
+                    <SimpleCard
+                      key={index}
+                      card={card}
+                      isCurrentTicket={
+                        this.props.currentTicket && this.props.currentTicket.id === card.id
+                      }
+                      handleCardStartClick={this.handleCardStartClick}
+                      handleCardContinueClick={this.props.handleCardContinueClick}
+                    />
+                  ))}
+            </div>
+          </div>
+        )}
+      </Query>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    project: state.LoginReducers.currentProject,
     backlog: state.SettingsReducers.selectedBacklogId
       ? state.SettingsReducers.selectedBacklogId
       : '',
