@@ -8,7 +8,7 @@ import { saveSettings } from '../Settings/SettingsActions';
 import { resetMonitor } from '../Monitor/MonitorActions';
 import BacklogAutocomplete from './BacklogAutocomplete';
 import { Query } from 'react-apollo';
-import { GET_CURRENT_PROJECT } from '../../Apollo/Queries/Projects';
+import { GET_CURRENT_PROJECT } from 'Apollo/Queries/Projects';
 
 const getTicketPointsFromName = name => {
   const regex = /\((\?|\d+\.?,?\d*)\)/m;
