@@ -1,7 +1,7 @@
-import { loginUserMutations } from './loginUser';
+import userResolvers from './User';
 
 export default {
   Mutation: {
-    ...loginUserMutations,
+    ...userResolvers.mutations,
   },
 };

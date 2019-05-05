@@ -1,9 +1,7 @@
 import axios from 'axios';
 import { authenticateTrello } from 'Utils/TrelloApiUtils';
 
-const updateLoginUser = async (_, { interactive }, { cache }) => {
-  console.log('hello');
-
+const updateUser = async (_, { interactive }, { cache }) => {
   await authenticateTrello(interactive);
   const loginResponse = await axios.post('/api/login', {
     trelloToken: localStorage.getItem('trello_token'),
@@ -17,9 +15,11 @@ const updateLoginUser = async (_, { interactive }, { cache }) => {
     __typename: 'User',
   };
 
-  console.log(cacheUser);
+  const currentProject = user.currentProject
+    ? { ...user.currentProject, __typename: 'Project' }
+    : null;
 
-  cache.writeData({ data: { user: cacheUser } });
+  cache.writeData({ data: { user: cacheUser, currentProject } });
 
   if (user.currentProject) window.location.hash = '#/';
   else window.location.hash = '#/settings';
@@ -27,4 +27,4 @@ const updateLoginUser = async (_, { interactive }, { cache }) => {
   return null;
 };
 
-export default { updateLoginUser };
+export default { mutations: { updateUser } };

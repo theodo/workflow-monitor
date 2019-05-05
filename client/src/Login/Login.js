@@ -1,14 +1,14 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { Mutation } from 'react-apollo';
-import { SET_LOGIN_USER } from 'Apollo/Queries/Login';
+import { USER_LOGIN } from 'Apollo/Queries/User';
 
 const Login = () => (
-  <Mutation mutation={SET_LOGIN_USER}>
+  <Mutation mutation={USER_LOGIN}>
     {(setLoginUser, { loading, error }) => {
-      // if (localStorage.getItem('trello_token')) {
-      //   setLoginUser({ variables: { interactive: false } });
-      // }
+      if (localStorage.getItem('trello_token')) {
+        setLoginUser({ variables: { interactive: false } });
+      }
       return (
         <div className="Login">
           <Button
