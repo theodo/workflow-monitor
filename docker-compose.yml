@@ -11,13 +11,14 @@ services:
       - '5432:5432'
   backend:
     build: ./backend
-    command: yarn start
+    command: yarn debug
     environment:
       - NODE_ENV=development
     volumes:
       - ./backend:/app
     ports:
       - "4000:4000"
+      - "9229:9229"
     depends_on:
       - postgresql
   react:

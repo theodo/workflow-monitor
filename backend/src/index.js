@@ -28,6 +28,7 @@ const typeDefs = `
     hello: String!
     currentUser: User
     dailyPerformanceHistory(startDate: String, endDate: String): [DailyTicketPerformance]
+    currentProject: Project
     problemCategories: [ProblemCategory]
     problemCategoriesWithCount: [ProblemCategoryWithCount]
     tickets(pagination: PaginationInput): TicketList
@@ -141,6 +142,7 @@ const resolvers = {
         type: sequelize.QueryTypes.SELECT,
       });
     },
+    currentProject: (_, args, { user }) => user.currentProject,
     problemCategories: () => ProblemCategory.findAll(),
     problemCategoriesWithCount: (_, args, { user }) => {
       const projectId = user.currentProject.id;

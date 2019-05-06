@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import { GET_PROBLEM_CATEGORIES } from '../../../Queries/Categories';
+import { GET_PROBLEM_CATEGORIES } from 'Apollo/Queries/Categories';
 import { Query } from 'react-apollo';
 
 /* TODO: Translate and insert values below in database

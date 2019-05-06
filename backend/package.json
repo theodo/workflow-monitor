@@ -6,7 +6,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "graphql-yoga": "^1.8.5",
+    "graphql-yoga": "^1.17.4",
     "jsonwebtoken": "^8.2.1",
     "pg": "^7.4.3",
     "sequelize": "^4.37.10",
@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "nodemon src/index.js",
+    "debug": "nodemon --inspect=0.0.0.0:9229 src/index.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix"
   }

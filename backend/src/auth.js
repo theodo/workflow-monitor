@@ -21,18 +21,20 @@ const authenticationMiddleware = (req, res, next) => {
     verifyJWTToken(token, (err, result) => {
       if (err) {
         console.error(result);
-        res.status(405).send('{"error": "Not authorized!"}');
+        res.status(405).send({ error: 'Not authorized!' });
       } else {
         findUser(result.trelloId).then(user => {
           if (user) {
             req.user = user;
             next();
           } else {
-            res.status(405).send('{"error": "Not authorized!"}');
+            res.status(405).send({ error: 'Not authorized!' });
           }
         });
       }
     });
+  } else {
+    res.status(405).send({ error: 'Authentication header missing or invalid' });
   }
 };
 

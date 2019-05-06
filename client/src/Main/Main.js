@@ -31,6 +31,8 @@ import ProjectHistoryPage from './ProjectHistoryPage';
 import TicketPage from './TicketPage';
 
 import PropTypes from 'prop-types';
+import { Query } from 'react-apollo';
+import { GET_CURRENT_PROJECT } from 'Apollo/Queries/Projects';
 
 // The code of this component come from https://material-ui-next.com/demos/drawers/
 
@@ -136,148 +138,156 @@ export class Main extends Component {
     if (condition) e.preventDefault();
   };
   render() {
-    const { classes, theme, isTrelloCardSelected, isProjectSelected } = this.props;
+    const { classes, theme, isTrelloCardSelected } = this.props;
     return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classNames(classes.appBar, {
-            [classes.appBarShift]: this.state.open,
-          })}
-        >
-          <Toolbar disableGutters={!this.state.open}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, this.state.isDrawerOpen && classes.hide)}
-            >
-              {!this.state.open && <ChevronRightIcon />}
-            </IconButton>
-            <img src="./caspr.png" height="50px" alt="logo" />
-            <Typography variant="h6" color="inherit" className={classes.title} noWrap>
-              Caspr - The Ghost Programming Companion
-            </Typography>
-            <a
-              href="https://goo.gl/forms/QEUYWJFubYwcYPrf1"
-              target="_blank"
-              className={classes.feedbackButton}
-              rel="noopener noreferrer"
-            >
-              Give feedback
-            </a>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className="no-print"
-          variant="permanent"
-          classes={{
-            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-          }}
-          open={this.state.open}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
-          <div>
-            <Link
-              to="/"
-              onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
-            >
-              <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
-                <ListItemIcon>
-                  <TrelloBoardIcon size="25px" color={appColors.darkGrey} />
-                </ListItemIcon>
-                <ListItemText primary="Ticket List" />
-              </ListItem>
-            </Link>
-            <Link
-              to="/monitor"
-              onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)}
-              class={classes.textDecorationReset}
-            >
-              <ListItem
-                selected={isCurrentPage('monitor')}
-                disabled={!isProjectSelected || !isTrelloCardSelected}
-                button
+      <Query query={GET_CURRENT_PROJECT}>
+        {currentProject => {
+          return (
+            <div className={classes.root}>
+              <CssBaseline />
+              <AppBar
+                position="fixed"
+                className={classNames(classes.appBar, {
+                  [classes.appBarShift]: this.state.open,
+                })}
               >
-                <ListItemIcon>
-                  <ChecklistIcon size="25px" color={appColors.darkGrey} />
-                </ListItemIcon>
-                <ListItemText primary="Current Ticket" />
-              </ListItem>
-            </Link>
-            <Link
-              to="/history"
-              onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
-            >
-              <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
-                <ListItemIcon>
-                  <HistoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="History" />
-              </ListItem>
-            </Link>
-            <Link
-              to="/problem-categories"
-              onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
-            >
-              <ListItem
-                selected={isCurrentPage('problem-categories')}
-                disabled={!isProjectSelected}
-                button
+                <Toolbar disableGutters={!this.state.open}>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={this.handleDrawerOpen}
+                    className={classNames(
+                      classes.menuButton,
+                      this.state.isDrawerOpen && classes.hide,
+                    )}
+                  >
+                    {!this.state.open && <ChevronRightIcon />}
+                  </IconButton>
+                  <img src="./caspr.png" height="50px" alt="logo" />
+                  <Typography variant="h6" color="inherit" className={classes.title} noWrap>
+                    Caspr - The Ghost Programming Companion
+                  </Typography>
+                  <a
+                    href="https://goo.gl/forms/QEUYWJFubYwcYPrf1"
+                    target="_blank"
+                    className={classes.feedbackButton}
+                    rel="noopener noreferrer"
+                  >
+                    Give feedback
+                  </a>
+                </Toolbar>
+              </AppBar>
+              <Drawer
+                className="no-print"
+                variant="permanent"
+                classes={{
+                  paper: classNames(
+                    classes.drawerPaper,
+                    !this.state.open && classes.drawerPaperClose,
+                  ),
+                }}
+                open={this.state.open}
               >
-                <ListItemIcon>
-                  <LineChartIcon size="25px" color={appColors.darkGrey} />
-                </ListItemIcon>
-                <ListItemText primary="Pareto" />
-              </ListItem>
-            </Link>
-            <Link to="/settings" class={classes.textDecorationReset}>
-              <ListItem selected={isCurrentPage('settings')} button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
-            <Link
-              to="/performance"
-              onClick={this.preventOn(true)}
-              class={classes.textDecorationReset}
-            >
-              <ListItem selected={isCurrentPage('performance')} button>
-                <ListItemIcon>
-                  <KaizenIcon color={appColors.lightBlack} />
-                </ListItemIcon>
-                <ListItemText primary="Performance" />
-              </ListItem>
-            </Link>
-          </div>
-          <Divider />
-        </Drawer>
-        <main className={classes.content}>
-          <div className={'no-print ' + classes.toolbar} />
-          <div className={classes.mainContent}>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/monitor" component={Monitor} />
-              <Route path="/history/:ticketId" component={TicketPage} />
-              <Route path="/history" component={ProjectHistoryPage} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/problem-categories" component={ProblemCategoryPage} />
-              <Route path="/performance" component={PerformancePage} />
-            </Switch>
-          </div>
-        </main>
-      </div>
+                <div className={classes.toolbar}>
+                  <IconButton onClick={this.handleDrawerClose}>
+                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                  </IconButton>
+                </div>
+                <Divider />
+                <div>
+                  <Link
+                    to="/"
+                    onClick={this.preventOn(!currentProject)}
+                    className={classes.textDecorationReset}
+                  >
+                    <ListItem selected={isCurrentPage('')} disabled={!currentProject} button>
+                      <ListItemIcon>
+                        <TrelloBoardIcon size="25px" color={appColors.darkGrey} />
+                      </ListItemIcon>
+                      <ListItemText primary="Ticket List" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/monitor"
+                    onClick={this.preventOn(!isTrelloCardSelected || !currentProject)}
+                    class={classes.textDecorationReset}
+                  >
+                    <ListItem
+                      selected={isCurrentPage('monitor')}
+                      disabled={!currentProject || !isTrelloCardSelected}
+                      button
+                    >
+                      <ListItemIcon>
+                        <ChecklistIcon size="25px" color={appColors.darkGrey} />
+                      </ListItemIcon>
+                      <ListItemText primary="Current Ticket" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/history" onClick={this.preventOn(!currentProject)}>
+                    <ListItem selected={isCurrentPage('history')} disabled={!currentProject} button>
+                      <ListItemIcon>
+                        <HistoryIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="History" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/problem-categories"
+                    onClick={this.preventOn(!currentProject)}
+                    class={classes.textDecorationReset}
+                  >
+                    <ListItem
+                      selected={isCurrentPage('problem-categories')}
+                      disabled={!currentProject}
+                      button
+                    >
+                      <ListItemIcon>
+                        <LineChartIcon size="25px" color={appColors.darkGrey} />
+                      </ListItemIcon>
+                      <ListItemText primary="Pareto" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/settings" class={classes.textDecorationReset}>
+                    <ListItem selected={isCurrentPage('settings')} button>
+                      <ListItemIcon>
+                        <SettingsIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Settings" />
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to="/performance"
+                    onClick={this.preventOn(true)}
+                    class={classes.textDecorationReset}
+                  >
+                    <ListItem selected={isCurrentPage('performance')} button>
+                      <ListItemIcon>
+                        <KaizenIcon color={appColors.lightBlack} />
+                      </ListItemIcon>
+                      <ListItemText primary="Performance" />
+                    </ListItem>
+                  </Link>
+                </div>
+                <Divider />
+              </Drawer>
+              <main className={classes.content}>
+                <div className={'no-print ' + classes.toolbar} />
+                <div className={classes.mainContent}>
+                  <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route path="/monitor" component={Monitor} />
+                    <Route path="/history/:ticketId" component={TicketPage} />
+                    <Route path="/history" component={ProjectHistoryPage} />
+                    <Route path="/settings" component={Settings} />
+                    <Route path="/problem-categories" component={ProblemCategoryPage} />
+                    <Route path="/performance" component={PerformancePage} />
+                  </Switch>
+                </div>
+              </main>
+            </div>
+          );
+        }}
+      </Query>
     );
   }
 }
@@ -288,7 +298,6 @@ Main.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isProjectSelected: !!state.LoginReducers.currentProject,
   isTrelloCardSelected: !!state.MonitorReducers.currentTrelloCard,
 });
 

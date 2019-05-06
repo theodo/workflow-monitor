@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { GET_DAILY_PERFORMANCE_HISTORY } from 'Queries/Tickets';
+import { GET_DAILY_PERFORMANCE_HISTORY } from 'Apollo/Queries/Tickets';
 import PerformancePage from './view';
 
 const PerformancePageContainer = () => (
@@ -14,8 +14,6 @@ const PerformancePageContainer = () => (
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return 'Unexpected error';
-
-      console.log(data);
       return <PerformancePage failureHistory={JSON.stringify(data.dailyPerformanceHistory)} />;
     }}
   </Query>

@@ -8,8 +8,8 @@ import {
   GET_PROBLEM_CATEGORIES,
   GET_PROBLEM_CATEGORIES_WITH_COUNT,
   ADD_PROBLEM_CATEGORY,
-} from '../../Queries/Categories';
-import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
+} from 'Apollo/Queries/Categories';
+import { GET_TICKETS_HISTORY } from 'Apollo/Queries/Tickets';
 
 class ProblemCategoryPageContainer extends Component {
   render() {
