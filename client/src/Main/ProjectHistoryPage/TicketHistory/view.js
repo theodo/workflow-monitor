@@ -21,21 +21,13 @@ const styles = {
   },
 };
 
-const getTicketTasksDevelopmentTime = tasks => {
-  return Math.round(tasks.reduce((a, b) => a + b['realTime'], 0));
+const DidSucceedIcon = ({ didTicketSucceed }) => {
+  if (didTicketSucceed === null) return null;
+
+  return didTicketSucceed ? <SuccessIcon size="30px" /> : <FailureIcon size="30px" />;
 };
 
-const didTicketSucceed = ticket => {
-  return getTicketTasksDevelopmentTime(ticket.tasks) <= ticket.allocatedTime ? true : false;
-};
-
-const DidSucceedIcon = ({ ticket }) => {
-  if (!ticket.allocatedTime || ticket.allocatedTime === 0) return null;
-
-  return didTicketSucceed(ticket) ? <SuccessIcon size="30px" /> : <FailureIcon size="30px" />;
-};
-
-const TicketHistory = ({ ticket, goToTicket, classes }) => {
+const TicketHistory = ({ ticket, goToTicket, classes, didTicketSucceed }) => {
   return (
     <div className={classes['container']}>
       <Card key={ticket.id} className={classes['card']}>
@@ -47,7 +39,7 @@ const TicketHistory = ({ ticket, goToTicket, classes }) => {
           </CardContent>
         </CardActionArea>
       </Card>
-      <DidSucceedIcon ticket={ticket} />
+      <DidSucceedIcon didTicketSucceed={didTicketSucceed} />
     </div>
   );
 };
