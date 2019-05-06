@@ -32,7 +32,7 @@ import TicketPage from './TicketPage';
 
 import PropTypes from 'prop-types';
 import { Query } from 'react-apollo';
-import { GET_CURRENT_PROJECT } from '../Apollo/Queries/Projects';
+import { GET_CURRENT_PROJECT } from 'Apollo/Queries/Projects';
 
 // The code of this component come from https://material-ui-next.com/demos/drawers/
 
