@@ -155,6 +155,8 @@ class Monitor extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.step === MONITOR_STEPS.WORKFLOW && this.props.step === MONITOR_STEPS.RESULTS) {
+      console.log('prevProps', prevProps);
+      console.log('props', this.props);
       gqlClient
         .mutate({
           mutation: gql`

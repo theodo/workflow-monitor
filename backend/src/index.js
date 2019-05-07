@@ -74,8 +74,9 @@ const typeDefs = `
     problems: [Problem]
   }
   input TaskInput {
-    id: Int
-    description: String
+    id: Int,
+    ticketId: Int,
+    description: String,
     estimatedTime: Int,
     realTime: Int,
     addedOnTheFly: Boolean,
@@ -194,6 +195,7 @@ const resolvers = {
         project.dailyDevelopmentTime,
       );
       const formattedTicket = formatFullTicket(jsState, project, user, allocatedTime);
+      console.log(formattedTicket);
       const ticket = await upsert(Ticket, formattedTicket, {
         thirdPartyId: formattedTicket.thirdPartyId,
       });
@@ -213,25 +215,27 @@ const resolvers = {
       });
       return ticketId;
     },
-    updateTask: (_, { task }) => {
-      return Task.findById(task.id, { include: [{ model: Problem, as: 'problems' }] }).then(
-        taskToUpdate => {
-          taskToUpdate.update(task).then(() => {
-            Problem.destroy({ where: { taskId: taskToUpdate.id } }).then(() => {
-              task.problems.map(formattedProblem => {
-                formattedProblem.taskId = taskToUpdate.id;
-                Problem.create(formattedProblem)
-                  .then(
-                    problem =>
-                      formattedProblem.problemCategory &&
-                      problem.setProblemCategory(formattedProblem.problemCategory.id),
-                  )
-                  .then(problem => problem.save());
-              });
-            });
-          });
-        },
-      );
+    updateTask: async (_, { task }) => {
+      taskToUpdate = await Task.findById(task.id, {
+        include: [{ model: Problem, as: 'problems' }],
+      });
+      ticketToUpdate = await Ticket.findById(task.ticketId);
+      updatedEstimatedTime =
+        ticketToUpdate.estimatedTime + task.estimatedTime - taskToUpdate.estimatedTime;
+      updatedRealTime = ticketToUpdate.realTime + task.realTime - taskToUpdate.realTime;
+      ticketToUpdate.update({ estimatedTime: updatedEstimatedTime, realTime: updatedRealTime });
+      taskToUpdate.update(task);
+      Problem.destroy({ where: { taskId: taskToUpdate.id } });
+      if (task.problems) {
+        task.problems.forEach(async formattedProblem => {
+          formattedProblem.taskId = taskToUpdate.id;
+          problem = await Problem.create(formattedProblem);
+          formattedProblem.problemCategory &&
+            problem.setProblemCategory(formattedProblem.problemCategory.id);
+          problem.save();
+        });
+      }
+      return taskToUpdate;
     },
     selectProject: (_, { project }, { user }) => {
       project.thirdPartyType = 'TRELLO';

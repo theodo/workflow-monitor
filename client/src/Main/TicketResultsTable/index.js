@@ -5,7 +5,7 @@ import TicketResultsTable from './view';
 import { UPDATE_TASK } from 'Queries/Tasks';
 import { WithTicketData } from 'Main/shared';
 
-const nestedTask = task => ({
+const nestedTask = (task, ticketId) => ({
   id: task.id,
   description: task.description,
   estimatedTime: task.estimatedTime,
@@ -22,11 +22,12 @@ const nestedTask = task => ({
         : null,
     },
   ],
+  ticketId,
 });
 
 class TicketResultsTableContainer extends Component {
   updateTask = task => {
-    const nested = nestedTask(task);
+    const nested = nestedTask(task, this.props.ticketId);
 
     gqlClient.mutate({
       mutation: UPDATE_TASK,
