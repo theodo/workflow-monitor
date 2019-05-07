@@ -19,10 +19,10 @@ module.exports = {
     );
 
     const tasksGroupedByTicket = rows[0];
-    for (var i in tasksGroupedByTicket) {
-      const ticketId = tasksGroupedByTicket[i].ticketId;
-      const ticketRealTime = tasksGroupedByTicket[i].totalRealTime;
-      const ticketEstimatedTime = tasksGroupedByTicket[i].totalEstimatedTime;
+    tasksGroupedByTicket.map(ticketTime => {
+      const ticketId = ticketTime.ticketId;
+      const ticketRealTime = ticketTime.totalRealTime;
+      const ticketEstimatedTime = ticketTime.totalEstimatedTime;
       queryInterface.sequelize.query(UPDATE_TICKETS_WITH_REAL_AND_ESTIMATED_TIME, {
         replacements: {
           ticketId: ticketId,
@@ -30,7 +30,8 @@ module.exports = {
           ticketEstimatedTime: ticketEstimatedTime,
         },
       });
-    }
+    });
+
     return rows;
   },
 

@@ -64,6 +64,7 @@ const typeDefs = `
     status: String
     tasks: [Task]
     allocatedTime: Int
+    realTime: Int
   }
   type Task {
     id: Int
@@ -195,7 +196,6 @@ const resolvers = {
         project.dailyDevelopmentTime,
       );
       const formattedTicket = formatFullTicket(jsState, project, user, allocatedTime);
-      console.log(formattedTicket);
       const ticket = await upsert(Ticket, formattedTicket, {
         thirdPartyId: formattedTicket.thirdPartyId,
       });

@@ -10,9 +10,7 @@ export const GET_TICKETS_HISTORY = gql`
         complexity
         status
         allocatedTime
-        tasks {
-          realTime
-        }
+        realTime
       }
       count
     }
