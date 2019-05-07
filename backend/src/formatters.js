@@ -1,9 +1,16 @@
+const getTotatlTimeFromTasks = (tasks, key) =>
+  tasks.reduce((total, task) => (task[key] ? total + task[key] : total), 0);
+
 const formatFullTicket = (state, project, user, allocatedTime) => {
   const {
     currentTrelloCard: { idShort: thirdPartyId, name: description, ticketPoints: points },
+    tasks,
   } = state;
   const { id: projectId } = project;
   const { id: userId } = user;
+
+  const estimatedTime = getTotatlTimeFromTasks(tasks, 'estimatedTime');
+  const realTime = getTotatlTimeFromTasks(tasks, 'realTime');
 
   return {
     thirdPartyId: thirdPartyId.toString(),
@@ -15,6 +22,8 @@ const formatFullTicket = (state, project, user, allocatedTime) => {
     celerity: project.celerity,
     dailyDevelopmentTime: project.dailyDevelopmentTime,
     allocatedTime,
+    estimatedTime,
+    realTime,
   };
 };
 
