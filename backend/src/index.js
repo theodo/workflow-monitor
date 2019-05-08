@@ -58,6 +58,7 @@ const typeDefs = `
   }
   type Ticket {
     id: Int
+    createdAt: String
     description: String
     thirdPartyId: String
     complexity: Int
@@ -174,7 +175,6 @@ const resolvers = {
         limit,
         order: [['createdAt', 'DESC']],
         offset,
-        include: { model: Task, as: 'tasks', attributes: ['realTime'] },
       });
     },
   },

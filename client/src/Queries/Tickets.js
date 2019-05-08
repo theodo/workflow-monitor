@@ -5,6 +5,7 @@ export const GET_TICKETS_HISTORY = gql`
     tickets(pagination: $pagination) {
       rows {
         id
+        createdAt
         description
         thirdPartyId
         complexity
