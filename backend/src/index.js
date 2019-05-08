@@ -216,20 +216,20 @@ const resolvers = {
       return ticketId;
     },
     updateTask: async (_, { task }) => {
-      taskToUpdate = await Task.findById(task.id, {
+      const taskToUpdate = await Task.findById(task.id, {
         include: [{ model: Problem, as: 'problems' }],
       });
-      ticketToUpdate = await Ticket.findById(task.ticketId);
-      updatedEstimatedTime =
+      const ticketToUpdate = await Ticket.findById(task.ticketId);
+      const updatedEstimatedTime =
         ticketToUpdate.estimatedTime + task.estimatedTime - taskToUpdate.estimatedTime;
-      updatedRealTime = ticketToUpdate.realTime + task.realTime - taskToUpdate.realTime;
+      const updatedRealTime = ticketToUpdate.realTime + task.realTime - taskToUpdate.realTime;
       ticketToUpdate.update({ estimatedTime: updatedEstimatedTime, realTime: updatedRealTime });
       taskToUpdate.update(task);
       Problem.destroy({ where: { taskId: taskToUpdate.id } });
       if (task.problems) {
         task.problems.forEach(async formattedProblem => {
           formattedProblem.taskId = taskToUpdate.id;
-          problem = await Problem.create(formattedProblem);
+          const problem = await Problem.create(formattedProblem);
           formattedProblem.problemCategory &&
             problem.setProblemCategory(formattedProblem.problemCategory.id);
           problem.save();
