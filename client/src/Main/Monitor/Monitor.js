@@ -147,7 +147,7 @@ class Monitor extends Component {
         {
           next(data) {
             if (data.state) {
-              props.update(JSON.parse(data.state));
+              props.update(JSON.parse(data.data.state));
             }
           },
         },
