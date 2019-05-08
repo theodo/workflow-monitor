@@ -1,27 +1,24 @@
 const fs = require('fs');
 const { GraphQLServer, PubSub } = require('graphql-yoga');
 const bodyParser = require('body-parser');
-const { sequelize } = require('../models');
 const { formatFullTicket, formatTasks } = require('./formatters');
-const {
-  upsert,
-  SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
-  SELECT_DAILY_PERFORMANCE_HISTORY_QUERY,
-} = require('./dbUtils');
+const { upsert, SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const getAllocatedTimeFromPointsAndCelerity = require('./helpers');
 const {
   authenticationMiddleware,
   loginRoute,
   websocketAuthenticationMiddleware,
 } = require('./auth');
+const db = require('./datasources/db');
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
+const isTest = process.env.NODE_ENV && process.env.NODE_ENV === 'test';
 
-const Project = sequelize.models.project;
-const ProblemCategory = sequelize.models.problemCategory;
-const Ticket = sequelize.models.ticket;
-const Task = sequelize.models.task;
-const Problem = sequelize.models.problem;
+const Project = db.getORM().models.project;
+const ProblemCategory = db.getORM().models.problemCategory;
+const Ticket = db.getORM().models.ticket;
+const Task = db.getORM().models.task;
+const Problem = db.getORM().models.problem;
 
 const typeDefs = `
   type Query {
@@ -138,19 +135,16 @@ const resolvers = {
   Query: {
     hello: (_, args, { user }) => `Hello ${user.fullName || 'World'}`,
     currentUser: (_, args, { user }) => user,
-    dailyPerformanceHistory: (_, { startDate, endDate }, { user }) => {
-      const projectId = user.get('currentProjectId');
-      return sequelize.query(SELECT_DAILY_PERFORMANCE_HISTORY_QUERY, {
-        replacements: { projectId: projectId, startDate: startDate, endDate: endDate },
-        type: sequelize.QueryTypes.SELECT,
-      });
+    dailyPerformanceHistory: (_, { startDate, endDate }, { user, db }) => {
+      const projectId = user.currentProject.id;
+      return db.getDailyPerformanceHistory(startDate, endDate, projectId);
     },
     problemCategories: () => ProblemCategory.findAll(),
     problemCategoriesWithCount: (_, args, { user }) => {
       const projectId = user.currentProject.id;
-      return sequelize.query(SELECT_PROBLEM_CATEGORY_COUNT_QUERY, {
+      return db.getORM().query(SELECT_PROBLEM_CATEGORY_COUNT_QUERY, {
         replacements: [projectId],
-        type: sequelize.QueryTypes.SELECT,
+        type: db.getORM().QueryTypes.SELECT,
       });
     },
     ticket: (_, { ticketId }) => {
@@ -280,22 +274,38 @@ const resolvers = {
 };
 
 const pubsub = new PubSub();
+const defaultContext = {
+  pubsub,
+  db,
+};
 const context = async ({ request, connection }) => ({
   user: request ? request.user : connection ? connection.context.user : undefined,
-  pubsub,
+  ...defaultContext,
 });
+
 const server = new GraphQLServer({ typeDefs, resolvers, context });
-server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware);
+server.express.post(server.options.endpoint, bodyParser.json(), authenticationMiddleware(db));
 
-const serverOptions = isDev
-  ? { subscriptions: { onConnect: websocketAuthenticationMiddleware } }
-  : {
-      https: {
-        cert: fs.readFileSync('/home/ubuntu/certificates/cert.pem', 'utf8'),
-        key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8'),
-      },
-      subscriptions: { onConnect: websocketAuthenticationMiddleware },
-    };
+const serverOptions =
+  isDev || isTest
+    ? { subscriptions: { onConnect: websocketAuthenticationMiddleware(db) } }
+    : {
+        https: {
+          cert: fs.readFileSync('/home/ubuntu/certificates/cert.pem', 'utf8'),
+          key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8'),
+        },
+        subscriptions: { onConnect: websocketAuthenticationMiddleware(db) },
+      };
 
-server.express.post(`/login`, bodyParser.json(), loginRoute);
-server.start(serverOptions, () => console.log('Server is running on localhost:4000'));
+serverOptions.port = isTest ? 4001 : 4000;
+server.express.post(`/login`, bodyParser.json(), loginRoute(db));
+
+if (!isTest) {
+  server.start(serverOptions, () => console.log('Server is running on localhost:4000'));
+}
+
+module.exports = {
+  server,
+  serverOptions,
+  db,
+};

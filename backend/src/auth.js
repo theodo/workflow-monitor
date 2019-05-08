@@ -6,44 +6,40 @@ const verifyJWTToken = (token, callback) => {
   return jwt.verify(token, 'JWT_SECRET', callback);
 };
 
-const findUser = userTrelloId => {
-  return sequelize.models.user.find({
-    where: { trelloId: userTrelloId },
-    include: [{ model: sequelize.models.project, as: 'currentProject' }],
-  });
+const authenticationMiddleware = db => {
+  return (req, res, next) => {
+    let authorization = req.headers.authentication;
+    const bearerLength = 'Bearer '.length;
+    if (authorization && authorization.length > bearerLength) {
+      const token = authorization.slice(bearerLength);
+      verifyJWTToken(token, (err, result) => {
+        if (err) {
+          res.status(405).send('{"error": "Not authorized!"}');
+        } else {
+          db.findUser(result.trelloId).then(user => {
+            if (user) {
+              req.user = user;
+              next();
+            } else {
+              res.status(405).send('{"error": "Not authorized!"}');
+            }
+          });
+        }
+      });
+    } else {
+      res.status(405).send({ error: 'Authentication header missing or invalid' });
+    }
+  };
 };
 
-const authenticationMiddleware = (req, res, next) => {
-  let authorization = req.headers.authentication;
-  const bearerLength = 'Bearer '.length;
-  if (authorization && authorization.length > bearerLength) {
-    const token = authorization.slice(bearerLength);
-    verifyJWTToken(token, (err, result) => {
-      if (err) {
-        console.error(result);
-        res.status(403).send('{"error": "Not authorized!"}');
-      } else {
-        findUser(result.trelloId).then(user => {
-          if (user) {
-            req.user = user;
-            next();
-          } else {
-            res.status(403).send('{"error": "Not authorized!"}');
-          }
-        });
-      }
-    });
-  }
-};
-
-const websocketAuthenticationMiddleware = async connectionParams => {
+const websocketAuthenticationMiddleware = db => async connectionParams => {
   if (connectionParams.authToken) {
     return verifyJWTToken(connectionParams.authToken, (err, result) => {
       if (err) {
         console.error(result);
         throw new Error('Not authorized!');
       } else {
-        return findUser(result.trelloId).then(user => {
+        return db.findUser(result.trelloId).then(user => {
           if (user) {
             return {
               user: user,
@@ -59,7 +55,7 @@ const websocketAuthenticationMiddleware = async connectionParams => {
   throw new Error('Missing auth token!');
 };
 
-const loginRoute = (req, res) => {
+const loginRoute = db => (req, res) => {
   const trelloToken = req.body.trelloToken;
   const trelloKey = '0314242ee352e79b01e16d6c79a6dee9';
   https
@@ -73,7 +69,7 @@ const loginRoute = (req, res) => {
 
         resp.on('end', () => {
           const dataJson = JSON.parse(data);
-          sequelize.models.user
+          db.models.user
             .findOrCreate({
               where: { trelloId: dataJson.id },
               defaults: { fullName: dataJson.fullName },
