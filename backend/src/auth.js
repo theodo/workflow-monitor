@@ -21,14 +21,14 @@ const authenticationMiddleware = (req, res, next) => {
     verifyJWTToken(token, (err, result) => {
       if (err) {
         console.error(result);
-        res.status(405).send('{"error": "Not authorized!"}');
+        res.status(403).send('{"error": "Not authorized!"}');
       } else {
         findUser(result.trelloId).then(user => {
           if (user) {
             req.user = user;
             next();
           } else {
-            res.status(405).send('{"error": "Not authorized!"}');
+            res.status(403).send('{"error": "Not authorized!"}');
           }
         });
       }
@@ -89,12 +89,12 @@ const loginRoute = (req, res) => {
         });
       } else {
         console.error(`Got error too:`);
-        res.status(405).send('{"error": "Not authorized!"}');
+        res.status(403).send('{"error": "Not authorized!"}');
       }
     })
     .on('error', e => {
       console.error(`Got error: ${e.message}`);
-      res.status(405).send('{"error": "Not authorized!"}');
+      res.status(403).send('{"error": "Not authorized!"}');
     });
 };
 
