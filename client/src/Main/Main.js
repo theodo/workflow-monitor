@@ -250,7 +250,7 @@ export class Main extends Component {
             </Link>
             <Link
               to="/performance"
-              onClick={this.preventOn(true)}
+              onClick={this.preventOn(!isProjectSelected)}
               className={classes.textDecorationReset}
             >
               <ListItem selected={isCurrentPage('performance')} button>
