@@ -7,8 +7,9 @@ const { db } = require('../');
 const GET_DAILY_PERFORMANCE_HISTORY = gql`
   query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
     dailyPerformanceHistory(startDate: $startDate, endDate: $endDate) {
+      celerityFailedTicketsCount
+      casprFailedTicketsCount
       creationDay
-      failedTicketsCount
     }
   }
 `;
@@ -50,8 +51,9 @@ describe('API Tickets Tests', () => {
     it('fetches daily performance history with 5 failed tickets on one day', async () => {
       db.getDailyPerformanceHistory = jest.fn(() => [
         {
-          creationDay: '2019-05-06',
-          failedTicketsCount: 5,
+          creationDay: '2019-05-08',
+          celerityFailedTicketsCount: 0,
+          casprFailedTicketsCount: 0,
         },
       ]);
 

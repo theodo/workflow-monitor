@@ -1,6 +1,5 @@
 const https = require('https');
 const jwt = require('jsonwebtoken');
-const { sequelize } = require('../models');
 
 const verifyJWTToken = (token, callback) => {
   return jwt.verify(token, 'JWT_SECRET', callback);
@@ -69,11 +68,11 @@ const loginRoute = db => (req, res) => {
 
         resp.on('end', () => {
           const dataJson = JSON.parse(data);
-          db.models.user
-            .findOrCreate({
+          db.getORM()
+            .models.user.findOrCreate({
               where: { trelloId: dataJson.id },
               defaults: { fullName: dataJson.fullName },
-              include: [{ model: sequelize.models.project, as: 'currentProject' }],
+              include: [{ model: db.getORM().models.project, as: 'currentProject' }],
             })
             .spread(user => {
               const loginView = {
