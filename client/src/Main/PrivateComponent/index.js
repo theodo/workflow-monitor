@@ -5,7 +5,4 @@ const mapStateToProps = state => ({
   trelloId: state.LoginReducers.trelloId,
 });
 
-export default connect(
-  mapStateToProps,
-  null,
-)(PrivateRoute);
+export default connect(mapStateToProps)(PrivateRoute);
