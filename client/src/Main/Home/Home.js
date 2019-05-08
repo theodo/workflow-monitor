@@ -7,12 +7,19 @@ import SimpleCard from './SimpleCard/SimpleCard';
 import { saveSettings } from '../Settings/SettingsActions';
 import { resetMonitor } from '../Monitor/MonitorActions';
 import BacklogAutocomplete from './BacklogAutocomplete';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@material-ui/core';
 
 const getTicketPointsFromName = name => {
   const regex = /\((\?|\d+\.?,?\d*)\)/m;
   const points = regex.exec(name);
 
-  return points ? parseInt(points[1]) : 0;
+  return points ? parseInt(points[1]) : -1;
 };
 
 class Home extends Component {
@@ -21,6 +28,8 @@ class Home extends Component {
     lists: [],
     backlog: this.props.backlog,
     cards: [],
+    openDialog: false,
+    selectedCard: null,
   };
 
   componentDidMount() {
@@ -36,6 +45,18 @@ class Home extends Component {
     }
   }
 
+  startMonitor = (card = this.state.selectedCard) => {
+    this.props.resetMonitor(card);
+  };
+
+  openDialog = card => {
+    this.setState({ openDialog: true, selectedCard: card });
+  };
+
+  closeDialog = () => {
+    this.setState({ openDialog: false, selectedCard: null });
+  };
+
   handleSelectedBacklogChange = backlogId => {
     this.setState({ backlog: backlogId }, () => {
       this.props.saveSettings({
@@ -47,7 +68,11 @@ class Home extends Component {
 
   handleCardStartClick = card => {
     card.ticketPoints = getTicketPointsFromName(card.name);
-    this.props.resetMonitor(card);
+    if (card.ticketPoints === -1) {
+      this.openDialog(card);
+    } else {
+      this.startMonitor(card);
+    }
   };
 
   loadCardsFromTrello = backlogId => {
@@ -103,6 +128,27 @@ class Home extends Component {
                 />
               ))}
         </div>
+        <Dialog
+          open={this.state.openDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{'Ticket without points !'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Your Trello ticket does not contain a valid point estimation. Do you wish to start the
+              ticket anyway ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" onClick={this.closeDialog} color="primary" autoFocus>
+              Cancel
+            </Button>
+            <Button variant="outlined" onClick={() => this.startMonitor()} color="secondary">
+              Start Ticket Anyway
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
