@@ -33,10 +33,14 @@ const styles = {
     flexGrow: 2,
     marginRight: '10px',
   },
+  blankSpan: {
+    display: 'inline-block',
+    width: '30px',
+  },
 };
 
-const DidSucceedIcon = ({ didTicketSucceed }) => {
-  if (didTicketSucceed === null) return <span style={{ display: 'inline-block', width: '30px' }} />; // to keep item aligned
+const DidSucceedIcon = ({ didTicketSucceed, classes }) => {
+  if (didTicketSucceed === null) return <span className={classes.blankSpan} />; // to keep item aligned
 
   return didTicketSucceed ? <SuccessIcon size="30px" /> : <FailureIcon size="30px" />;
 };
@@ -54,7 +58,7 @@ const TicketHistory = ({ ticket, goToTicket, classes, didTicketSucceed }) => {
           </CardContent>
         </CardActionArea>
       </Card>
-      <DidSucceedIcon didTicketSucceed={didTicketSucceed} />
+      <DidSucceedIcon didTicketSucceed={didTicketSucceed} classes={classes} />
     </div>
   );
 };
