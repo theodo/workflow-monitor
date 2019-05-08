@@ -225,6 +225,18 @@ export class Main extends Component {
               </ListItem>
             </Link>
             <Link
+              to="/performance"
+              onClick={this.preventOn(!isProjectSelected)}
+              className={classes.textDecorationReset}
+            >
+              <ListItem selected={isCurrentPage('performance')} button>
+                <ListItemIcon>
+                  <LineChartIcon size="25px" color={appColors.darkGrey} />
+                </ListItemIcon>
+                <ListItemText primary="Performance" />
+              </ListItem>
+            </Link>
+            <Link
               to="/problem-categories"
               onClick={this.preventOn(!isProjectSelected)}
               className={classes.textDecorationReset}
@@ -235,7 +247,7 @@ export class Main extends Component {
                 button
               >
                 <ListItemIcon>
-                  <LineChartIcon size="25px" color={appColors.darkGrey} />
+                  <KaizenIcon color={appColors.lightBlack} />
                 </ListItemIcon>
                 <ListItemText primary="Pareto" />
               </ListItem>
@@ -246,18 +258,6 @@ export class Main extends Component {
                   <SettingsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
-            <Link
-              to="/performance"
-              onClick={this.preventOn(!isProjectSelected)}
-              className={classes.textDecorationReset}
-            >
-              <ListItem selected={isCurrentPage('performance')} button>
-                <ListItemIcon>
-                  <KaizenIcon color={appColors.lightBlack} />
-                </ListItemIcon>
-                <ListItemText primary="Performance" />
               </ListItem>
             </Link>
           </div>
@@ -271,9 +271,9 @@ export class Main extends Component {
               <Route path="/monitor" component={Monitor} />
               <Route path="/history/:ticketId" component={TicketPage} />
               <Route path="/history" component={ProjectHistoryPage} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/problem-categories" component={ProblemCategoryPage} />
               <Route path="/performance" component={PerformancePage} />
+              <Route path="/problem-categories" component={ProblemCategoryPage} />
+              <Route path="/settings" component={Settings} />
             </Switch>
           </div>
         </main>

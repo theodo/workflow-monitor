@@ -24,11 +24,11 @@ const getDayFailures = (weekDay, performanceHistory) => {
 };
 
 const getPerformanceData = performanceHistory => {
-  var orderedWeekDays = [];
-  var daysLabel = [];
-  var failuresCountData = [];
+  const orderedWeekDays = [];
+  const daysLabel = [];
+  const failuresCountData = [];
 
-  for (var i = 0; i < 7; i++) {
+  for (let i = 0; i < 7; i++) {
     const weekDay = startDate.add(i, 'day');
     if (isWorkingDay(weekDay)) {
       orderedWeekDays.push(weekDay);
@@ -50,18 +50,17 @@ const PerformancePageContainer = () => (
   <Query
     query={GET_DAILY_PERFORMANCE_HISTORY}
     variables={{
-      startDate,
-      endDate,
+      startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD'),
     }}
+    fetchPolicy="network-only"
   >
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return 'Unexpected error';
 
       const performanceData = getPerformanceData(data.dailyPerformanceHistory);
-
-      console.log(performanceData);
-      return <PerformancePage failureHistory={JSON.stringify(data.dailyPerformanceHistory)} />;
+      return <PerformancePage chartInput={performanceData} />;
     }}
   </Query>
 );
