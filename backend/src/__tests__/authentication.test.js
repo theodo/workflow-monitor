@@ -38,7 +38,7 @@ describe('API Authentication Tests', () => {
     done();
   });
 
-  it('authenticate the user by token', async () => {
+  it('should authenticate the user by token', async () => {
     const testServer = await startTestServer(headers);
     graphql = testServer.graphql;
 
@@ -51,7 +51,7 @@ describe('API Authentication Tests', () => {
     expect(res.data).toEqual({ hello: 'Hello ' + userMock.fullName });
   });
 
-  it('reject the user because missing token', async () => {
+  it('should reject the user because missing token', async () => {
     const testServer = await startTestServer();
     graphql = testServer.graphql;
     try {
@@ -65,7 +65,7 @@ describe('API Authentication Tests', () => {
     }
   });
 
-  it('reject the user because of invalid token', async () => {
+  it('should reject the user because of invalid token', async () => {
     const testServer = await startTestServer({ Authentication: 'Invalid Token' });
     graphql = testServer.graphql;
     try {
@@ -79,7 +79,7 @@ describe('API Authentication Tests', () => {
     }
   });
 
-  it('reject the user because he was not found in db', async () => {
+  it('should reject the user because he was not found in db', async () => {
     db.findUser = jest.fn(() => Promise.resolve(null));
     const testServer = await startTestServer(headers);
     graphql = testServer.graphql;

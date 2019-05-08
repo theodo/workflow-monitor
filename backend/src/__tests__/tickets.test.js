@@ -48,7 +48,7 @@ describe('API Tickets Tests', () => {
   });
 
   describe('Queries', () => {
-    it('fetches daily performance history with 5 failed tickets on one day', async () => {
+    it('should fetche daily performance history with 5 failed tickets on one day', async () => {
       db.getDailyPerformanceHistory = jest.fn(() => [
         {
           creationDay: '2019-05-08',
