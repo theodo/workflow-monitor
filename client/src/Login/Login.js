@@ -26,6 +26,7 @@ class Login extends Component {
     this.trelloAuthenticationFailure = this.trelloAuthenticationFailure.bind(this);
     this.trelloAuthenticationSuccess = this.trelloAuthenticationSuccess.bind(this);
     this.handleLoginButtonClick = this.handleLoginButtonClick.bind(this);
+
     if (localStorage.getItem('trello_token')) {
       window.Trello.authorize({
         ...trelloAuthParams,
@@ -60,7 +61,9 @@ class Login extends Component {
     });
   }
   render() {
-    if (this.state.redirectToReferrer) return <Redirect to={this.state.redirectLocation.from} />;
+    if (this.state.redirectToReferrer) {
+      return <Redirect to={this.state.redirectLocation.from} />;
+    }
     return (
       <div className="Login">
         <Button onClick={this.handleLoginButtonClick}>Login with Trello</Button>

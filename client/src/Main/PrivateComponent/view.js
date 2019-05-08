@@ -9,7 +9,7 @@ const PrivateRoute = props => {
     <Route
       {...rest}
       render={routerProps =>
-        props.project && authorized ? (
+        props.trelloId && authorized ? (
           <Component {...routerProps} />
         ) : (
           <Redirect to={{ pathname: '/login', state: { from: routerProps.location } }} />
