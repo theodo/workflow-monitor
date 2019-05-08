@@ -12,14 +12,13 @@ import { gqlClient } from 'Utils/Graphql';
 import AppReducer from 'AppReducer';
 import Login from 'Login/Login';
 import Main from 'Main/Main';
+import PrivateRoute from 'Main/PrivateComponent';
 import 'App.css';
 
 let store = createStore(
   AppReducer /* preloadedState, */,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
-
-window.location.hash = '#/login';
 
 class App extends Component {
   render() {
@@ -31,7 +30,7 @@ class App extends Component {
               <div className="App">
                 <Switch>
                   <Route exact path="/login" component={Login} />
-                  <Route path="/" component={Main} />
+                  <PrivateRoute path="/" component={Main} />
                 </Switch>
               </div>
             </HashRouter>
