@@ -1,8 +1,8 @@
-import { connect } from 'react-redux';
 import PrivateRoute from './view';
+import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
-  project: state.LoginReducers.currentProject,
+  trelloId: state.LoginReducers.trelloId,
 });
 
 export default connect(
