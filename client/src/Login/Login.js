@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import { login } from './LoginActions';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 const trelloAuthParams = {
@@ -15,6 +16,11 @@ const trelloAuthParams = {
 };
 
 class Login extends Component {
+  state = {
+    redirectToReferrer: false,
+    redirectLocation: this.props.location.state || { from: { pathname: '/' } },
+  };
+
   constructor(props) {
     super(props);
     this.trelloAuthenticationFailure = this.trelloAuthenticationFailure.bind(this);
@@ -36,6 +42,12 @@ class Login extends Component {
       })
       .then(response => {
         this.props.login(response.data.user, response.data.jwt);
+        this.setState(state => ({
+          redirectToReferrer: true,
+          redirectLocation: response.data.user.currentProject
+            ? state.redirectLocation
+            : { from: { pathname: '/settings' } },
+        }));
       })
       .catch(() => {});
   }
@@ -48,6 +60,7 @@ class Login extends Component {
     });
   }
   render() {
+    if (this.state.redirectToReferrer) return <Redirect to={this.state.redirectLocation.from} />;
     return (
       <div className="Login">
         <Button onClick={this.handleLoginButtonClick}>Login with Trello</Button>
@@ -63,8 +76,6 @@ const mapDispatchToProps = dispatch => {
     login: (user, jwtToken) => {
       localStorage.setItem('jwt_token', jwtToken);
       dispatch(login(user));
-      if (user.currentProject) window.location.hash = '#/';
-      else window.location.hash = '#/settings';
     },
   };
 };
