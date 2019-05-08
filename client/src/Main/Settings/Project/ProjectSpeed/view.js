@@ -60,7 +60,7 @@ class ProjectSpeed extends Component {
   render() {
     return (
       <div>
-        <label for="project-celerity" className={this.props.classes.mr20}>
+        <label htmlFor="project-celerity" className={this.props.classes.mr20}>
           <span>Project celerity :</span>
         </label>
         <Input
@@ -73,7 +73,7 @@ class ProjectSpeed extends Component {
           value={this.state.celerity}
           onChange={event => this.onSelectedProjectCelerityChange(event.target.value)}
         />
-        <label for="project-work-hours-per-day" className={this.props.classes.mr20}>
+        <label htmlFor="project-work-hours-per-day" className={this.props.classes.mr20}>
           <span>Work hours per day :</span>
         </label>
         <TextField

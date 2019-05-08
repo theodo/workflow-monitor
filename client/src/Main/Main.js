@@ -187,7 +187,7 @@ export class Main extends Component {
             <Link
               to="/"
               onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
+              className={classes.textDecorationReset}
             >
               <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
@@ -199,7 +199,7 @@ export class Main extends Component {
             <Link
               to="/monitor"
               onClick={this.preventOn(!isTrelloCardSelected || !isProjectSelected)}
-              class={classes.textDecorationReset}
+              className={classes.textDecorationReset}
             >
               <ListItem
                 selected={isCurrentPage('monitor')}
@@ -215,7 +215,7 @@ export class Main extends Component {
             <Link
               to="/history"
               onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
+              className={classes.textDecorationReset}
             >
               <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
                 <ListItemIcon>
@@ -227,7 +227,7 @@ export class Main extends Component {
             <Link
               to="/problem-categories"
               onClick={this.preventOn(!isProjectSelected)}
-              class={classes.textDecorationReset}
+              className={classes.textDecorationReset}
             >
               <ListItem
                 selected={isCurrentPage('problem-categories')}
@@ -240,7 +240,7 @@ export class Main extends Component {
                 <ListItemText primary="Pareto" />
               </ListItem>
             </Link>
-            <Link to="/settings" class={classes.textDecorationReset}>
+            <Link to="/settings" className={classes.textDecorationReset}>
               <ListItem selected={isCurrentPage('settings')} button>
                 <ListItemIcon>
                   <SettingsIcon />
@@ -251,7 +251,7 @@ export class Main extends Component {
             <Link
               to="/performance"
               onClick={this.preventOn(true)}
-              class={classes.textDecorationReset}
+              className={classes.textDecorationReset}
             >
               <ListItem selected={isCurrentPage('performance')} button>
                 <ListItemIcon>
