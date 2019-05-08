@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 import { SuccessIcon, FailureIcon } from 'ui/Icons';
-import TicketDescriptionWithIdShort from './TicketDescriptionWithIdShort';
+import TicketIdShort from './TicketIdShort';
 
 const styles = {
   container: {
@@ -18,6 +18,20 @@ const styles = {
     width: '900px',
     marginRight: '30px',
     marginBottom: '10px',
+  },
+  cardContent: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: '20px 16px',
+  },
+  ticketIdContainer: {
+    width: '30px',
+    margin: '10px 20px',
+  },
+  ticketDescription: {
+    flexGrow: 2,
+    marginRight: '10px',
   },
 };
 
@@ -32,9 +46,10 @@ const TicketHistory = ({ ticket, goToTicket, classes, didTicketSucceed }) => {
     <div className={classes['container']}>
       <Card key={ticket.id} className={classes['card']}>
         <CardActionArea onClick={() => goToTicket(ticket.id)}>
-          <CardContent>
-            <Typography component="h3">
-              <TicketDescriptionWithIdShort ticket={ticket} />
+          <CardContent className={classes['cardContent']}>
+            <TicketIdShort className={classes.ticketIdContainer} ticket={ticket} />
+            <Typography className={classes.ticketDescription} align="center" component="h3">
+              {ticket.description}
             </Typography>
           </CardContent>
         </CardActionArea>

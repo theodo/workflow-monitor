@@ -18,7 +18,7 @@ const setIdShortAndThirdPartyId = async (ticket, setIdShort) => {
   setIdShort(trelloTicket.idShort);
 };
 
-const TicketDescriptionWithIdShort = ({ ticket }) => {
+const TicketIdShort = ({ ticket, className }) => {
   const [idShort, setIdShort] = useState('');
   useEffect(() => {
     if (!ticket.thirdPartyId || ticket.thirdPartyId.length < 10) {
@@ -27,11 +27,7 @@ const TicketDescriptionWithIdShort = ({ ticket }) => {
       setIdShortAndThirdPartyId(ticket, setIdShort);
     }
   });
-  return (
-    <span>
-      #{idShort} {ticket.description}
-    </span>
-  );
+  return <h3 className={className}>#{idShort}</h3>;
 };
 
-export default TicketDescriptionWithIdShort;
+export default TicketIdShort;
