@@ -36,7 +36,7 @@ const styles = {
 };
 
 const DidSucceedIcon = ({ didTicketSucceed }) => {
-  if (didTicketSucceed === null) return null;
+  if (didTicketSucceed === null) return <span style={{ display: 'inline-block', width: '30px' }} />; // to keep item aligned
 
   return didTicketSucceed ? <SuccessIcon size="30px" /> : <FailureIcon size="30px" />;
 };
