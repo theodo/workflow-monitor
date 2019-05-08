@@ -3,10 +3,20 @@ import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
+import { onError } from 'apollo-link-error';
 
-const httpLink = createHttpLink({
+const errorLink = onError(({ networkError }) => {
+  if (networkError.statusCode === 403) {
+    localStorage.clear();
+    window.location.hash = '#/login'; // Quick fix ...
+  }
+});
+
+const link = createHttpLink({
   uri: '/api/',
 });
+
+const httpLink = errorLink.concat(link);
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
