@@ -1,4 +1,4 @@
-const { SELECT_DAILY_PERFORMANCE_HISTORY_QUERY } = require('../dbUtils');
+/* Temporary class file for the backend refactoring: The idea is to move all sequelize and DB code into their own files */
 const { sequelize } = require('../../models');
 
 class DB {
@@ -8,17 +8,6 @@ class DB {
 
   getORM() {
     return this.db;
-  }
-
-  initialize(config) {
-    this.context = config.context;
-  }
-
-  getDailyPerformanceHistory(startDate, endDate, projectId) {
-    return this.db.query(SELECT_DAILY_PERFORMANCE_HISTORY_QUERY, {
-      replacements: { projectId, startDate, endDate },
-      type: this.db.QueryTypes.SELECT,
-    });
   }
 
   findUser(userTrelloId) {
