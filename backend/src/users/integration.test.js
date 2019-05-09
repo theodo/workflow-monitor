@@ -3,7 +3,7 @@ const { toPromise } = require('apollo-link');
 const gql = require('graphql-tag');
 
 jest.mock('./dao'); // Mock database
-jest.mock('../auth'); // Mock Authentication middlewares
+jest.mock('../auth'); // Mock Authentication middlewares (necessary for this file as we test the auth middlewares)
 const db = require('./dao');
 const auth = require('../auth');
 
