@@ -6,7 +6,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { onError } from 'apollo-link-error';
 
 const errorLink = onError(({ networkError }) => {
-  if (networkError.statusCode === 403) {
+  if (networkError && networkError.statusCode === 403) {
     localStorage.clear();
     window.location.hash = '#/login'; // REFACTO needed to change the redirection method
   }
