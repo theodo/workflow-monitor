@@ -2,7 +2,7 @@ import React from 'react';
 import TicketHistory from './view';
 
 const didTicketSucceed = ticket => {
-  if (!ticket.allocatedTime || ticket.allocatedTime === 0) return null;
+  if (ticket.allocatedTime === null) return null;
 
   return ticket.realTime <= ticket.allocatedTime;
 };
