@@ -4,8 +4,7 @@ import dayjs from 'dayjs';
 import { GET_DAILY_PERFORMANCE_HISTORY } from 'Queries/Tickets';
 import PerformancePage from './view';
 
-const startDate = dayjs().subtract(6, 'day');
-const endDate = startDate.add(7, 'day');
+const DAYS_RANGE = 7;
 
 const SHORT_WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
@@ -23,12 +22,12 @@ const getDayFailures = (weekDay, performanceHistory) => {
   return 0;
 };
 
-const getPerformanceData = performanceHistory => {
+const getPerformanceData = (performanceHistory, startDate) => {
   const orderedWeekDays = [];
   const daysLabel = [];
   const failuresCountData = [];
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < DAYS_RANGE; i++) {
     const weekDay = startDate.add(i, 'day');
     if (isWorkingDay(weekDay)) {
       orderedWeekDays.push(weekDay);
@@ -46,23 +45,49 @@ const getPerformanceData = performanceHistory => {
   return { daysLabel, failuresCountData };
 };
 
-const PerformancePageContainer = () => (
-  <Query
-    query={GET_DAILY_PERFORMANCE_HISTORY}
-    variables={{
-      startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    }}
-    fetchPolicy="network-only"
-  >
-    {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
-      if (error) return 'Unexpected error';
+class PerformancePageContainer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      endDate: dayjs(),
+    };
+  }
 
-      const performanceData = getPerformanceData(data.dailyPerformanceHistory);
-      return <PerformancePage chartInput={performanceData} />;
-    }}
-  </Query>
-);
+  moveDaysForward = forwardDays => () => {
+    this.setState(previousState => ({
+      endDate: previousState.endDate.add(forwardDays, 'days'),
+    }));
+  };
+
+  render() {
+    return (
+      <Query
+        query={GET_DAILY_PERFORMANCE_HISTORY}
+        variables={{
+          startDate: this.state.endDate.subtract(DAYS_RANGE - 1, 'day').format('YYYY-MM-DD'),
+          endDate: this.state.endDate.add(1, 'day').format('YYYY-MM-DD'), // add 1 day so that sql query includes endDate
+        }}
+        fetchPolicy="network-only"
+      >
+        {({ loading, error, data }) => {
+          if (loading) return 'Loading...';
+          if (error) return 'Unexpected error';
+
+          const performanceData = getPerformanceData(
+            data.dailyPerformanceHistory,
+            this.state.endDate.subtract(DAYS_RANGE - 1, 'day'),
+          );
+          return (
+            <PerformancePage
+              chartInput={performanceData}
+              disableNextWeekButton={this.state.endDate.isSame(dayjs(), 'day')}
+              moveDaysForward={this.moveDaysForward}
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
 
 export default PerformancePageContainer;
