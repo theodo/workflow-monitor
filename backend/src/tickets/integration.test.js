@@ -1,10 +1,14 @@
+const gql = require('graphql-tag');
+
 const {
   startTestServer,
   launchAPIServer,
   toPromise,
   mockAuthenticationMiddleware,
 } = require('../testUtils');
-const gql = require('graphql-tag');
+
+jest.mock('./dao'); // Mock database
+const db = require('./dao');
 
 const GET_DAILY_PERFORMANCE_HISTORY = gql`
   query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
@@ -14,17 +18,6 @@ const GET_DAILY_PERFORMANCE_HISTORY = gql`
     }
   }
 `;
-
-jest.mock('./dao', () => ({
-  getDailyPerformanceHistory: async () => {
-    return [
-      {
-        creationDay: '2019-05-06',
-        failedTicketsCount: 5,
-      },
-    ];
-  },
-}));
 
 const userMock = {
   id: '1',
@@ -38,24 +31,28 @@ const userMock = {
 describe('API Tickets Tests', () => {
   let graphql, httpServer;
 
-  beforeAll(async done => {
-    mockAuthenticationMiddleware(userMock);
-    httpServer = await launchAPIServer();
-    done();
-  });
-
-  afterAll(async done => {
-    await httpServer.close();
-    done();
-  });
-
   beforeEach(async () => {
+    mockAuthenticationMiddleware(userMock);
     const testServer = await startTestServer();
     graphql = testServer.graphql;
   });
 
+  afterEach(async () => {
+    await httpServer.close();
+  });
+
   describe('Queries', () => {
     it('should fetch daily performance history with 5 failed tickets on one day', async () => {
+      db.getDailyPerformanceHistory.mockImplementation(async () => dailyPerformanceHistory);
+      httpServer = await launchAPIServer();
+
+      const dailyPerformanceHistory = [
+        {
+          creationDay: '2019-05-06',
+          failedTicketsCount: 5,
+        },
+      ];
+
       const res = await toPromise(
         graphql({
           query: GET_DAILY_PERFORMANCE_HISTORY,
@@ -63,14 +60,7 @@ describe('API Tickets Tests', () => {
         }),
       );
 
-      expect(res.data).toEqual({
-        dailyPerformanceHistory: [
-          {
-            creationDay: '2019-05-06',
-            failedTicketsCount: 5,
-          },
-        ],
-      });
+      expect(res.data).toEqual({ dailyPerformanceHistory });
     });
   });
 });
