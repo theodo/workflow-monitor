@@ -19,7 +19,7 @@ const getTicketPointsFromName = name => {
   const regex = /\((\?|\d+\.?,?\d*)\)/m;
   const points = regex.exec(name);
 
-  return points ? parseInt(points[1]) : -1;
+  return points ? parseInt(points[1]) : null;
 };
 
 class Home extends Component {
@@ -68,7 +68,7 @@ class Home extends Component {
 
   handleCardStartClick = card => {
     card.ticketPoints = getTicketPointsFromName(card.name);
-    if (card.ticketPoints === -1) {
+    if (!card.ticketPoints) {
       this.openDialog(card);
     } else {
       this.startMonitor(card);
