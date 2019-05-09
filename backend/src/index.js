@@ -35,7 +35,8 @@ const typeDefs = `
   }
   type DailyTicketPerformance {
     creationDay: String,
-    failedTicketsCount: Int
+    celerityFailedTicketsCount: Int,
+    casprFailedTicketsCount: Int,
   }
   type User {
     id: String,
