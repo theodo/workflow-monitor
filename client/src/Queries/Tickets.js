@@ -49,7 +49,8 @@ export const GET_DAILY_PERFORMANCE_HISTORY = gql`
   query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
     dailyPerformanceHistory(startDate: $startDate, endDate: $endDate) {
       creationDay
-      failedTicketsCount
+      celerityFailedTicketsCount
+      casprFailedTicketsCount
     }
   }
 `;
