@@ -30,11 +30,6 @@ const typeDefs = `
     tickets(pagination: PaginationInput): TicketList
     ticket(ticketId: Int): Ticket
   }
-  type DailyTicketPerformance {
-    creationDay: String,
-    celerityFailedTicketsCount: Int,
-    casprFailedTicketsCount: Int,
-  }
   type User {
     id: String,
     fullName: String,
