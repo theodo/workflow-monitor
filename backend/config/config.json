@@ -19,12 +19,5 @@
     "database": "caspr",
     "host": "localhost",
     "dialect": "postgres"
-  },
-  "test": {
-    "username": "caspr",
-    "password": "caspr",
-    "database": "caspr_test",
-    "host": "localhost",
-    "dialect": "postgres"
   }
 }
