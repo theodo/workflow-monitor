@@ -9,13 +9,6 @@ class DB {
   getORM() {
     return this.db;
   }
-
-  findUser(userTrelloId) {
-    return this.db.models.user.find({
-      where: { trelloId: userTrelloId },
-      include: [{ model: this.db.models.project, as: 'currentProject' }],
-    });
-  }
 }
 
 module.exports = new DB({ db: sequelize });
