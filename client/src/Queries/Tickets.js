@@ -51,6 +51,7 @@ export const GET_DAILY_PERFORMANCE_HISTORY = gql`
       creationDay
       celerityFailedTicketsCount
       casprFailedTicketsCount
+      overtime
     }
   }
 `;

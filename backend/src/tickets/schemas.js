@@ -8,6 +8,7 @@ type DailyTicketPerformance {
   creationDay: String,
   celerityFailedTicketsCount: Int,
   casprFailedTicketsCount: Int,
+  overtime: Int
 }
 type TicketList {
   count: Int

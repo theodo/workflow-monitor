@@ -45,9 +45,25 @@ const DateRangeSlider = ({ classes, disableNextButton, slideDateRangeWindow }) =
 };
 
 const chartOptions = {
-  legend: { position: 'bottom' },
+  legend: { position: 'bottom', labels: { fontSize: 16 } },
   scales: {
-    yAxes: [{ ticks: { stepSize: 1, beginAtZero: true, min: 0 } }],
+    yAxes: [
+      {
+        id: 'overtime',
+        gridLines: { display: false },
+        position: 'left',
+        ticks: { fontSize: 16, stepSize: 1, beginAtZero: true, min: 0 },
+        type: 'linear',
+        scaleLabel: { display: true, labelString: 'Overtime in Hours', fontSize: 20 },
+      },
+      {
+        id: 'failedCount',
+        gridLines: { display: false },
+        position: 'right',
+        scaleLabel: { display: true, labelString: 'Tickets Count', fontSize: 20 },
+        ticks: { beginAtZero: true, fontSize: 16, min: 0, stepSize: 1 },
+      },
+    ],
   },
 };
 
@@ -61,14 +77,23 @@ const PerformanceChart = ({ performanceType, chartInput }) => {
     labels: chartInput.daysLabel,
     datasets: [
       {
+        borderColor: appColors.casprBlue,
+        data: chartInput.overtime,
+        label: 'Overtime',
+        fill: false,
+        type: 'line',
+        yAxisID: 'overtime',
+      },
+      {
         backgroundColor: appColors.softRed,
         data: ordinatesData,
         label: 'Tickets Failed',
+        yAxisID: 'failedCount',
       },
     ],
   };
 
-  return <Bar beginAtZero precision={1} data={data} height={125} options={chartOptions} redraw />;
+  return <Bar beginAtZero data={data} height={125} options={chartOptions} redraw />;
 };
 
 const PerformancePage = ({
