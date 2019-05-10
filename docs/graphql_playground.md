@@ -20,6 +20,17 @@ Then, update the url of the playground by setting `http://localhost/api/`
 ![caspr_playground](https://user-images.githubusercontent.com/31185922/57509162-d2c91380-7303-11e9-9117-d36109f603d0.gif)
 
 
-You are all set to use GraphQL Playground !
+You are all set to use GraphQL Playground ! 
+
+Example request:
+``` 
+{
+  currentUser {
+    id
+    fullName
+    trelloId    
+  }
+}
+```
 
 You can also install the [chrome extension](https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm) to have GraphiQL in your browser
