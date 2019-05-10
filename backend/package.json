@@ -28,7 +28,7 @@
     "start": "nodemon src/index.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
-    "test": "NODE_ENV='test' jest"
+    "test": "NODE_ENV=development jest"
   },
   "jest": {
     "testPathIgnorePatterns": [
