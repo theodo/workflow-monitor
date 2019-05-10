@@ -2,9 +2,9 @@ const { startTestServer, launchAPIServer, mockAuthenticationMiddleware } = requi
 const { toPromise } = require('apollo-link');
 const gql = require('graphql-tag');
 
-jest.mock('./dao'); // Mock database
+jest.mock('./db'); // Mock database
 jest.mock('../auth'); // Mock Authentication middlewares (necessary for this file as we test the auth middlewares)
-const db = require('./dao');
+const db = require('./db');
 const auth = require('../auth');
 
 const HELLO = gql`
