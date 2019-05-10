@@ -1,6 +1,6 @@
 const { sequelize } = require('../../models');
 
-class userDAO {
+class userDB {
   constructor(db) {
     this.db = db;
     this.model = this.db.models.user;
@@ -18,4 +18,4 @@ class userDAO {
   }
 }
 
-module.exports = new userDAO(sequelize);
+module.exports = new userDB(sequelize);

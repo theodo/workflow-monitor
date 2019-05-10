@@ -1,6 +1,6 @@
 const { formatFullTicket, formatTasks } = require('../formatters');
 const getAllocatedTimeFromPointsAndCelerity = require('../helpers');
-const ticketDAO = require('./db');
+const ticketDB = require('./db');
 
 module.exports = {
   Mutation: {
@@ -17,31 +17,31 @@ module.exports = {
 
       const formattedTicket = formatFullTicket(jsState, project, user, allocatedTime);
 
-      const ticket = await ticketDAO.upsert(formattedTicket, {
+      const ticket = await ticketDB.upsert(formattedTicket, {
         thirdPartyId: formattedTicket.thirdPartyId,
       });
 
       const formattedTasks = formatTasks(jsState, ticket);
-      await ticketDAO.refreshWithTasks(ticket.id, formattedTasks);
+      await ticketDB.refreshWithTasks(ticket.id, formattedTasks);
 
       return ticket.id;
     },
     setTicketThirdPartyId: async (_, { ticketId, idShort }) => {
-      await ticketDAO.updateThirdPartyId(ticketId, idShort);
+      await ticketDB.updateThirdPartyId(ticketId, idShort);
       return 1;
     },
   },
   Query: {
     tickets: (_, { pagination: { limit, offset } }, { user }) => {
       const project = user.currentProject;
-      return ticketDAO.getTicketsByProject(project.id, limit, offset);
+      return ticketDB.getTicketsByProject(project.id, limit, offset);
     },
     dailyPerformanceHistory: (_, { startDate, endDate }, { user }) => {
       const projectId = user.currentProject.id;
-      return ticketDAO.getDailyPerformanceHistory(startDate, endDate, projectId);
+      return ticketDB.getDailyPerformanceHistory(startDate, endDate, projectId);
     },
     ticket: (_, { ticketId }) => {
-      return ticketDAO.getTicket(ticketId);
+      return ticketDB.getTicket(ticketId);
     },
   },
 };

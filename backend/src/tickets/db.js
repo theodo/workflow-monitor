@@ -13,7 +13,7 @@ const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
   ORDER BY date("createdAt");
 `;
 
-class ticketDAO {
+class ticketDB {
   constructor(db) {
     this.db = db;
     this.model = this.db.models.ticket;
@@ -80,4 +80,4 @@ class ticketDAO {
   }
 }
 
-module.exports = new ticketDAO(sequelize);
+module.exports = new ticketDB(sequelize);
