@@ -1,6 +1,6 @@
 const https = require('https');
 const jwt = require('jsonwebtoken');
-const { userDAO } = require('./users/index');
+const { userDB } = require('./users/index');
 
 const verifyJWTToken = (token, callback) => {
   return jwt.verify(token, 'JWT_SECRET', callback);
@@ -15,7 +15,7 @@ const authenticationMiddleware = (req, res, next) => {
       if (err) {
         res.status(403).send('{"error": "Not authorized!"}');
       } else {
-        userDAO.findUser(result.trelloId).then(user => {
+        userDB.findUser(result.trelloId).then(user => {
           if (user) {
             req.user = user;
             next();
@@ -37,7 +37,7 @@ const websocketAuthenticationMiddleware = async connectionParams => {
         console.error(result);
         throw new Error('Not authorized!');
       } else {
-        return userDAO.findUser(result.trelloId).then(user => {
+        return userDB.findUser(result.trelloId).then(user => {
           if (user) {
             return {
               user: user,
@@ -67,12 +67,12 @@ const loginRoute = (req, res) => {
 
         resp.on('end', () => {
           const dataJson = JSON.parse(data);
-          userDAO
+          userDB
             .getORM()
             .models.user.findOrCreate({
               where: { trelloId: dataJson.id },
               defaults: { fullName: dataJson.fullName },
-              include: [{ model: userDAO.getORM().models.project, as: 'currentProject' }],
+              include: [{ model: userDB.getORM().models.project, as: 'currentProject' }],
             })
             .spread(user => {
               const loginView = {
