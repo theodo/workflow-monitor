@@ -19,20 +19,7 @@ const SELECT_PROBLEM_CATEGORY_COUNT_QUERY = `
   ON ("problemCategories".id = "currentProjectCategoriesCount"."problemCategoryId");
 `;
 
-const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
-  SELECT date("createdAt") as "creationDay",
-  SUM(CASE WHEN "allocatedTime" < "realTime" THEN 1 ELSE 0 END) AS "celerityFailedTicketsCount",
-  SUM(CASE WHEN "estimatedTime" < "realTime" THEN 1 ELSE 0 END) AS "casprFailedTicketsCount"
-  FROM "tickets"
-  WHERE
-    "projectId"=:projectId
-    AND "createdAt" BETWEEN :startDate AND :endDate
-  GROUP BY date("createdAt")
-  ORDER BY date("createdAt");
-`;
-
 module.exports = {
   upsert,
   SELECT_PROBLEM_CATEGORY_COUNT_QUERY,
-  SELECT_DAILY_PERFORMANCE_HISTORY_QUERY,
 };

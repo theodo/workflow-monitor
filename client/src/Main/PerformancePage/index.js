@@ -19,10 +19,11 @@ const getDayFailures = (weekDay, performanceHistory) => {
       return {
         celerityFailures: performanceHistory[i].celerityFailedTicketsCount,
         casprFailures: performanceHistory[i].casprFailedTicketsCount,
+        overtime: Math.round((performanceHistory[i].overtime / (1000 * 3600)) * 10) / 10, // overtime in hour
       };
     }
   }
-  return { celerityFailures: 0, casprFailures: 0 };
+  return { celerityFailures: 0, casprFailures: 0, overtime: 0 };
 };
 
 const getPerformanceData = (performanceHistory, startDate) => {
@@ -30,6 +31,7 @@ const getPerformanceData = (performanceHistory, startDate) => {
   const daysLabel = [];
   const celerityFailedTicketsCount = [];
   const casprFailedTicketsCount = [];
+  const overtime = [];
 
   for (let i = 0; i < DAYS_RANGE; i++) {
     const weekDay = startDate.add(i, 'day');
@@ -45,9 +47,10 @@ const getPerformanceData = (performanceHistory, startDate) => {
 
     celerityFailedTicketsCount.push(weekDayFailures.celerityFailures);
     casprFailedTicketsCount.push(weekDayFailures.casprFailures);
+    overtime.push(weekDayFailures.overtime);
   });
 
-  return { daysLabel, celerityFailedTicketsCount, casprFailedTicketsCount };
+  return { daysLabel, celerityFailedTicketsCount, casprFailedTicketsCount, overtime };
 };
 
 class PerformancePageContainer extends React.Component {
@@ -55,7 +58,7 @@ class PerformancePageContainer extends React.Component {
     super();
     this.state = {
       endDate: dayjs(),
-      performanceType: 'celerityTime',
+      performanceType: 'casprTime',
     };
   }
 
