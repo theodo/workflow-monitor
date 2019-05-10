@@ -14,7 +14,8 @@ const GET_DAILY_PERFORMANCE_HISTORY = gql`
   query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
     dailyPerformanceHistory(startDate: $startDate, endDate: $endDate) {
       creationDay
-      failedTicketsCount
+      celerityFailedTicketsCount
+      casprFailedTicketsCount
     }
   }
 `;
@@ -48,8 +49,9 @@ describe('API Tickets Tests', () => {
 
       const dailyPerformanceHistory = [
         {
-          creationDay: '2019-05-06',
-          failedTicketsCount: 5,
+          creationDay: '2019-05-08',
+          celerityFailedTicketsCount: 0,
+          casprFailedTicketsCount: 0,
         },
       ];
 
