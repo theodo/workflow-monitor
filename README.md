@@ -6,11 +6,15 @@ The ultimate lean digital tool to develop faster and better.
 
 Run `npm install` in client and backend folders.
 
-Run `docker-compose up` in the root folder.
+Run `docker-compose up` or `npm start` in the root folder.
 
 Run migrations in the backend folder: `node_modules/.bin/sequelize db:migrate --env=local`.
 
-You're all set! Go to http://localhost to access to Caspr.
+You're all set! Go to [http://localhost](http://localhost) to access to Caspr.
+
+## GraphiQL and GraphQL Playground
+
+To use Graphql Playground, [visit this page](./docs/graphql_playground.md).
 
 # Deployment
 
