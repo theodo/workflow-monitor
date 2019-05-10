@@ -109,6 +109,7 @@ const ProblemCategoryAutocompleteContainer = props => (
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return 'Unexpected error';
+      if (!data.problemCategories) return 'Unexpected error';
       const options = data.problemCategories.map(problemCategory => ({
         value: problemCategory.id,
         label: problemCategory.description,
