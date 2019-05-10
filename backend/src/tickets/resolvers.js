@@ -1,6 +1,6 @@
 const { formatFullTicket, formatTasks } = require('../formatters');
 const getAllocatedTimeFromPointsAndCelerity = require('../helpers');
-const ticketDAO = require('./dao');
+const ticketDAO = require('./db');
 
 module.exports = {
   Mutation: {

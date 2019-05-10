@@ -7,8 +7,8 @@ const {
   mockAuthenticationMiddleware,
 } = require('../testUtils');
 
-jest.mock('./dao'); // Mock database
-const db = require('./dao');
+jest.mock('./db'); // Mock database
+const db = require('./db');
 
 const GET_DAILY_PERFORMANCE_HISTORY = gql`
   query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
