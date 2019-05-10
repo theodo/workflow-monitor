@@ -49,9 +49,11 @@ class TaskPanel extends Component {
     } else if (!nextProps.dateLastPause && this.props.dateLastPause) {
       initAlarm(this.props.currentTask.estimatedTime - nextProps.taskChrono.elapsedTime);
     }
-    if (nextProps.currentTask && nextProps.currentTask !== this.props.currentTask) {
+
+    if (nextProps.currentTask && nextProps.currentTask.id !== this.props.currentTask.id) {
       cancelAlarm();
       initAlarm(nextProps.currentTask.estimatedTime);
+
       this.setState({
         newTasks: [],
         currentTaskCheckOK: false,
