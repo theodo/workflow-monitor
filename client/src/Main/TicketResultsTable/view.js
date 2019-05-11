@@ -9,8 +9,9 @@ import {
   TableEditColumn,
 } from '@devexpress/dx-react-grid-material-ui';
 import { setFavicon } from 'Utils/FaviconUtils';
-import { Cell } from './Cell';
+import Cell from './Cell';
 import { EditCell } from './EditCell';
+import { Command } from './Command';
 
 import './style.css';
 
@@ -24,6 +25,10 @@ class TicketResultsTable extends React.Component {
       { name: 'realTime', title: 'Real Time' },
       { name: 'problems', title: 'Problems' },
       { name: 'problemCategory', title: 'Problem Category' },
+    ],
+    tableColumnExtensions: [
+      { columnName: 'realTime', width: 110 },
+      { columnName: 'estimatedTime', width: 110 },
     ],
   };
 
@@ -62,10 +67,10 @@ class TicketResultsTable extends React.Component {
               getRowId={row => row.id}
             >
               <EditingState onCommitChanges={this.commitChanges} />
-              <Table cellComponent={Cell} />
+              <Table cellComponent={Cell} columnExtensions={this.state.tableColumnExtensions} />
               <TableHeaderRow />
               <TableEditRow cellComponent={EditCell} />
-              <TableEditColumn showEditCommand />
+              <TableEditColumn commandComponent={Command} showEditCommand width={100} />
             </Grid>
           </div>
         </div>

@@ -2,12 +2,24 @@ import React from 'react';
 import { Table } from '@devexpress/dx-react-grid-material-ui';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 import { TableCell } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 
-const ProblemCategoryCell = ({ value, style }) => (
-  <TableCell style={style}>{value && value.description}</TableCell>
+const styles = {
+  cell: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+    paddingLeft: '8px',
+    paddingRight: '12px',
+  },
+};
+
+const ProblemCategoryCell = ({ value, classes, style }) => (
+  <TableCell className={classes.cell} style={style}>
+    {value && value.description}
+  </TableCell>
 );
 
-const DurationCell = ({ value, style, row }) => {
+const DurationCell = ({ value, classes, style, row }) => {
   if (row.estimatedTime) {
     style = {
       ...style,
@@ -15,22 +27,26 @@ const DurationCell = ({ value, style, row }) => {
     };
   }
 
-  return <TableCell style={style}>{value && formatMilliSecondToTime(value)}</TableCell>;
+  return (
+    <TableCell className={classes.cell} style={style}>
+      {value && formatMilliSecondToTime(value)}
+    </TableCell>
+  );
 };
 
-export const Cell = props => {
-  const { column, row } = props;
+const Cell = props => {
+  const { column, row, classes } = props;
   const style = row.addedOnTheFly
     ? {
         backgroundColor: '#ffe6e6',
-        whiteSpace: 'normal',
-        wordWrap: 'break-word',
       }
-    : { whiteSpace: 'normal', wordWrap: 'break-word' };
+    : null;
   if (column.name === 'problemCategory') {
-    return <ProblemCategoryCell {...props} style={style} />;
+    return <ProblemCategoryCell {...props} classes={classes} style={style} />;
   } else if (column.name === 'estimatedTime' || column.name === 'realTime') {
-    return <DurationCell {...props} style={style} />;
+    return <DurationCell {...props} classes={classes} style={style} />;
   }
-  return <Table.Cell {...props} style={style} />;
+  return <Table.Cell {...props} className={classes.cell} />;
 };
+
+export default withStyles(styles)(Cell);
