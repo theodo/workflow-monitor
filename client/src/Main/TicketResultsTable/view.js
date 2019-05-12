@@ -12,8 +12,34 @@ import { setFavicon } from 'Utils/FaviconUtils';
 import Cell from './Cell';
 import { EditCell } from './EditCell';
 import { Command } from './Command';
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 
 import './style.css';
+
+const getTotalTimeFromTasks = (tasks, timeType) => {
+  return formatMilliSecondToTime(
+    tasks.reduce((total, task) => (task[timeType] ? total + task[timeType] : total), 0),
+  );
+};
+
+const TotalTimeResult = ({ tasks }) => {
+  const totalEstimatedTime = getTotalTimeFromTasks(tasks, 'estimatedTime');
+  const totalRealTime = getTotalTimeFromTasks(tasks, 'realTime');
+
+  const style = {
+    color: totalRealTime <= totalEstimatedTime ? 'green' : 'red',
+    fontWeight: '500',
+  };
+
+  return (
+    <div className="totalTimeResultContainer">
+      <h3 className="totalTimeTitle">Total Time: </h3>
+      <span style={style}>
+        {totalRealTime} / {totalEstimatedTime}
+      </span>
+    </div>
+  );
+};
 
 class TicketResultsTable extends React.Component {
   title = '#' + this.props.ticketData.thirdPartyId + ' ' + this.props.ticketData.description;
@@ -58,21 +84,20 @@ class TicketResultsTable extends React.Component {
   render() {
     return (
       <div className="resultsPage">
-        <div className="resultsGrid">
-          <div className="printArea">
-            <h2 className="displayOnlyOnPrint">{this.title}</h2>
-            <Grid
-              rows={this.props.ticketData.tasks}
-              columns={this.state.columns}
-              getRowId={row => row.id}
-            >
-              <EditingState onCommitChanges={this.commitChanges} />
-              <Table cellComponent={Cell} columnExtensions={this.state.tableColumnExtensions} />
-              <TableHeaderRow />
-              <TableEditRow cellComponent={EditCell} />
-              <TableEditColumn commandComponent={Command} showEditCommand width={100} />
-            </Grid>
-          </div>
+        <div className="printArea">
+          <h2 className="displayOnlyOnPrint">{this.title}</h2>
+          <Grid
+            rows={this.props.ticketData.tasks}
+            columns={this.state.columns}
+            getRowId={row => row.id}
+          >
+            <EditingState onCommitChanges={this.commitChanges} />
+            <Table cellComponent={Cell} columnExtensions={this.state.tableColumnExtensions} />
+            <TableHeaderRow />
+            <TableEditRow cellComponent={EditCell} />
+            <TableEditColumn commandComponent={Command} showEditCommand width={100} />
+          </Grid>
+          <TotalTimeResult tasks={this.props.ticketData.tasks} />
         </div>
         <div className="printButton">
           <Button variant="contained" color="primary" onClick={() => this.printResults()}>

@@ -2,8 +2,16 @@
   padding: 10px;
 }
 
-.resultsGrid {
-  margin-bottom: 35px;
+.totalTimeResultContainer {
+  align-items: baseline;
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  margin-right: 50px;
+}
+
+.totalTimeTitle {
+  margin-right: 10px;
 }
 
 .printButton {
