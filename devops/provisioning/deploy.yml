@@ -21,3 +21,6 @@
 
   - name: Build frontend
     raw: "cd workflow-monitor/client && npm i && npm run build"
+
+  - name: Copy final build in the served folder
+    raw: "cp -r workflow-monitor/client/build/. workflow-monitor/client/build-prod"
