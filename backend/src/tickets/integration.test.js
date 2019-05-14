@@ -44,9 +44,6 @@ describe('API Tickets Tests', () => {
 
   describe('Queries', () => {
     it('should fetch daily performance history with 5 failed tickets on one day', async () => {
-      db.getDailyPerformanceHistory.mockImplementation(async () => dailyPerformanceHistory);
-      httpServer = await launchAPIServer();
-
       const dailyPerformanceHistory = [
         {
           creationDay: '2019-05-08',
@@ -54,6 +51,9 @@ describe('API Tickets Tests', () => {
           casprFailedTicketsCount: 0,
         },
       ];
+
+      db.getDailyPerformanceHistory.mockImplementation(async () => dailyPerformanceHistory);
+      httpServer = await launchAPIServer();
 
       const res = await toPromise(
         graphql({
