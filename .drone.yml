@@ -1,0 +1,58 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: install backend
+    image: node
+    environment:
+      NODE_ENV: development
+    commands:
+      - cd backend
+      - npm install
+
+  - name: lint backend
+    image: node
+    environment:
+      NODE_ENV: development
+    commands:
+      - cd backend
+      - npm run lint
+    depends_on:
+      - install backend
+
+  - name: test backend
+    image: node
+    environment:
+      NODE_ENV: development
+    commands:
+      - cd backend
+      - npm run test
+    depends_on:
+      - install backend
+
+  - name: install frontend
+    image: node
+    commands:
+      - cd client
+      - npm install
+
+  - name: lint frontend
+    image: node
+    environment:
+      NODE_ENV: development
+    commands:
+      - cd client
+      - npm run lint
+    depends_on:
+      - install frontend
+
+  - name: build frontend
+    image: node
+    environment:
+      NODE_PATH: src/
+      NODE_ENV: production
+    commands:
+      - cd client
+      - npm run build
+    depends_on:
+      - install frontend
