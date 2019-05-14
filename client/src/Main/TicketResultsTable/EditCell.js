@@ -1,11 +1,11 @@
 import React from 'react';
 import { TableCell, TextField } from '@material-ui/core';
-import ProblemCategoryAutocomplete from '../Monitor/ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
+import ProblemCategoryEditButton from 'Components/ProblemCategoryEditButton';
 
 const ProblemCategoryEditCell = ({ value, onValueChange }) => (
   <TableCell>
-    <ProblemCategoryAutocomplete value={value || null} onChange={onValueChange} placeholder={''} />
+    <ProblemCategoryEditButton value={value || null} onChange={onValueChange} placeholder={''} />
   </TableCell>
 );
 
@@ -26,7 +26,6 @@ const DurationEditCell = ({ value, onValueChange }) => (
 const MultilineEditCell = ({ value, onValueChange, ...props }) => (
   <TableCell>
     <TextField
-      {...props}
       multiline
       onChange={event => onValueChange(event.target.value)}
       type="text"
