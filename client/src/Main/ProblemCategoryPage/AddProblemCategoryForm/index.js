@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AddProblemCategoryForm from './view';
 import { PROBLEM_LEAN_CATEGORY_VALUES } from './constants';
 
-const computeFullProblemCategoryDescription = (category, description) =>
+export const computeFullProblemCategoryDescription = (category, description) =>
   `${PROBLEM_LEAN_CATEGORY_VALUES[category]} / ${description}`;
 
 class AddProblemCategoryFormContainer extends Component {
