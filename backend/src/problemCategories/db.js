@@ -1,7 +1,8 @@
 const { sequelize } = require('../../models');
 
 const SELECT_PROBLEM_CATEGORY_COUNT_QUERY = `
-  SELECT "categories".id, "categories"."description", COUNT("problemsWithOvertime"."problemCategoryId"), SUM("problemsWithOvertime"."overtime") as "overTime"
+  SELECT "categories".id, "categories"."description", COUNT("problemsWithOvertime"."problemCategoryId"),
+  SUM(CASE WHEN "problemsWithOvertime"."overtime" IS NOT NULL THEN "problemsWithOvertime"."overtime" ELSE 0 END) as "overTime"
   FROM (SELECT * FROM "problemCategories" WHERE "problemCategories"."projectId" = :projectId) AS "categories"
   LEFT OUTER JOIN (
     SELECT "problems".id, "problems"."problemCategoryId", SUM(CASE WHEN "estimatedTime" < "realTime" THEN "realTime" - "estimatedTime" ELSE 0 END) AS "overtime"
@@ -11,6 +12,7 @@ const SELECT_PROBLEM_CATEGORY_COUNT_QUERY = `
   ) as "problemsWithOvertime"
   ON "categories".id = "problemsWithOvertime"."problemCategoryId"
   GROUP BY "categories".id, "categories"."description"
+  ORDER BY "overTime" DESC
 `;
 
 class ProblemCategoryDB {
