@@ -6,7 +6,7 @@ import { gqlClient } from 'Utils/Graphql';
 import ProblemCategoryPage from './view';
 import {
   GET_PROBLEM_CATEGORIES,
-  GET_PROBLEM_CATEGORIES_WITH_COUNT,
+  GET_PROBLEM_CATEGORIES_PARETO,
   ADD_PROBLEM_CATEGORY,
 } from '../../Queries/Categories';
 import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
@@ -14,13 +14,13 @@ import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 class ProblemCategoryPageContainer extends Component {
   render() {
     return (
-      <Query query={GET_PROBLEM_CATEGORIES_WITH_COUNT}>
+      <Query query={GET_PROBLEM_CATEGORIES_PARETO}>
         {({ loading, error, data }) => {
           if (error) return 'Unexpected error';
           return (
             <ProblemCategoryPageMutationContainer
               loading={loading}
-              problemCategories={data.problemCategoriesWithCount}
+              problemCategories={data.problemCategoriesWithPareto}
             />
           );
         }}
@@ -43,7 +43,7 @@ class ProblemCategoryPageMutationContainer extends Component {
         },
         refetchQueries: [
           { query: GET_PROBLEM_CATEGORIES },
-          { query: GET_PROBLEM_CATEGORIES_WITH_COUNT },
+          { query: GET_PROBLEM_CATEGORIES_PARETO },
           { query: GET_TICKETS_HISTORY },
         ],
       })

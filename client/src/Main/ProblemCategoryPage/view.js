@@ -4,6 +4,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import AddProblemCategoryForm from './AddProblemCategoryForm';
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 
 const fullPageHeightStyle = {
   height: '100%',
@@ -24,7 +25,8 @@ const ProblemCategoryPage = props => (
             props.problemCategories.map(problemCategory => (
               <ListItem key={problemCategory.id}>
                 {problemCategory.description} - {problemCategory.count ? problemCategory.count : 0}{' '}
-                occurrences
+                occurrences -{' '}
+                {problemCategory.overTime ? formatMilliSecondToTime(problemCategory.overTime) : 0}
               </ListItem>
             ))}
         </List>
