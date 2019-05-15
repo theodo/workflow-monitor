@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   project.associate = function(models) {
-    // associations can be defined here
+    project.hasMany(models.problemCategory, { as: 'problemCategories' });
   };
   return project;
 };
