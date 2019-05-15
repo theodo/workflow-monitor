@@ -10,9 +10,9 @@ module.exports = {
     problemCategories: (_, args, { user }) =>
       problemCategoryDB.getAllByProject(user.currentProject.id),
 
-    problemCategoriesWithCount: (_, args, { user }) => {
+    problemCategoriesWithPareto: (_, args, { user }) => {
       const projectId = user.currentProject.id;
-      return problemCategoryDB.getWithCount(projectId);
+      return problemCategoryDB.getCountAndOvertime(projectId);
     },
   },
 };

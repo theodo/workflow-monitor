@@ -1,7 +1,7 @@
 module.exports = `
 type Query {
   problemCategories: [ProblemCategory]
-  problemCategoriesWithCount: [ProblemCategoryWithCount]
+  problemCategoriesWithPareto: [ProblemCategoryPareto]
 }
 type ProblemCategory {
   id: Int
@@ -12,10 +12,11 @@ input ProblemCategoryInput {
   id: Int
   description: String
 }
-type ProblemCategoryWithCount {
+type ProblemCategoryPareto {
   id: Int
   description: String
   count: Int
+  overTime: Int
   projectId: Int
 }
 type Mutation {
