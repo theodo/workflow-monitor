@@ -18,12 +18,13 @@ export const GET_PROBLEM_CATEGORIES = gql`
   }
 `;
 
-export const GET_PROBLEM_CATEGORIES_WITH_COUNT = gql`
+export const GET_PROBLEM_CATEGORIES_PARETO = gql`
   {
-    problemCategoriesWithCount {
+    problemCategoriesWithPareto {
       id
       description
       count
+      overTime
     }
   }
 `;
