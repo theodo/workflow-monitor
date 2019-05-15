@@ -19,12 +19,13 @@ const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES = gql`
   }
 `;
 
-const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_WITH_COUNT = gql`
+const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_PARETO = gql`
   {
-    problemCategoriesWithCount {
+    problemCategoriesWithPareto {
       id
       description
       count
+      overTime
     }
   }
 `;
@@ -84,30 +85,32 @@ describe('API problemCategories Tests', () => {
 
       expect(res.data).toEqual({ problemCategories });
     });
-    it('should fetch all the problem categories of the current project with count', async () => {
-      const problemCategoriesWithCount = [
+    it('should fetch all the problem categories of the current project with count an overtime for pareto', async () => {
+      const problemCategoriesWithPareto = [
         {
           id: 0,
           description: 'Tools / problem 2',
-          count: null,
+          count: 1,
+          overTime: 10,
         },
         {
           id: 80,
           description: 'A new Category',
+          overTime: 0,
           count: null,
         },
       ];
 
-      db.getWithCount.mockImplementation(async () => problemCategoriesWithCount);
+      db.getCountAndOvertime.mockImplementation(async () => problemCategoriesWithPareto);
       httpServer = await launchAPIServer();
 
       const res = await toPromise(
         graphql({
-          query: GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_WITH_COUNT,
+          query: GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_PARETO,
         }),
       );
 
-      expect(res.data).toEqual({ problemCategoriesWithCount });
+      expect(res.data).toEqual({ problemCategoriesWithPareto });
     });
   });
 
