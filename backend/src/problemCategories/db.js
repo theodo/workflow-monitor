@@ -31,9 +31,9 @@ class ProblemCategoryDB {
   }
 
   add(description, projectId) {
-    return this.db.create({
+    return this.model.create({
       description: description,
-      projectId,
+      projectId: projectId,
     });
   }
 }
