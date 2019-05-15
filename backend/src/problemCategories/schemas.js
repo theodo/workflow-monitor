@@ -6,6 +6,7 @@ type Query {
 type ProblemCategory {
   id: Int
   description: String
+  projectId: Int
 }
 input ProblemCategoryInput {
   id: Int
@@ -15,6 +16,7 @@ type ProblemCategoryWithCount {
   id: Int
   description: String
   count: Int
+  projectId: Int
 }
 type Mutation {
   addProblemCategory(problemCategoryDescription: String): ProblemCategory
