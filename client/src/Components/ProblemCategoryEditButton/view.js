@@ -45,6 +45,7 @@ const ProblemCategoryEditButton = ({
   classes,
   createProblemCategoryMode,
   handleCreateProblemCategory,
+  handleEditProblemCategory,
   handleSearchProblemCategory,
   handleSelectProblemCategory,
   isEditDialogOpen,
@@ -55,21 +56,21 @@ const ProblemCategoryEditButton = ({
   setCreateProblemCategoryMode,
   searchProblemCategoryTerm,
   selectedProblemCategory,
-  setIsEditDialogOpen,
+  closeEditDialog,
   setNewProblemCategoryName,
   setNewProblemCategoryType,
 }) => {
   return (
     <div>
-      <Chip clickable label={problemCategoryDescription} onClick={setIsEditDialogOpen(true)} />
-      <Dialog fullWidth maxWidth="sm" onClose={setIsEditDialogOpen(false)} open={isEditDialogOpen}>
+      <Chip clickable label={problemCategoryDescription} onClick={handleEditProblemCategory} />
+      <Dialog fullWidth maxWidth="sm" onClose={closeEditDialog} open={isEditDialogOpen}>
         <div className={classes.dialog}>
           {!createProblemCategoryMode && (
             <div>
               <MuiDialogTitle>
                 <div className={classes.dialogTitle}>
                   <Typography variant="h6">Chose a Problem Category</Typography>
-                  <IconButton aria-label="Close" onClick={setIsEditDialogOpen(false)}>
+                  <IconButton aria-label="Close" onClick={closeEditDialog}>
                     <CloseIcon />
                   </IconButton>
                 </div>
@@ -115,7 +116,7 @@ const ProblemCategoryEditButton = ({
               mutatingProblemCategory={mutatingProblemCategory}
               newProblemCategory={newProblemCategory}
               onBack={setCreateProblemCategoryMode(false)}
-              onClose={setIsEditDialogOpen(false)}
+              onClose={closeEditDialog}
               parentStyle={style}
               setNewProblemCategoryName={setNewProblemCategoryName}
               setNewProblemCategoryType={setNewProblemCategoryType}
