@@ -25,7 +25,7 @@ const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_PARETO = gql`
       id
       description
       count
-      overTime
+      overtime
     }
   }
 `;
@@ -91,12 +91,12 @@ describe('API problemCategories Tests', () => {
           id: 0,
           description: 'Tools / problem 2',
           count: 1,
-          overTime: 10,
+          overtime: 10,
         },
         {
           id: 80,
           description: 'A new Category',
-          overTime: 0,
+          overtime: 0,
           count: null,
         },
       ];

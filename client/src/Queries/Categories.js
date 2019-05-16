@@ -24,7 +24,7 @@ export const GET_PROBLEM_CATEGORIES_PARETO = gql`
       id
       description
       count
-      overTime
+      overtime
     }
   }
 `;

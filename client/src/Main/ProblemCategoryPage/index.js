@@ -14,7 +14,7 @@ import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 class ProblemCategoryPageContainer extends Component {
   render() {
     return (
-      <Query query={GET_PROBLEM_CATEGORIES_PARETO}>
+      <Query query={GET_PROBLEM_CATEGORIES_PARETO} fetchPolicy="network-only">
         {({ loading, error, data }) => {
           if (error) return 'Unexpected error';
           return (

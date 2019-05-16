@@ -16,7 +16,7 @@ type ProblemCategoryPareto {
   id: Int
   description: String
   count: Int
-  overTime: Int
+  overtime: Int
   projectId: Int
 }
 type Mutation {

@@ -26,7 +26,8 @@ const ProblemCategoryPage = props => (
               <ListItem key={problemCategory.id}>
                 {problemCategory.description} - {problemCategory.count ? problemCategory.count : 0}{' '}
                 occurrences -{' '}
-                {problemCategory.overTime ? formatMilliSecondToTime(problemCategory.overTime) : 0}
+                {problemCategory.overtime ? formatMilliSecondToTime(problemCategory.overtime) : 0}{' '}
+                overtime
               </ListItem>
             ))}
         </List>
