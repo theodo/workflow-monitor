@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-
 import { gqlClient } from 'Utils/Graphql';
-
-import ProblemCategoryPage from './view';
 import {
   GET_PROBLEM_CATEGORIES,
   GET_PROBLEM_CATEGORIES_PARETO,
   ADD_PROBLEM_CATEGORY,
-} from '../../Queries/Categories';
-import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
+} from 'Queries/Categories';
+import { GET_TICKETS_HISTORY } from 'Queries/Tickets';
+import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+import { appColors } from 'ui';
+import ProblemCategoryPage from './view';
 
 class ProblemCategoryPageContainer extends Component {
   render() {
     return (
       <Query query={GET_PROBLEM_CATEGORIES_PARETO} fetchPolicy="network-only">
         {({ loading, error, data }) => {
+          if (loading) return 'Loading';
           if (error) return 'Unexpected error';
           return (
             <ProblemCategoryPageMutationContainer
@@ -54,10 +55,60 @@ class ProblemCategoryPageMutationContainer extends Component {
   render() {
     const { loading: loadingQuery, problemCategories } = this.props;
     const { loading: loadingMutation } = this.state;
+
+    const causes = problemCategories.map(problemCategory => problemCategory.description);
+    const overtime = problemCategories.map(
+      problemCategory => problemCategory.overtime / (3600 * 1000), // overtime in hours
+    );
+    const occurencesByProblemCatgory = problemCategories.reduce((result, problemCategory) => {
+      result[problemCategory.description] = problemCategory.count;
+      return result;
+    }, {});
+
+    const chartOptions = {
+      legend: { display: false },
+      tooltips: {
+        callbacks: {
+          label: tooltipItem =>
+            `Overtime: ${formatMilliSecondToTime(tooltipItem.xLabel * 1000 * 3600)}, ` +
+            `Occurrences: ${occurencesByProblemCatgory[tooltipItem.yLabel]}`,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            id: 'overtime',
+            ticks: { fontSize: 14, beginAtZero: true, min: 0 },
+            type: 'linear',
+            scaleLabel: { display: true, labelString: 'Overtime in hours', fontSize: 16 },
+          },
+        ],
+        yAxes: [
+          {
+            id: 'causes',
+            gridLines: { display: false },
+          },
+        ],
+      },
+    };
+
+    const chartData = {
+      labels: causes,
+      datasets: [
+        {
+          backgroundColor: appColors.softRed,
+          data: overtime,
+        },
+      ],
+    };
+
     return (
       <ProblemCategoryPage
-        loading={loadingQuery || loadingMutation}
         addProblemCategory={this.addProblemCategory}
+        chartData={chartData}
+        chartOptions={chartOptions}
+        loading={loadingQuery || loadingMutation}
+        occurencesByProblemCatgory={occurencesByProblemCatgory}
         problemCategories={problemCategories}
       />
     );
