@@ -90,8 +90,8 @@ const defaultResolvers = {
     updateCurrentState: async (_, { state }, { pubsub, user }) => {
       const channel = 'user#' + user.id;
       pubsub.publish(channel, { state });
-      user.set('state', state);
-      user.save();
+      await user.set('state', state);
+      await user.save();
       return 1;
     },
     updateTask: async (_, { task }) => {
@@ -102,17 +102,20 @@ const defaultResolvers = {
       const updatedEstimatedTime =
         ticketToUpdate.estimatedTime + task.estimatedTime - taskToUpdate.estimatedTime;
       const updatedRealTime = ticketToUpdate.realTime + task.realTime - taskToUpdate.realTime;
-      ticketToUpdate.update({ estimatedTime: updatedEstimatedTime, realTime: updatedRealTime });
-      taskToUpdate.update(task);
-      Problem.destroy({ where: { taskId: taskToUpdate.id } });
+      await ticketToUpdate.update({
+        estimatedTime: updatedEstimatedTime,
+        realTime: updatedRealTime,
+      });
+      await taskToUpdate.update(task);
+      await Problem.destroy({ where: { taskId: taskToUpdate.id } });
       if (task.problems) {
-        task.problems.forEach(async formattedProblem => {
+        for (let formattedProblem of task.problems) {
           formattedProblem.taskId = taskToUpdate.id;
           const problem = await Problem.create(formattedProblem);
           formattedProblem.problemCategory &&
-            problem.setProblemCategory(formattedProblem.problemCategory.id);
-          problem.save();
-        });
+            (await problem.setProblemCategory(formattedProblem.problemCategory.id));
+          await problem.save();
+        }
       }
       return taskToUpdate;
     },
