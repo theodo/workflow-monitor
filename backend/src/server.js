@@ -2,6 +2,7 @@ const fs = require('fs');
 const { mergeResolvers, mergeTypes } = require('merge-graphql-schemas');
 const { GraphQLServer, PubSub } = require('graphql-yoga');
 const bodyParser = require('body-parser');
+const { SELECT_PROBLEM_CATEGORY_COUNT_QUERY } = require('./dbUtils');
 const {
   authenticationMiddleware,
   loginRoute,
@@ -12,16 +13,20 @@ const db = require('./datasources/db');
 
 const { ticketResolvers, ticketSchemas } = require('./tickets');
 const { userResolvers, userSchemas } = require('./users');
-const { problemCategoriesResolvers, problemCategoriesSchemas } = require('./problemCategories');
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV !== 'production';
 
 const Project = db.getORM().models.project;
+const ProblemCategory = db.getORM().models.problemCategory;
 const Ticket = db.getORM().models.ticket;
 const Task = db.getORM().models.task;
 const Problem = db.getORM().models.problem;
 
 const defaultTypeDefs = `
+  type Query {
+    problemCategories: [ProblemCategory]
+    problemCategoriesWithCount: [ProblemCategoryWithCount]
+  }
   type Project {
     id: Int
     name: String
@@ -57,6 +62,19 @@ const defaultTypeDefs = `
     description: String
     problemCategory: ProblemCategoryInput
   }
+  type ProblemCategory {
+    id: Int
+    description: String
+  }
+  input ProblemCategoryInput {
+    id: Int
+    description: String
+  }
+  type ProblemCategoryWithCount {
+    id: Int
+    description: String
+    count: Int
+  }
   input ProjectInput {
     name: String
     thirdPartyId: String
@@ -73,6 +91,7 @@ const defaultTypeDefs = `
     updateCurrentState(state: String!): Int,
     updateTask(task: TaskInput!): Task,
     selectProject(project: ProjectInput): Project,
+    addProblemCategory(problemCategoryDescription: String): ProblemCategory,
     setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput!): Int
   }
   type Subscription {
@@ -80,12 +99,19 @@ const defaultTypeDefs = `
   }
 `;
 
-const typeDefs = mergeTypes(
-  [defaultTypeDefs, ticketSchemas, userSchemas, problemCategoriesSchemas],
-  { all: true },
-);
+const typeDefs = mergeTypes([defaultTypeDefs, ticketSchemas, userSchemas], { all: true });
 
 const defaultResolvers = {
+  Query: {
+    problemCategories: () => ProblemCategory.findAll(),
+    problemCategoriesWithCount: (_, args, { user }) => {
+      const projectId = user.currentProject.id;
+      return db.getORM().query(SELECT_PROBLEM_CATEGORY_COUNT_QUERY, {
+        replacements: [projectId],
+        type: db.getORM().QueryTypes.SELECT,
+      });
+    },
+  },
   Mutation: {
     updateCurrentState: async (_, { state }, { pubsub, user }) => {
       const channel = 'user#' + user.id;
@@ -126,6 +152,11 @@ const defaultResolvers = {
         return project;
       });
     },
+    addProblemCategory: (_, { problemCategoryDescription }) => {
+      return ProblemCategory.create({
+        description: problemCategoryDescription,
+      });
+    },
     setCurrentProjectSpeed: async (_, { projectSpeed }, { user }) => {
       const project = user.get('currentProject');
       Project.update(
@@ -148,12 +179,7 @@ const defaultResolvers = {
   },
 };
 
-const resolvers = mergeResolvers([
-  ticketResolvers,
-  userResolvers,
-  defaultResolvers,
-  problemCategoriesResolvers,
-]);
+const resolvers = mergeResolvers([ticketResolvers, userResolvers, defaultResolvers]);
 
 const pubsub = new PubSub();
 const defaultContext = {
