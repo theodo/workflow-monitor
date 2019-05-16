@@ -35,7 +35,7 @@ class ProblemCategoryEditButtonContainer extends React.Component {
 
     this.props.onChange(problemCategory);
     this.setState({ selectedProblemCategory: problemCategory });
-    this.setIsEditDialogOpen(false)();
+    this.closeEditDialog();
   };
 
   handleCreateProblemCategory = async () => {
@@ -57,13 +57,24 @@ class ProblemCategoryEditButtonContainer extends React.Component {
       description: result.data.addProblemCategory.description,
     };
     this.setState({
-      createProblemCategoryMode: false,
       isEditDialogOpen: false,
-      mutatingProblemCategory: false,
-      searchProblemCategoryTerm: '',
       selectedProblemCategory: newProblemCategory,
     });
+
     this.props.onChange(newProblemCategory);
+  };
+
+  handleEditProblemCategory = () => {
+    this.setState({
+      isEditDialogOpen: true,
+      createProblemCategoryMode: false,
+      mutatingProblemCategory: false,
+      newProblemCategory: {
+        name: null,
+        type: null,
+      },
+      searchProblemCategoryTerm: '',
+    });
   };
 
   handleSearchProblemCategory = term => {
@@ -74,8 +85,8 @@ class ProblemCategoryEditButtonContainer extends React.Component {
     }));
   };
 
-  setIsEditDialogOpen = isEditDialogOpen => () => {
-    this.setState({ isEditDialogOpen });
+  closeEditDialog = () => {
+    this.setState({ isEditDialogOpen: false });
   };
 
   setCreateProblemCategoryMode = createMode => () => {
@@ -110,6 +121,7 @@ class ProblemCategoryEditButtonContainer extends React.Component {
             <ProblemCategoryEditButton
               createProblemCategoryMode={this.state.createProblemCategoryMode}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
+              handleEditProblemCategory={this.handleEditProblemCategory}
               handleSearchProblemCategory={this.handleSearchProblemCategory}
               handleSelectProblemCategory={this.handleSelectProblemCategory}
               isEditDialogOpen={this.state.isEditDialogOpen}
@@ -121,7 +133,7 @@ class ProblemCategoryEditButtonContainer extends React.Component {
               searchProblemCategoryTerm={this.state.searchProblemCategoryTerm}
               selectedProblemCategory={this.state.selectedProblemCategory}
               setCreateProblemCategoryMode={this.setCreateProblemCategoryMode}
-              setIsEditDialogOpen={this.setIsEditDialogOpen}
+              closeEditDialog={this.closeEditDialog}
               setNewProblemCategoryName={this.setNewProblemCategoryName}
               setNewProblemCategoryType={this.setNewProblemCategoryType}
             />
