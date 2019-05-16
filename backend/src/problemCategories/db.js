@@ -30,10 +30,9 @@ class ProblemCategoryDB {
     });
   }
 
-  add(description, projectId) {
+  add(description) {
     return this.db.create({
       description: description,
-      projectId,
     });
   }
 }
