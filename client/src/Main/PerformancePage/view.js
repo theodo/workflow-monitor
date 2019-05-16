@@ -52,7 +52,7 @@ const chartOptions = {
         id: 'overtime',
         gridLines: { display: false },
         position: 'left',
-        ticks: { fontSize: 16, stepSize: 1, beginAtZero: true, min: 0 },
+        ticks: { fontSize: 16, beginAtZero: true, min: 0 },
         type: 'linear',
         scaleLabel: { display: true, labelString: 'Overtime in Hours', fontSize: 20 },
       },
