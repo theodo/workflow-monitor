@@ -41,7 +41,7 @@ const style = {
 
 const CreateProblemCategoryWithStyle = withStyles(style)(CreateProblemCategory);
 
-const ProblemCategoryEditButton = ({
+const ProblemCategoryChangeButton = ({
   classes,
   createProblemCategoryMode,
   handleCreateProblemCategory,
@@ -128,4 +128,4 @@ const ProblemCategoryEditButton = ({
   );
 };
 
-export default withStyles(style)(ProblemCategoryEditButton);
+export default withStyles(style)(ProblemCategoryChangeButton);

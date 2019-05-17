@@ -1,11 +1,11 @@
 import React from 'react';
 import { TableCell, TextField } from '@material-ui/core';
 import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
-import ProblemCategoryEditButton from 'Components/ProblemCategoryEditButton';
+import ProblemCategoryChangeButton from 'Components/ProblemCategoryChangeButton';
 
 const ProblemCategoryEditCell = ({ value, onValueChange }) => (
   <TableCell>
-    <ProblemCategoryEditButton value={value || null} onChange={onValueChange} placeholder={''} />
+    <ProblemCategoryChangeButton value={value || null} onChange={onValueChange} placeholder={''} />
   </TableCell>
 );
 
