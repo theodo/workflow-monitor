@@ -66,7 +66,6 @@ const ProblemCategoryChangeButton = ({
   setProblemCategoryInEdition,
   setProblemCategoryInCreationType,
 }) => {
-  console.log(problemCategoryInEdition);
   return (
     <div>
       <Chip clickable label={problemCategoryDescription} onClick={handleChangeProblemCategory} />

@@ -1,6 +1,10 @@
 import React from 'react';
 import ProblemCategoryChangeButton from './view';
-import { ADD_PROBLEM_CATEGORY, GET_PROBLEM_CATEGORIES } from 'Queries/Categories';
+import {
+  ADD_PROBLEM_CATEGORY,
+  GET_PROBLEM_CATEGORIES,
+  UPDATE_PROBLEM_CATEGORY_DESCRIPTION,
+} from 'Queries/Categories';
 import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
 import { computeFullProblemCategoryDescription } from 'Main/ProblemCategoryPage/AddProblemCategoryForm';
@@ -105,7 +109,6 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
 
   handleEditProblemCategory = problemCategoryToEdit => () => {
     const problemCategory = getProblemCategoryTypeAndName(problemCategoryToEdit);
-    console.log('pb', problemCategory);
     this.setState(state => ({
       problemCategoryInEdition: {
         id: problemCategoryToEdit.id,
@@ -116,7 +119,30 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
     }));
   };
 
-  handleSaveProblemCategoryInEdition = () => {};
+  handleSaveProblemCategoryInEdition = async () => {
+    const description = computeFullProblemCategoryDescription(
+      this.state.problemCategoryInEdition.type,
+      this.state.problemCategoryInEdition.name,
+    );
+
+    this.setState({ mutatingProblemCategory: true });
+
+    await gqlClient.mutate({
+      mutation: UPDATE_PROBLEM_CATEGORY_DESCRIPTION,
+      variables: {
+        problemCategory: {
+          id: this.state.problemCategoryInEdition.id,
+          description,
+        },
+      },
+      refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }],
+    });
+    this.setState(state => ({
+      ...state,
+      dialogStatus: { ...state.dialogStatus, editMode: false },
+      mutatingProblemCategory: false,
+    }));
+  };
 
   handleSearchProblemCategory = term => {
     this.setState(state => ({

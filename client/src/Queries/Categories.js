@@ -10,7 +10,7 @@ export const ADD_PROBLEM_CATEGORY = gql`
 `;
 
 export const UPDATE_PROBLEM_CATEGORY_DESCRIPTION = gql`
-  mutation UpdateProblemCategoryDescription($problemCategory: ProblemCategory) {
+  mutation UpdateProblemCategoryDescription($problemCategory: ProblemCategoryInput!) {
     updateProblemCategoryDescription(problemCategory: $problemCategory)
   }
 `;

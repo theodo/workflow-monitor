@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
-import { withStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import { PROBLEM_LEAN_CATEGORY } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
