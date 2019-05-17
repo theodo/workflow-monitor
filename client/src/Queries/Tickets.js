@@ -11,6 +11,7 @@ export const GET_TICKETS_HISTORY = gql`
         complexity
         status
         allocatedTime
+        estimatedTime
         realTime
       }
       count

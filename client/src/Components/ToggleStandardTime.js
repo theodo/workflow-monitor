@@ -26,7 +26,7 @@ class ToggleStandardTime extends React.Component {
   handlePerformanceTypeChange = (_, performanceType) => {
     if (performanceType) {
       this.setState({ performanceType });
-      this.props.changePerformanceType(performanceType);
+      this.props.setPerformanceType(performanceType);
     }
   };
 
@@ -41,10 +41,16 @@ class ToggleStandardTime extends React.Component {
         exclusive
         onChange={this.handlePerformanceTypeChange}
       >
-        <TooltipToggleButton value="celerityTime" title="Dev time compared to Ticket points">
+        <TooltipToggleButton
+          value="celerityTime"
+          title="Ticket is KO when dev time is over ticket points"
+        >
           Celerity Time
         </TooltipToggleButton>
-        <TooltipToggleButton value="casprTime" title="Dev time compared to Caspr planning">
+        <TooltipToggleButton
+          value="casprTime"
+          title="Ticket is KO when dev time is over Caspr planning estimation"
+        >
           Caspr Time
         </TooltipToggleButton>
       </ToggleButtonGroup>

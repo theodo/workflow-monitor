@@ -23,6 +23,7 @@ type Ticket {
   status: String
   tasks: [Task]
   allocatedTime: Int
+  estimatedTime: Int
   realTime: Int
 }
 type Mutation {

@@ -2,6 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import TicketHistory from './TicketHistory';
+import ToggleStandardTime from 'Components/ToggleStandardTime';
 
 const styles = {
   container: {
@@ -28,12 +29,23 @@ const getDisplayedDate = (index, ticketsTable) => {
   return previousDate !== currentDate ? currentDate : null;
 };
 
-const ProjectHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket, classes }) => {
+const ProjectHistoryPage = ({
+  tickets: { rows, count },
+  loadMore,
+  goToTicket,
+  classes,
+  performanceType,
+  setPerformanceType,
+}) => {
   return (
     <Grid container spacing={0} className={classes.fullPageHeightStyle}>
       <Grid item xs={1} />
       <Grid item xs={10}>
         <h3>Ticket history</h3>
+        <ToggleStandardTime
+          initialPerformanceType={performanceType}
+          setPerformanceType={setPerformanceType}
+        />
         <div className={classes.container}>
           {rows.map((ticket, index, ticketsTable) => {
             const dateToDiplay = getDisplayedDate(index, ticketsTable);
@@ -42,7 +54,11 @@ const ProjectHistoryPage = ({ tickets: { rows, count }, loadMore, goToTicket, cl
                 {dateToDiplay && (
                   <div className={classes.date}>{new Date(ticket.createdAt).toDateString()}</div>
                 )}
-                <TicketHistory ticket={ticket} goToTicket={goToTicket} />
+                <TicketHistory
+                  ticket={ticket}
+                  goToTicket={goToTicket}
+                  performanceType={performanceType}
+                />
               </div>
             );
           })}
