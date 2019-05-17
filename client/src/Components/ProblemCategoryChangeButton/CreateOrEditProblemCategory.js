@@ -12,17 +12,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import { PROBLEM_LEAN_CATEGORY } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
 
-const style = {
-  dialogTitle: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  createInput: {
-    width: '100%',
-  },
-};
-
 const CreateOrEditProblemCategory = ({
   classes,
   problemCategory,
@@ -87,4 +76,4 @@ const CreateOrEditProblemCategory = ({
   );
 };
 
-export default withStyles(style)(CreateOrEditProblemCategory);
+export default CreateOrEditProblemCategory;
