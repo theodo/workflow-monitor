@@ -8,9 +8,9 @@ import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 import { filterEmptyTasks } from 'Utils/TaskUtils';
 
+import ProblemCategoryEditButton from 'Components/ProblemCategoryEditButton';
 import ReverseChrono from '../ReverseChrono';
 import TaskEditor from '../../TaskEditor/TaskEditor';
-import ProblemCategoryAutocomplete from '../ProblemCategoryAutocomplete/ProblemCategoryAutocomplete';
 import './TaskPanel.css';
 
 const TEXT_AREA_BORDER = '1px solid #CACFD2';
@@ -85,7 +85,9 @@ class TaskPanel extends Component {
   }
 
   handleProblemCategoryValueChange(selectedOption) {
-    this.props.handleCurrentTaskChange({ problemCategory: selectedOption });
+    this.props.handleCurrentTaskChange({
+      problemCategory: { value: selectedOption.id, label: selectedOption.description },
+    });
   }
 
   handleNewTasksValueChange(tasks) {
@@ -148,7 +150,7 @@ class TaskPanel extends Component {
             </Grid>
             <Grid item xs={5}>
               <h3>Root cause category</h3>
-              <ProblemCategoryAutocomplete
+              <ProblemCategoryEditButton
                 value={currentTask.problemCategory || null}
                 onChange={this.handleProblemCategoryValueChange}
                 placeholder={'Select the root cause category'}
