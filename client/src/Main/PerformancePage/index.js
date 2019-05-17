@@ -62,8 +62,8 @@ class PerformancePageContainer extends React.Component {
     };
   }
 
-  changePerformanceType = performanceType => {
-    this.setState({ performanceType: performanceType });
+  setPerformanceType = performanceType => {
+    this.setState({ performanceType });
   };
 
   slideDateRangeWindow = direction => () => {
@@ -99,7 +99,7 @@ class PerformancePageContainer extends React.Component {
               disableNextButton={this.state.endDate.isSame(dayjs(), 'day')}
               slideDateRangeWindow={this.slideDateRangeWindow}
               performanceType={this.state.performanceType}
-              changePerformanceType={this.changePerformanceType}
+              setPerformanceType={this.setPerformanceType}
             />
           );
         }}

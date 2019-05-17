@@ -4,6 +4,14 @@ import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 import ProjectHistoryPage from './view';
 
 class ProjectHistoryPageContainer extends Component {
+  state = {
+    performanceType: 'casprTime',
+  };
+
+  setPerformanceType = performanceType => {
+    this.setState({ performanceType });
+  };
+
   goToTicket = ticketId => (window.location.hash = `#/history/${ticketId}`);
   render() {
     return (
@@ -44,6 +52,8 @@ class ProjectHistoryPageContainer extends Component {
               loadMore={loadMore}
               loading={loading}
               tickets={data.tickets}
+              performanceType={this.state.performanceType}
+              setPerformanceType={this.setPerformanceType}
             />
           );
         }}

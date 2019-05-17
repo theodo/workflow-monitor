@@ -97,7 +97,7 @@ const PerformanceChart = ({ performanceType, chartInput }) => {
 };
 
 const PerformancePage = ({
-  changePerformanceType,
+  setPerformanceType,
   chartInput,
   classes,
   disableNextButton,
@@ -110,7 +110,7 @@ const PerformancePage = ({
         <h3 className={classes.title}>Performance Indicator</h3>
         <ToggleStandardTime
           initialPerformanceType={performanceType}
-          changePerformanceType={changePerformanceType}
+          setPerformanceType={setPerformanceType}
         />
       </div>
       <PerformanceChart performanceType={performanceType} chartInput={chartInput} />
