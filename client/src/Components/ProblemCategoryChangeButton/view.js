@@ -22,7 +22,6 @@ const style = {
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  dialogBody: {},
   textInput: {
     width: '100%',
   },
@@ -83,7 +82,7 @@ const ProblemCategoryChangeButton = ({
                   </IconButton>
                 </div>
               </MuiDialogTitle>
-              <div className={classes.dialogBody}>
+              <div>
                 <TextField
                   className={classes.textInput}
                   label="Search a Problem Category"
@@ -145,7 +144,7 @@ const ProblemCategoryChangeButton = ({
           {!dialogStatus.createMode && dialogStatus.editMode && (
             <CreateOrEditProblemCategoryWithStyle
               handleProblemCategoryChange={setProblemCategoryInEdition}
-              handleSubmit={handleCreateProblemCategory}
+              handleSubmit={handleSaveProblemCategoryInEdition}
               mutatingProblemCategory={mutatingProblemCategory}
               onBack={setDialogStatusMode('editMode')(false)}
               onClose={closeEditDialog}
