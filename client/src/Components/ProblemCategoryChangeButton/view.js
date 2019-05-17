@@ -10,8 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
-import CreateProblemCategory from './CreateProblemCategory';
+import CreateOrEditProblemCategory from './CreateOrEditProblemCategory';
 import { appColors } from 'ui';
 
 const style = {
@@ -37,34 +38,42 @@ const style = {
     padding: '100px',
     textAlign: 'center',
   },
+  problemCategoryItemContainer: {
+    display: 'flex',
+  },
 };
 
-const CreateProblemCategoryWithStyle = withStyles(style)(CreateProblemCategory);
+const CreateOrEditProblemCategoryWithStyle = withStyles(style)(CreateOrEditProblemCategory);
 
 const ProblemCategoryChangeButton = ({
   classes,
   dialogStatus,
   handleCreateProblemCategory,
   handleChangeProblemCategory,
+  handleEditProblemCategory,
+  handleSaveProblemCategoryInEdition,
   handleSearchProblemCategory,
   handleSelectProblemCategory,
   mutatingProblemCategory,
   problemCategoryInCreation,
   problemCategories,
   problemCategoryDescription,
-  setCreateProblemCategoryMode,
+  setDialogStatusMode,
   searchProblemCategoryTerm,
   problemCategoryInSelection,
   closeEditDialog,
-  setProblemCategoryInCreationName,
+  problemCategoryInEdition,
+  setProblemCategoryInCreation,
+  setProblemCategoryInEdition,
   setProblemCategoryInCreationType,
 }) => {
+  console.log(problemCategoryInEdition);
   return (
     <div>
       <Chip clickable label={problemCategoryDescription} onClick={handleChangeProblemCategory} />
       <Dialog fullWidth maxWidth="sm" onClose={closeEditDialog} open={dialogStatus.isOpen}>
         <div className={classes.dialog}>
-          {!dialogStatus.createMode && (
+          {!dialogStatus.createMode && !dialogStatus.editMode && (
             <div>
               <MuiDialogTitle>
                 <div className={classes.dialogTitle}>
@@ -91,33 +100,57 @@ const ProblemCategoryChangeButton = ({
                         .includes(searchProblemCategoryTerm.toLowerCase());
                     })
                     .map(problemCategory => (
-                      <ListItem
+                      <div
+                        className={classes.problemCategoryItemContainer}
                         key={problemCategory.id}
-                        button
-                        onClick={() => handleSelectProblemCategory(problemCategory)}
                       >
-                        <ListItemText primary={problemCategory.description} />
-                        {problemCategoryInSelection.id === problemCategory.id && <DoneIcon />}
-                      </ListItem>
+                        <ListItem
+                          button
+                          onClick={() => handleSelectProblemCategory(problemCategory)}
+                        >
+                          <ListItemText primary={problemCategory.description} />
+                          {problemCategoryInSelection.id === problemCategory.id && <DoneIcon />}
+                        </ListItem>
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={handleEditProblemCategory(problemCategory)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </div>
                     ))}
                 </List>
                 <div className={classes.addProblemContainer}>
-                  <span className={classes.addProblem} onClick={setCreateProblemCategoryMode(true)}>
+                  <span
+                    className={classes.addProblem}
+                    onClick={setDialogStatusMode('createMode')(true)}
+                  >
                     Add a Problem Category
                   </span>
                 </div>
               </div>
             </div>
           )}
-          {dialogStatus.createMode && (
-            <CreateProblemCategoryWithStyle
-              handleCreateProblemCategory={handleCreateProblemCategory}
+          {dialogStatus.createMode && !dialogStatus.editMode && (
+            <CreateOrEditProblemCategoryWithStyle
+              handleProblemCategoryChange={setProblemCategoryInCreation}
+              handleSubmit={handleCreateProblemCategory}
               mutatingProblemCategory={mutatingProblemCategory}
-              problemCategoryInCreation={problemCategoryInCreation}
-              onBack={setCreateProblemCategoryMode(false)}
+              onBack={setDialogStatusMode('createMode')(false)}
               onClose={closeEditDialog}
-              setProblemCategoryInCreationName={setProblemCategoryInCreationName}
-              setProblemCategoryInCreationType={setProblemCategoryInCreationType}
+              problemCategory={problemCategoryInCreation}
+              type="create"
+            />
+          )}
+          {!dialogStatus.createMode && dialogStatus.editMode && (
+            <CreateOrEditProblemCategoryWithStyle
+              handleProblemCategoryChange={setProblemCategoryInEdition}
+              handleSubmit={handleCreateProblemCategory}
+              mutatingProblemCategory={mutatingProblemCategory}
+              onBack={setDialogStatusMode('editMode')(false)}
+              onClose={closeEditDialog}
+              problemCategory={problemCategoryInEdition}
+              type="edit"
             />
           )}
         </div>

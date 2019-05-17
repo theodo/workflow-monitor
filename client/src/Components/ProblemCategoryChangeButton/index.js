@@ -4,6 +4,7 @@ import { ADD_PROBLEM_CATEGORY, GET_PROBLEM_CATEGORIES } from 'Queries/Categories
 import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
 import { computeFullProblemCategoryDescription } from 'Main/ProblemCategoryPage/AddProblemCategoryForm';
+import { PROBLEM_LEAN_CATEGORY_VALUES } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
 
 const getSelectedProblemCategory = problemCategory => {
   return problemCategory
@@ -11,15 +12,32 @@ const getSelectedProblemCategory = problemCategory => {
     : { id: null, description: null };
 };
 
+const getProblemCategoryTypeAndName = problemCategory => {
+  const eclatedDescription = problemCategory.description.split(' / ');
+  const typeKey = Object.keys(PROBLEM_LEAN_CATEGORY_VALUES).find(
+    key => PROBLEM_LEAN_CATEGORY_VALUES[key] === eclatedDescription[0],
+  );
+  return {
+    type: typeKey,
+    name: eclatedDescription[1],
+  };
+};
+
 class ProblemCategoryChangeButtonContainer extends React.Component {
   state = {
     dialogStatus: {
       isOpen: false,
       createMode: false,
+      editMode: false,
     },
     mutatingProblemCategory: false,
     searchProblemCategoryTerm: '',
     problemCategoryInCreation: {
+      name: null,
+      type: null,
+    },
+    problemCategoryInEdition: {
+      id: null,
       name: null,
       type: null,
     },
@@ -76,9 +94,29 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
         name: null,
         type: null,
       },
+      problemCategoryInEdition: {
+        id: null,
+        name: null,
+        type: null,
+      },
       searchProblemCategoryTerm: '',
     }));
   };
+
+  handleEditProblemCategory = problemCategoryToEdit => () => {
+    const problemCategory = getProblemCategoryTypeAndName(problemCategoryToEdit);
+    console.log('pb', problemCategory);
+    this.setState(state => ({
+      problemCategoryInEdition: {
+        id: problemCategoryToEdit.id,
+        type: problemCategory.type,
+        name: problemCategory.name,
+      },
+      dialogStatus: { ...state.dialogStatus, editMode: true },
+    }));
+  };
+
+  handleSaveProblemCategoryInEdition = () => {};
 
   handleSearchProblemCategory = term => {
     this.setState(state => ({
@@ -89,27 +127,23 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
   };
 
   closeEditDialog = () => {
-    this.setState({ dialogStatus: { createMode: false, isOpen: false } });
+    this.setState({ dialogStatus: { createMode: false, isOpen: false, editMode: false } });
   };
 
-  setCreateProblemCategoryMode = createMode => () => {
+  setDialogStatusMode = mode => status => () => {
     this.setState(state => ({
       ...state,
-      dialogStatus: { ...state.dialogStatus, createMode: createMode },
+      dialogStatus: { ...state.dialogStatus, [mode]: status },
     }));
   };
 
-  setProblemCategoryInCreationName = name => {
-    this.setState(state => ({
-      ...state,
-      problemCategoryInCreation: { ...state.problemCategoryInCreation, name },
-    }));
+  setProblemCategoryInCreation = (type, name) => {
+    this.setState({ problemCategoryInCreation: { type, name } });
   };
 
-  setProblemCategoryInCreationType = type => {
+  setProblemCategoryInEdition = (type, name) => {
     this.setState(state => ({
-      ...state,
-      problemCategoryInCreation: { ...state.problemCategoryInCreation, type },
+      problemCategoryInEdition: { ...state.problemCategoryInEdition, type, name },
     }));
   };
 
@@ -126,8 +160,10 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
           return (
             <ProblemCategoryChangeButton
               dialogStatus={this.state.dialogStatus}
+              handleSaveProblemCategoryInEdition={this.handleSaveProblemCategoryInEdition}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
               handleChangeProblemCategory={this.handleChangeProblemCategory}
+              handleEditProblemCategory={this.handleEditProblemCategory}
               handleSearchProblemCategory={this.handleSearchProblemCategory}
               handleSelectProblemCategory={this.handleSelectProblemCategory}
               mutatingProblemCategory={this.state.mutatingProblemCategory}
@@ -136,11 +172,12 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
               problemCategoryDescription={problemCategoryDescription}
               searchProblemCategoryTerm={this.state.searchProblemCategoryTerm}
               problemCategoryInCreation={this.state.problemCategoryInCreation}
+              problemCategoryInEdition={this.state.problemCategoryInEdition}
               problemCategoryInSelection={this.state.problemCategoryInSelection}
-              setCreateProblemCategoryMode={this.setCreateProblemCategoryMode}
+              setDialogStatusMode={this.setDialogStatusMode}
               closeEditDialog={this.closeEditDialog}
-              setProblemCategoryInCreationName={this.setProblemCategoryInCreationName}
-              setProblemCategoryInCreationType={this.setProblemCategoryInCreationType}
+              setProblemCategoryInCreation={this.setProblemCategoryInCreation}
+              setProblemCategoryInEdition={this.setProblemCategoryInEdition}
             />
           );
         }}
