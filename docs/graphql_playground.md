@@ -1,5 +1,5 @@
 GraphiQL and GraphQL Playground
-=== 
+===
 
 The project uses GraphQL and comes with GraphQL playground. visit [http://localhost/api](http://localhost/api) and you should see an interface in which you can write your queries directly to the server. In order to issue requests, you need to be authenticated by sending a valid token in the headers:
 
@@ -20,17 +20,32 @@ Then, update the url of the playground by setting `http://localhost/api/`
 ![caspr_playground](https://user-images.githubusercontent.com/31185922/57509162-d2c91380-7303-11e9-9117-d36109f603d0.gif)
 
 
-You are all set to use GraphQL Playground ! 
+You are all set to use GraphQL Playground !
 
-Example request:
-``` 
+Example request for a query:
+```
 {
   currentUser {
     id
     fullName
-    trelloId    
+    trelloId
   }
 }
 ```
+
+For a mutation, the shape of the request shall be written as it is in the front queries:
+
+```
+  mutation AddProblemCategory($description: String!) {
+    addProblemCategory(problemCategoryDescription: $description) {
+      id
+      description
+    }
+  }
+
+```
+
+Pass the variables in the "Query variables" panel next to the HTTP HEADERS : `{"description": "nouvelle description"}`
+
 
 You can also install the [chrome extension](https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm) to have GraphiQL in your browser
