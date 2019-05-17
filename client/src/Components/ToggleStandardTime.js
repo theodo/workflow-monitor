@@ -43,7 +43,7 @@ class ToggleStandardTime extends React.Component {
       >
         <TooltipToggleButton
           value="celerityTime"
-          title="Ticket is KO when dev time is over ticket points"
+          title="Ticket is KO when dev time is greater than ticket points converted to time"
         >
           Celerity Time
         </TooltipToggleButton>
