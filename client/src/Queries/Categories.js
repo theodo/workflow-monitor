@@ -9,6 +9,12 @@ export const ADD_PROBLEM_CATEGORY = gql`
   }
 `;
 
+export const UPDATE_PROBLEM_CATEGORY_DESCRIPTION = gql`
+  mutation UpdateProblemCategoryDescription($problemCategory: ProblemCategory) {
+    updateProblemCategoryDescription(problemCategory: $problemCategory)
+  }
+`;
+
 export const GET_PROBLEM_CATEGORIES = gql`
   {
     problemCategories {
