@@ -25,13 +25,13 @@ const style = {
 
 const CreateProblemCategory = ({
   classes,
-  newProblemCategory,
+  problemCategoryInCreation,
   onBack,
   onClose,
   handleCreateProblemCategory,
   mutatingProblemCategory,
-  setNewProblemCategoryName,
-  setNewProblemCategoryType,
+  setProblemCategoryInCreationName,
+  setProblemCategoryInCreationType,
 }) => {
   return (
     <div>
@@ -51,16 +51,16 @@ const CreateProblemCategory = ({
             label="Root cause"
             margin="normal"
             variant="outlined"
-            value={newProblemCategory.name}
-            onChange={e => setNewProblemCategoryName(e.target.value)}
+            value={problemCategoryInCreation.name}
+            onChange={e => setProblemCategoryInCreationName(e.target.value)}
           />
           <List>
             {Object.keys(PROBLEM_LEAN_CATEGORY).map(problemTypeKey => (
               <ListItem
                 key={problemTypeKey}
                 button
-                onClick={() => setNewProblemCategoryType(problemTypeKey)}
-                selected={problemTypeKey === newProblemCategory.type}
+                onClick={() => setProblemCategoryInCreationType(problemTypeKey)}
+                selected={problemTypeKey === problemCategoryInCreation.type}
               >
                 <ListItemText primary={PROBLEM_LEAN_CATEGORY[problemTypeKey]} />
               </ListItem>
@@ -69,7 +69,7 @@ const CreateProblemCategory = ({
           <div className={classes.addProblemContainer}>
             <Button
               color="primary"
-              disabled={!newProblemCategory.name || !newProblemCategory.type}
+              disabled={!problemCategoryInCreation.name || !problemCategoryInCreation.type}
               onClick={handleCreateProblemCategory}
             >
               Create a Problem Category

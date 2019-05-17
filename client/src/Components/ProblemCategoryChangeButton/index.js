@@ -13,20 +13,22 @@ const getSelectedProblemCategory = problemCategory => {
 
 class ProblemCategoryChangeButtonContainer extends React.Component {
   state = {
-    createProblemCategoryMode: false,
-    isEditDialogOpen: false,
+    dialogStatus: {
+      isOpen: false,
+      createMode: false,
+    },
     mutatingProblemCategory: false,
-    newProblemCategory: {
+    searchProblemCategoryTerm: '',
+    problemCategoryInCreation: {
       name: null,
       type: null,
     },
-    searchProblemCategoryTerm: '',
-    selectedProblemCategory: getSelectedProblemCategory(this.props.value),
+    problemCategoryInSelection: getSelectedProblemCategory(this.props.value),
   };
 
   handleSelectProblemCategory = problemCategoryClicked => {
     const problemCategory =
-      this.state.selectedProblemCategory.id === problemCategoryClicked.id
+      this.state.problemCategoryInSelection.id === problemCategoryClicked.id
         ? { id: null, description: null }
         : {
             id: problemCategoryClicked.id,
@@ -34,14 +36,14 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
           };
 
     this.props.onChange(problemCategory);
-    this.setState({ selectedProblemCategory: problemCategory });
+    this.setState({ problemCategoryInSelection: problemCategory });
     this.closeEditDialog();
   };
 
   handleCreateProblemCategory = async () => {
     const description = computeFullProblemCategoryDescription(
-      this.state.newProblemCategory.type,
-      this.state.newProblemCategory.name,
+      this.state.problemCategoryInCreation.type,
+      this.state.problemCategoryInCreation.name,
     );
 
     this.setState({ mutatingProblemCategory: true });
@@ -56,60 +58,64 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
       id: result.data.addProblemCategory.id,
       description: result.data.addProblemCategory.description,
     };
-    this.setState({
-      isEditDialogOpen: false,
-      selectedProblemCategory: newProblemCategory,
-    });
+    this.setState(state => ({
+      ...state,
+      dialogStatus: { ...state.dialogStatus, isOpen: false },
+      problemCategoryInSelection: newProblemCategory,
+    }));
 
     this.props.onChange(newProblemCategory);
   };
 
-  handleEditProblemCategory = () => {
-    this.setState({
-      isEditDialogOpen: true,
-      createProblemCategoryMode: false,
+  handleChangeProblemCategory = () => {
+    this.setState(state => ({
+      ...state,
+      dialogStatus: { ...state.dialogStatus, createMode: false, isOpen: true },
       mutatingProblemCategory: false,
-      newProblemCategory: {
+      problemCategoryInCreation: {
         name: null,
         type: null,
       },
       searchProblemCategoryTerm: '',
-    });
+    }));
   };
 
   handleSearchProblemCategory = term => {
     this.setState(state => ({
       ...state,
       searchProblemCategoryTerm: term,
-      newProblemCategory: { ...state.newProblemCategory, name: term },
+      problemCategoryInCreation: { ...state.problemCategoryInCreation, name: term },
     }));
   };
 
   closeEditDialog = () => {
-    this.setState({ isEditDialogOpen: false });
+    this.setState({ dialogStatus: { createMode: false, isOpen: false } });
   };
 
   setCreateProblemCategoryMode = createMode => () => {
-    this.setState({ createProblemCategoryMode: createMode });
-  };
-
-  setNewProblemCategoryName = name => {
     this.setState(state => ({
       ...state,
-      newProblemCategory: { ...state.newProblemCategory, name },
+      dialogStatus: { ...state.dialogStatus, createMode: createMode },
     }));
   };
 
-  setNewProblemCategoryType = type => {
+  setProblemCategoryInCreationName = name => {
     this.setState(state => ({
       ...state,
-      newProblemCategory: { ...state.newProblemCategory, type },
+      problemCategoryInCreation: { ...state.problemCategoryInCreation, name },
+    }));
+  };
+
+  setProblemCategoryInCreationType = type => {
+    this.setState(state => ({
+      ...state,
+      problemCategoryInCreation: { ...state.problemCategoryInCreation, type },
     }));
   };
 
   render() {
     const problemCategoryDescription =
-      this.state.selectedProblemCategory.description || 'Select a problem Category';
+      this.state.problemCategoryInSelection.description || 'Select a problem Category';
     return (
       <Query query={GET_PROBLEM_CATEGORIES}>
         {({ loading, error, data }) => {
@@ -119,23 +125,22 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
 
           return (
             <ProblemCategoryChangeButton
-              createProblemCategoryMode={this.state.createProblemCategoryMode}
+              dialogStatus={this.state.dialogStatus}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
-              handleEditProblemCategory={this.handleEditProblemCategory}
+              handleChangeProblemCategory={this.handleChangeProblemCategory}
               handleSearchProblemCategory={this.handleSearchProblemCategory}
               handleSelectProblemCategory={this.handleSelectProblemCategory}
-              isEditDialogOpen={this.state.isEditDialogOpen}
               mutatingProblemCategory={this.state.mutatingProblemCategory}
-              newProblemCategory={this.state.newProblemCategory}
               onProblemCategoryChange={this.props.onChange}
               problemCategories={data.problemCategories}
               problemCategoryDescription={problemCategoryDescription}
               searchProblemCategoryTerm={this.state.searchProblemCategoryTerm}
-              selectedProblemCategory={this.state.selectedProblemCategory}
+              problemCategoryInCreation={this.state.problemCategoryInCreation}
+              problemCategoryInSelection={this.state.problemCategoryInSelection}
               setCreateProblemCategoryMode={this.setCreateProblemCategoryMode}
               closeEditDialog={this.closeEditDialog}
-              setNewProblemCategoryName={this.setNewProblemCategoryName}
-              setNewProblemCategoryType={this.setNewProblemCategoryType}
+              setProblemCategoryInCreationName={this.setProblemCategoryInCreationName}
+              setProblemCategoryInCreationType={this.setProblemCategoryInCreationType}
             />
           );
         }}
