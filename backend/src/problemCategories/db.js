@@ -41,6 +41,10 @@ class ProblemCategoryDB {
       projectId: projectId,
     });
   }
+
+  updateDescription(problemCategoryId, description) {
+    return this.model.update({ description: description }, { where: { id: problemCategoryId } });
+  }
 }
 
 module.exports = new ProblemCategoryDB(sequelize);

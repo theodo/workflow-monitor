@@ -5,6 +5,10 @@ module.exports = {
     addProblemCategory: (_, { problemCategoryDescription }, { user }) => {
       return problemCategoryDB.add(problemCategoryDescription, user.currentProject.id);
     },
+    updateProblemCategoryDescription: async (_, { problemCategory }) => {
+      await problemCategoryDB.updateDescription(problemCategory.id, problemCategory.description);
+      return 1;
+    },
   },
   Query: {
     problemCategories: (_, args, { user }) =>
