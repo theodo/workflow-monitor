@@ -23,23 +23,25 @@ const style = {
   },
 };
 
-const CreateProblemCategory = ({
+const CreateOrEditProblemCategory = ({
   classes,
-  problemCategoryInCreation,
+  problemCategory,
   onBack,
   onClose,
-  handleCreateProblemCategory,
+  handleSubmit,
   mutatingProblemCategory,
-  setProblemCategoryInCreationName,
-  setProblemCategoryInCreationType,
+  handleProblemCategoryChange,
+  type,
 }) => {
+  const title = type === 'create' ? 'Create a new Problem Category' : 'Edit this Problem Category';
+  const submitText = type === 'create' ? 'Create a Problem Category' : 'Save';
   return (
     <div>
       <MuiDialogTitle disableTypography className={classes.dialogTitle}>
         <IconButton aria-label="Back" onClick={onBack}>
           <BackIcon />
         </IconButton>
-        <Typography variant="h6">Create a new Problem Category</Typography>
+        <Typography variant="h6">{title}</Typography>
         <IconButton aria-label="Close" onClick={onClose}>
           <CloseIcon />
         </IconButton>
@@ -51,16 +53,16 @@ const CreateProblemCategory = ({
             label="Root cause"
             margin="normal"
             variant="outlined"
-            value={problemCategoryInCreation.name}
-            onChange={e => setProblemCategoryInCreationName(e.target.value)}
+            value={problemCategory.name}
+            onChange={e => handleProblemCategoryChange(problemCategory.type, e.target.value)}
           />
           <List>
             {Object.keys(PROBLEM_LEAN_CATEGORY).map(problemTypeKey => (
               <ListItem
                 key={problemTypeKey}
                 button
-                onClick={() => setProblemCategoryInCreationType(problemTypeKey)}
-                selected={problemTypeKey === problemCategoryInCreation.type}
+                onClick={() => handleProblemCategoryChange(problemTypeKey, problemCategory.name)}
+                selected={problemTypeKey === problemCategory.type}
               >
                 <ListItemText primary={PROBLEM_LEAN_CATEGORY[problemTypeKey]} />
               </ListItem>
@@ -69,10 +71,10 @@ const CreateProblemCategory = ({
           <div className={classes.addProblemContainer}>
             <Button
               color="primary"
-              disabled={!problemCategoryInCreation.name || !problemCategoryInCreation.type}
-              onClick={handleCreateProblemCategory}
+              disabled={!problemCategory.name || !problemCategory.type}
+              onClick={handleSubmit}
             >
-              Create a Problem Category
+              {submitText}
             </Button>
           </div>
         </div>
@@ -85,4 +87,4 @@ const CreateProblemCategory = ({
   );
 };
 
-export default withStyles(style)(CreateProblemCategory);
+export default withStyles(style)(CreateOrEditProblemCategory);
