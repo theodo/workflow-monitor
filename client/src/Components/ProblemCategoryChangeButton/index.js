@@ -1,5 +1,5 @@
 import React from 'react';
-import ProblemCategoryEditButton from './view';
+import ProblemCategoryChangeButton from './view';
 import { ADD_PROBLEM_CATEGORY, GET_PROBLEM_CATEGORIES } from 'Queries/Categories';
 import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
@@ -11,7 +11,7 @@ const getSelectedProblemCategory = problemCategory => {
     : { id: null, description: null };
 };
 
-class ProblemCategoryEditButtonContainer extends React.Component {
+class ProblemCategoryChangeButtonContainer extends React.Component {
   state = {
     createProblemCategoryMode: false,
     isEditDialogOpen: false,
@@ -118,7 +118,7 @@ class ProblemCategoryEditButtonContainer extends React.Component {
           if (!data.problemCategories) return 'Unexpected error';
 
           return (
-            <ProblemCategoryEditButton
+            <ProblemCategoryChangeButton
               createProblemCategoryMode={this.state.createProblemCategoryMode}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
               handleEditProblemCategory={this.handleEditProblemCategory}
@@ -144,4 +144,4 @@ class ProblemCategoryEditButtonContainer extends React.Component {
   }
 }
 
-export default ProblemCategoryEditButtonContainer;
+export default ProblemCategoryChangeButtonContainer;
