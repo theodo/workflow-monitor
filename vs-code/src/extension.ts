@@ -9,6 +9,8 @@ const gql = require('graphql-tag');
 const MonitorReducers = require('../../cli/src/MonitorReducers');
 
 let originalConfig = null as any;
+let timerId: NodeJS.Timer;
+
 interface AlertColors {
 	[key: string]: string;
 	red: string;
@@ -64,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 
 		subscribeToUpdates(render);
+		timerId = startLocalTimer(render);
 	}));
 }
 
@@ -107,6 +110,17 @@ function subscribeToUpdates(render: Function) {
 	});
 }
 
+function startLocalTimer(render: Function) {
+	return setInterval(() => {
+		// TODO : this is not a trustworthy method of calculating time
+		if (!store.isSessionPaused) {
+			store.taskChrono.elapsedTime += 1000;
+			store = MonitorReducers(store, {type: 'UPDATE', state: store});
+			render(store);
+		}
+	}, 1000);
+}
+
 function updateLocalState({
 	data: {
 		currentUser: {
@@ -133,6 +147,8 @@ function getCurrentStateFromServer(): Promise<ServerUserData> {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+	clearInterval(timerId);
+
 	return cleanUp();
 }
 
