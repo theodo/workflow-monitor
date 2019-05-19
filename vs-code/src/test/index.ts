@@ -1,7 +1,7 @@
 import * as testRunner from 'vscode/lib/testrunner';
 
 testRunner.configure({
-    ui: 'tdd', 		
+    ui: 'bdd', 		
     useColors: true
 });
 
