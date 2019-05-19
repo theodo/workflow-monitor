@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import auth from './auth';
 import { createSubscriptionClient, gqlClient } from './api';
+import { calculateCurrentTaskTime } from './getTime';
 
 // TODO : fix certificate on server ?
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = "0";
@@ -71,20 +72,11 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function render(newState: any) {
-	const getTime = (dateLastPause: any, chrono: any) => {
-		if (!chrono.dateLastStart) { 
-
-			return 0;
-		}
-
-		const now = (new Date()).getTime();
-
-		return dateLastPause ?
-			chrono.elapsedTime + (dateLastPause - chrono.dateLastStart)
-			: chrono.elapsedTime + (now - chrono.dateLastStart);
-	};
-
-	let currentTime = getTime(newState.dateLastPause, newState.taskChrono);
+	// not sure this works as intended, need to check if the taskChrono.dateLastStart is behaving correctly
+	// possible milliseconds // other problem
+	// task.realTime is the correct number of time elapsed; what is newState.taskChrono ? :D
+	let currentTime = calculateCurrentTaskTime(newState.taskChrono);
+	console.log(currentTime);
 	let estimatedTime = newState.tasks[newState.currentTaskIndex].estimatedTime;
 
 	if (currentTime > estimatedTime) {
@@ -110,9 +102,13 @@ function subscribeToUpdates(render: Function) {
 	});
 }
 
+// TODO : needs to take pause into account
+// an IF based on the current state 
+// and react to state changes from server
 function startLocalTimer(render: Function) {
 	return setInterval(() => {
 		// TODO : this is not a trustworthy method of calculating time
+		// should be improved using a cached date to replace the 1000 ms
 		if (!store.isSessionPaused) {
 			store.taskChrono.elapsedTime += 1000;
 			store = MonitorReducers(store, {type: 'UPDATE', state: store});
