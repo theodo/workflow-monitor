@@ -12,21 +12,30 @@ import { appColors } from 'ui';
 import ProblemCategoryPage from './view';
 
 class ProblemCategoryPageContainer extends Component {
+  state = {
+    startDate: null,
+    endDate: null,
+  };
+  handleDateChange = (key, date) => {
+    this.setState({
+      ...this.state,
+      [key]: date,
+    });
+  };
   render() {
     return (
       <Query
         query={GET_PROBLEM_CATEGORIES_PARETO}
-        variables={{
-          startDate: null,
-          endDate: null,
-        }}
-        fetchPolicy="network-only"
+        variables={this.state}
+        fetchPolicy="cache-and-network"
       >
         {({ loading, error, data }) => {
           if (loading) return 'Loading';
           if (error) return 'Unexpected error';
           return (
             <ProblemCategoryPageMutationContainer
+              {...this.state}
+              handleDateChange={this.handleDateChange}
               loading={loading}
               problemCategories={data.problemCategoriesWithPareto}
             />
@@ -60,7 +69,7 @@ class ProblemCategoryPageMutationContainer extends Component {
       });
   };
   render() {
-    const { loading: loadingQuery, problemCategories } = this.props;
+    const { loading: loadingQuery, problemCategories, ...restProps } = this.props;
     const { loading: loadingMutation } = this.state;
 
     const causes = problemCategories.map(problemCategory => problemCategory.description);
@@ -111,6 +120,7 @@ class ProblemCategoryPageMutationContainer extends Component {
 
     return (
       <ProblemCategoryPage
+        {...restProps}
         addProblemCategory={this.addProblemCategory}
         chartData={chartData}
         chartOptions={chartOptions}
