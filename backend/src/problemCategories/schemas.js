@@ -1,7 +1,7 @@
 module.exports = `
 type Query {
   problemCategories: [ProblemCategory]
-  problemCategoriesWithPareto: [ProblemCategoryPareto]
+  problemCategoriesWithPareto(startDate: String, endDate: String): [ProblemCategoryPareto]
 }
 type ProblemCategory {
   id: Int

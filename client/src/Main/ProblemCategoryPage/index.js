@@ -14,7 +14,14 @@ import ProblemCategoryPage from './view';
 class ProblemCategoryPageContainer extends Component {
   render() {
     return (
-      <Query query={GET_PROBLEM_CATEGORIES_PARETO} fetchPolicy="network-only">
+      <Query
+        query={GET_PROBLEM_CATEGORIES_PARETO}
+        variables={{
+          startDate: null,
+          endDate: null,
+        }}
+        fetchPolicy="network-only"
+      >
         {({ loading, error, data }) => {
           if (loading) return 'Loading';
           if (error) return 'Unexpected error';

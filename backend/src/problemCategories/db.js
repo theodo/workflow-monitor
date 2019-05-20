@@ -2,12 +2,13 @@ const { sequelize } = require('../../models');
 
 const SELECT_PROBLEM_CATEGORY_COUNT_AND_OVERTIME_QUERY = `
   SELECT "categories".id, "categories"."description", COUNT("problemsWithOvertime"."problemCategoryId"),
-  SUM(CASE WHEN "problemsWithOvertime"."overtime" IS NOT NULL THEN "problemsWithOvertime"."overtime" ELSE 0 END) as "overtime"
+  SUM("problemsWithOvertime"."overtime") as "overtime"
   FROM (SELECT * FROM "problemCategories" WHERE "problemCategories"."projectId" = :projectId) AS "categories"
-  LEFT OUTER JOIN (
-    SELECT "problems".id, "problems"."problemCategoryId", CASE WHEN "estimatedTime" < "realTime" THEN "realTime" - "estimatedTime" ELSE 0 END AS "overtime"
+  INNER JOIN (
+    SELECT "problems".id, "problems"."problemCategoryId", "tasks"."realTime" - "tasks"."estimatedTime" AS "overtime"
     FROM "tasks", "problems"
-    WHERE "problems"."taskId" = "tasks".id
+    WHERE "problems"."taskId" = "tasks".id AND "tasks"."estimatedTime" < "tasks"."realTime" 
+    AND "tasks"."createdAt" > :startDate AND "tasks"."createdAt" < :endDate
   ) as "problemsWithOvertime"
   ON "categories".id = "problemsWithOvertime"."problemCategoryId"
   GROUP BY "categories".id, "categories"."description"
@@ -28,9 +29,11 @@ class ProblemCategoryDB {
     return this.model.findAll({ where: { projectId } });
   }
 
-  getCountAndOvertime(projectId) {
+  getCountAndOvertime(projectId, startDate, endDate) {
+    startDate = startDate ? startDate : new Date(0);
+    endDate = endDate ? endDate : new Date();
     return this.db.query(SELECT_PROBLEM_CATEGORY_COUNT_AND_OVERTIME_QUERY, {
-      replacements: { projectId },
+      replacements: { projectId, startDate, endDate },
       type: this.db.QueryTypes.SELECT,
     });
   }

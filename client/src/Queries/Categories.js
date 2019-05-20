@@ -25,8 +25,8 @@ export const GET_PROBLEM_CATEGORIES = gql`
 `;
 
 export const GET_PROBLEM_CATEGORIES_PARETO = gql`
-  {
-    problemCategoriesWithPareto {
+  query GetCurrentProjectProblemCategoriesPareto($startDate: String, $endDate: String) {
+    problemCategoriesWithPareto(startDate: $startDate, endDate: $endDate) {
       id
       description
       count
