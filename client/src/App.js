@@ -7,6 +7,8 @@ import { ApolloProvider } from 'react-apollo';
 import { Route, Switch } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import DayJsUtils from '@date-io/dayjs';
 
 import { gqlClient } from 'Utils/Graphql';
 import AppReducer from 'AppReducer';
@@ -26,14 +28,16 @@ class App extends Component {
       <Provider store={store}>
         <ApolloProvider client={gqlClient}>
           <SnackbarProvider maxSnack={3}>
-            <HashRouter>
-              <div className="App">
-                <Switch>
-                  <Route exact path="/login" component={Login} />
-                  <PrivateRoute path="/" component={Main} />
-                </Switch>
-              </div>
-            </HashRouter>
+            <MuiPickersUtilsProvider utils={DayJsUtils}>
+              <HashRouter>
+                <div className="App">
+                  <Switch>
+                    <Route exact path="/login" component={Login} />
+                    <PrivateRoute path="/" component={Main} />
+                  </Switch>
+                </div>
+              </HashRouter>
+            </MuiPickersUtilsProvider>
           </SnackbarProvider>
         </ApolloProvider>
       </Provider>
