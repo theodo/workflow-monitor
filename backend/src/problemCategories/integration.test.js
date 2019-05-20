@@ -20,8 +20,8 @@ const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES = gql`
 `;
 
 const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES_PARETO = gql`
-  {
-    problemCategoriesWithPareto {
+  query GetCurrentProjectProblemCategoriesPareto($startDate: String, $endDate: String) {
+    problemCategoriesWithPareto(startDate: $startDate, endDate: $endDate) {
       id
       description
       count

@@ -14,9 +14,9 @@ module.exports = {
     problemCategories: (_, args, { user }) =>
       problemCategoryDB.getAllByProject(user.currentProject.id),
 
-    problemCategoriesWithPareto: (_, args, { user }) => {
+    problemCategoriesWithPareto: (_, { startDate, endDate }, { user }) => {
       const projectId = user.currentProject.id;
-      return problemCategoryDB.getCountAndOvertime(projectId);
+      return problemCategoryDB.getCountAndOvertime(projectId, startDate, endDate);
     },
   },
 };
