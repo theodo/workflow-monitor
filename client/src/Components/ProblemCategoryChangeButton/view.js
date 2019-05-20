@@ -46,13 +46,16 @@ const CreateOrEditProblemCategoryWithStyle = withStyles(style)(CreateOrEditProbl
 
 const ProblemCategoryChangeButton = ({
   classes,
-  dialogStatus,
+  closeEditDialog,
+  creationMode,
+  editionMode,
   handleCreateProblemCategory,
   handleChangeProblemCategory,
   handleEditProblemCategory,
   handleSaveProblemCategoryInEdition,
   handleSearchProblemCategory,
   handleSelectProblemCategory,
+  isDialogOpen,
   mutatingProblemCategory,
   problemCategoryInCreation,
   problemCategories,
@@ -60,7 +63,6 @@ const ProblemCategoryChangeButton = ({
   setDialogStatusMode,
   searchProblemCategoryTerm,
   problemCategoryInSelection,
-  closeEditDialog,
   problemCategoryInEdition,
   setProblemCategoryInCreation,
   setProblemCategoryInEdition,
@@ -69,9 +71,9 @@ const ProblemCategoryChangeButton = ({
   return (
     <div>
       <Chip clickable label={problemCategoryDescription} onClick={handleChangeProblemCategory} />
-      <Dialog fullWidth maxWidth="sm" onClose={closeEditDialog} open={dialogStatus.isOpen}>
+      <Dialog fullWidth maxWidth="sm" onClose={closeEditDialog} open={isDialogOpen}>
         <div className={classes.dialog}>
-          {!dialogStatus.createMode && !dialogStatus.editMode && (
+          {!creationMode && !editionMode && (
             <div>
               <MuiDialogTitle>
                 <div className={classes.dialogTitle}>
@@ -121,7 +123,7 @@ const ProblemCategoryChangeButton = ({
                 <div className={classes.addProblemContainer}>
                   <span
                     className={classes.addProblem}
-                    onClick={setDialogStatusMode('createMode')(true)}
+                    onClick={setDialogStatusMode('creationMode')(true)}
                   >
                     Add a Problem Category
                   </span>
@@ -129,23 +131,23 @@ const ProblemCategoryChangeButton = ({
               </div>
             </div>
           )}
-          {dialogStatus.createMode && !dialogStatus.editMode && (
+          {creationMode && !editionMode && (
             <CreateOrEditProblemCategoryWithStyle
               handleProblemCategoryChange={setProblemCategoryInCreation}
               handleSubmit={handleCreateProblemCategory}
               mutatingProblemCategory={mutatingProblemCategory}
-              onBack={setDialogStatusMode('createMode')(false)}
+              onBack={setDialogStatusMode('creationMode')(false)}
               onClose={closeEditDialog}
               problemCategory={problemCategoryInCreation}
               type="create"
             />
           )}
-          {!dialogStatus.createMode && dialogStatus.editMode && (
+          {!creationMode && editionMode && (
             <CreateOrEditProblemCategoryWithStyle
               handleProblemCategoryChange={setProblemCategoryInEdition}
               handleSubmit={handleSaveProblemCategoryInEdition}
               mutatingProblemCategory={mutatingProblemCategory}
-              onBack={setDialogStatusMode('editMode')(false)}
+              onBack={setDialogStatusMode('editionMode')(false)}
               onClose={closeEditDialog}
               problemCategory={problemCategoryInEdition}
               type="edit"

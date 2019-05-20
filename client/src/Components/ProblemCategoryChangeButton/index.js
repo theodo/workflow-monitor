@@ -29,11 +29,9 @@ const getProblemCategoryTypeAndName = problemCategory => {
 
 class ProblemCategoryChangeButtonContainer extends React.Component {
   state = {
-    dialogStatus: {
-      isOpen: false,
-      createMode: false,
-      editMode: false,
-    },
+    isDialogOpen: false,
+    creationMode: false,
+    editionMode: false,
     mutatingProblemCategory: false,
     searchProblemCategoryTerm: '',
     problemCategoryInCreation: {
@@ -80,19 +78,16 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
       id: result.data.addProblemCategory.id,
       description: result.data.addProblemCategory.description,
     };
-    this.setState(state => ({
-      ...state,
-      dialogStatus: { ...state.dialogStatus, isOpen: false },
-      problemCategoryInSelection: newProblemCategory,
-    }));
+    this.setState({ isDialogOpen: false, problemCategoryInSelection: newProblemCategory });
 
     this.props.onChange(newProblemCategory);
   };
 
   handleChangeProblemCategory = () => {
-    this.setState(state => ({
-      ...state,
-      dialogStatus: { ...state.dialogStatus, createMode: false, isOpen: true },
+    this.setState({
+      isDialogOpen: true,
+      creationMode: false,
+      editionMode: false,
       mutatingProblemCategory: false,
       problemCategoryInCreation: {
         name: null,
@@ -104,19 +99,19 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
         type: null,
       },
       searchProblemCategoryTerm: '',
-    }));
+    });
   };
 
   handleEditProblemCategory = problemCategoryToEdit => () => {
     const problemCategory = getProblemCategoryTypeAndName(problemCategoryToEdit);
-    this.setState(state => ({
+    this.setState({
       problemCategoryInEdition: {
         id: problemCategoryToEdit.id,
         type: problemCategory.type,
         name: problemCategory.name,
       },
-      dialogStatus: { ...state.dialogStatus, editMode: true },
-    }));
+      editionMode: true,
+    });
   };
 
   handleSaveProblemCategoryInEdition = async () => {
@@ -137,11 +132,10 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
       },
       refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }],
     });
-    this.setState(state => ({
-      ...state,
-      dialogStatus: { ...state.dialogStatus, editMode: false },
+    this.setState({
+      editionMode: false,
       mutatingProblemCategory: false,
-    }));
+    });
   };
 
   handleSearchProblemCategory = term => {
@@ -153,14 +147,11 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
   };
 
   closeEditDialog = () => {
-    this.setState({ dialogStatus: { createMode: false, isOpen: false, editMode: false } });
+    this.setState({ creationMode: false, isDialogOpen: false, editionMode: false });
   };
 
   setDialogStatusMode = mode => status => () => {
-    this.setState(state => ({
-      ...state,
-      dialogStatus: { ...state.dialogStatus, [mode]: status },
-    }));
+    this.setState({ [mode]: status });
   };
 
   setProblemCategoryInCreation = (type, name) => {
@@ -185,13 +176,16 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
 
           return (
             <ProblemCategoryChangeButton
-              dialogStatus={this.state.dialogStatus}
+              closeEditDialog={this.closeEditDialog}
+              creationMode={this.state.creationMode}
+              editionMode={this.state.editionMode}
               handleSaveProblemCategoryInEdition={this.handleSaveProblemCategoryInEdition}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
               handleChangeProblemCategory={this.handleChangeProblemCategory}
               handleEditProblemCategory={this.handleEditProblemCategory}
               handleSearchProblemCategory={this.handleSearchProblemCategory}
               handleSelectProblemCategory={this.handleSelectProblemCategory}
+              isDialogOpen={this.state.isDialogOpen}
               mutatingProblemCategory={this.state.mutatingProblemCategory}
               onProblemCategoryChange={this.props.onChange}
               problemCategories={data.problemCategories}
@@ -201,7 +195,6 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
               problemCategoryInEdition={this.state.problemCategoryInEdition}
               problemCategoryInSelection={this.state.problemCategoryInSelection}
               setDialogStatusMode={this.setDialogStatusMode}
-              closeEditDialog={this.closeEditDialog}
               setProblemCategoryInCreation={this.setProblemCategoryInCreation}
               setProblemCategoryInEdition={this.setProblemCategoryInEdition}
             />
