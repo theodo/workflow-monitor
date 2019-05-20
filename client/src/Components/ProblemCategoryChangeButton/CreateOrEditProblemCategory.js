@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import CloseIcon from '@material-ui/icons/Close';
 import BackIcon from '@material-ui/icons/ArrowBack';
-import { PROBLEM_LEAN_CATEGORY } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
+import { PROBLEM_LEAN_CATEGORY } from './constants';
 
 const CreateOrEditProblemCategory = ({
   classes,

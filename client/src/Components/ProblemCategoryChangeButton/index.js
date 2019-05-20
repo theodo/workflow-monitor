@@ -8,8 +8,7 @@ import {
 import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
 import { withSnackbar } from 'notistack';
-import { computeFullProblemCategoryDescription } from 'Main/ProblemCategoryPage/AddProblemCategoryForm';
-import { PROBLEM_LEAN_CATEGORY_VALUES } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
+import { PROBLEM_LEAN_CATEGORY_VALUES } from './constants';
 
 const getSelectedProblemCategory = problemCategory => {
   return problemCategory
@@ -27,6 +26,9 @@ const getProblemCategoryTypeAndName = problemCategory => {
     name: eclatedDescription[1],
   };
 };
+
+const computeFullProblemCategoryDescription = (category, description) =>
+  `${PROBLEM_LEAN_CATEGORY_VALUES[category]} / ${description}`;
 
 class ProblemCategoryChangeButtonContainer extends React.Component {
   state = {
