@@ -7,6 +7,7 @@ import {
 } from 'Queries/Categories';
 import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
+import { withSnackbar } from 'notistack';
 import { computeFullProblemCategoryDescription } from 'Main/ProblemCategoryPage/AddProblemCategoryForm';
 import { PROBLEM_LEAN_CATEGORY_VALUES } from 'Main/ProblemCategoryPage/AddProblemCategoryForm/constants';
 
@@ -78,6 +79,9 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
       id: result.data.addProblemCategory.id,
       description: result.data.addProblemCategory.description,
     };
+    this.props.enqueueSnackbar('Created with success!', {
+      variant: 'success',
+    });
     this.setState({ isDialogOpen: false, problemCategoryInSelection: newProblemCategory });
 
     this.props.onChange(newProblemCategory);
@@ -131,6 +135,9 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
         },
       },
       refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }],
+    });
+    this.props.enqueueSnackbar('Edition successful!', {
+      variant: 'success',
     });
     this.setState({
       editionMode: false,
@@ -205,4 +212,4 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
   }
 }
 
-export default ProblemCategoryChangeButtonContainer;
+export default withSnackbar(ProblemCategoryChangeButtonContainer);
