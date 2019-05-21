@@ -10,8 +10,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import IconButton from '@material-ui/core/IconButton';
 import { connect } from 'react-redux';
 import { playOrPauseSession, updateTaskTimer } from '../MonitorActions';
-import { TimePicker } from 'material-ui-pickers';
-import { OffSetHours } from '../../../Utils/TimeUtils';
+import { parseMilliSecondFromFormattedTime } from '../../../Utils/TimeUtils';
+import { TextField } from '@material-ui/core';
 
 class TaskRow extends PureComponent {
   state = {
@@ -25,28 +25,21 @@ class TaskRow extends PureComponent {
       this.setState({
         wasPausedBeforeEdit: true,
         editTimeMode: true,
-        editedTime: new Date(
-          getTimer(this.props.taskChrono, this.props.dateLastPause) - OffSetHours(),
-        ),
+        editedTime: getTimer(this.props.taskChrono, this.props.dateLastPause),
       });
     } else {
       this.props.playOrPauseSession();
       this.setState({
         wasPausedBeforeEdit: false,
         editTimeMode: true,
-        editedTime: new Date(
-          getTimer(this.props.taskChrono, this.props.dateLastPause) - OffSetHours(),
-        ),
+        editedTime: getTimer(this.props.taskChrono, this.props.dateLastPause),
       });
     }
   };
 
   saveEditedTime = () => {
     this.setState({ ...this.state, editTimeMode: false });
-    const delta =
-      getTimer(this.props.taskChrono, this.props.dateLastPause) -
-      OffSetHours() -
-      new Date(this.state.editedTime).getTime();
+    const delta = getTimer(this.props.taskChrono, this.props.dateLastPause) - this.state.editedTime;
     this.props.updateTaskTimer(delta);
     if (!this.state.wasPausedBeforeEdit) {
       this.props.playOrPauseSession();
@@ -106,16 +99,16 @@ class TaskRow extends PureComponent {
                 />
               )}
               {this.props.isCurrent && this.state.editTimeMode && (
-                <TimePicker
-                  seconds
-                  ampm={false}
-                  format="HH:mm:ss"
-                  keyboard
-                  label="Timer"
-                  mask={[/\d/, /\d/, ':', /\d/, /\d/, ':', /\d/, /\d/]}
-                  disableOpenOnEnter
-                  value={this.state.editedTime}
-                  onChange={time => this.handleTimerChange(time)}
+                <TextField
+                  id="time"
+                  type="time"
+                  value={formatMilliSecondToTime(this.state.editedTime)}
+                  onChange={event =>
+                    this.handleTimerChange(parseMilliSecondFromFormattedTime(event.target.value))
+                  }
+                  inputProps={{
+                    step: 1,
+                  }}
                 />
               )}
             </div>
