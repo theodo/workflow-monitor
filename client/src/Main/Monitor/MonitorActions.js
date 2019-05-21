@@ -4,6 +4,7 @@ export const NEXT_TASK = 'NEXT_TASK';
 export const PREVIOUS_TASK = 'PREVIOUS_TASK';
 export const RESET_MONITOR = 'RESET_MONITOR';
 export const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
+export const UPDATE_TASK_TIMER = 'UPDATE_TASK_TIMER';
 export const SET_CURRENT_TRELLO_CARD = 'SET_CURRENT_TRELLO_CARD';
 export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
 export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
@@ -43,6 +44,13 @@ export function previousTask(newTasks) {
 export function playOrPauseSession() {
   return {
     type: PLAY_OR_PAUSE_SESSION,
+  };
+}
+
+export function updateTaskTimer(delta) {
+  return {
+    type: UPDATE_TASK_TIMER,
+    delta,
   };
 }
 
