@@ -2,15 +2,28 @@ kind: pipeline
 name: default
 
 steps:
-  - name: install backend
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      restore: true
+      mount:
+        - ./backend/node_modules
+        - ./client/node_modules
+
+  - name: install-backend
     image: node
     environment:
       NODE_ENV: development
     commands:
       - cd backend
       - npm install
+    depends_on:
+      - restore-cache
 
-  - name: lint backend
+  - name: lint-backend
     image: node
     environment:
       NODE_ENV: development
@@ -18,9 +31,9 @@ steps:
       - cd backend
       - npm run lint
     depends_on:
-      - install backend
+      - install-backend
 
-  - name: test backend
+  - name: test-backend
     image: node
     environment:
       NODE_ENV: development
@@ -28,15 +41,17 @@ steps:
       - cd backend
       - npm run test
     depends_on:
-      - install backend
+      - install-backend
 
-  - name: install frontend
+  - name: install-client
     image: node
     commands:
       - cd client
       - npm install
+    depends_on:
+      - restore-cache
 
-  - name: lint frontend
+  - name: lint-client
     image: node
     environment:
       NODE_ENV: development
@@ -44,9 +59,9 @@ steps:
       - cd client
       - npm run lint
     depends_on:
-      - install frontend
+      - install-client
 
-  - name: build frontend
+  - name: build-client
     image: node
     environment:
       NODE_PATH: src/
@@ -55,4 +70,23 @@ steps:
       - cd client
       - npm run build
     depends_on:
-      - install frontend
+      - install-client
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - ./backend/node_modules
+        - ./client/node_modules
+    depends_on:
+      - install-backend
+      - install-client
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/cache
