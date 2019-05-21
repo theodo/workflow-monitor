@@ -66,6 +66,7 @@ ul {
 
 .TaskRow-real-time {
   font-size: 16px;
+  max-width: 130px;
 }
 
 .TaskRow-real-time.red {

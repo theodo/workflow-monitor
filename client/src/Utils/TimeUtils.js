@@ -55,3 +55,7 @@ export const parseMilliSecondFromFormattedTime = timeString => {
   }
   return NaN;
 };
+
+export const OffSetHours = () => {
+  return (new Date(0).getHours() - new Date(0).getUTCHours()) * 60 * 60 * 1000;
+};

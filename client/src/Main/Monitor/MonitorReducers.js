@@ -17,6 +17,7 @@ import {
   SET_TASK_FIELDS,
   SET_TICKET_ID,
   SAVE_RESULTS,
+  UPDATE_TASK_TIMER,
 } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 
@@ -250,6 +251,19 @@ const MonitorReducers = (state = currentInitialState, action) => {
           },
         };
       }
+      break;
+    case UPDATE_TASK_TIMER:
+      newState = {
+        ...state,
+        taskChrono: {
+          ...state.taskChrono,
+          elapsedTime: state.taskChrono.elapsedTime - action.delta,
+        },
+        globalChrono: {
+          ...state.globalChrono,
+          elapsedTime: state.globalChrono.elapsedTime - action.delta,
+        },
+      };
       break;
     case UPDATE:
       newState = action.state;

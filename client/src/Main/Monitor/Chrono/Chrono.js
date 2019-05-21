@@ -4,6 +4,13 @@ import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 
 import './Chrono.css';
 
+export const getTimer = (chrono, dateLastPause) => {
+  if (!chrono.dateLastStart) return 0;
+  return dateLastPause
+    ? chrono.elapsedTime + (dateLastPause - chrono.dateLastStart)
+    : chrono.elapsedTime + (new Date().getTime() - chrono.dateLastStart);
+};
+
 class Chrono extends Component {
   constructor(props) {
     super(props);
@@ -19,18 +26,12 @@ class Chrono extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-  getTime() {
-    if (!this.props.chrono.dateLastStart) return 0;
-    return this.props.dateLastPause
-      ? this.props.chrono.elapsedTime + (this.props.dateLastPause - this.props.chrono.dateLastStart)
-      : this.props.chrono.elapsedTime + (this.state.now - this.props.chrono.dateLastStart);
-  }
   getColorClass(time) {
     if (!this.props.threshold) return '';
     return time < this.props.threshold ? 'green' : 'red';
   }
   render() {
-    const time = this.getTime();
+    const time = getTimer(this.props.chrono, this.props.dateLastPause);
     return (
       <span className={'Chrono ' + this.getColorClass(time)}>{formatMilliSecondToTime(time)}</span>
     );
