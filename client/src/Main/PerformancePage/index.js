@@ -31,7 +31,7 @@ const getPerformanceData = (performanceHistory, startDate) => {
   const daysLabel = [];
   const celerityFailedTicketsCount = [];
   const casprFailedTicketsCount = [];
-  const overtime = [];
+  const overtime = [;
 
   for (let i = 0; i < DAYS_RANGE; i++) {
     const weekDay = startDate.add(i, 'day');
