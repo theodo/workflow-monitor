@@ -9,6 +9,7 @@ import { Query } from 'react-apollo';
 import { gqlClient } from 'Utils/Graphql';
 import { withSnackbar } from 'notistack';
 import { PROBLEM_LEAN_CATEGORY_VALUES } from './constants';
+import { DELETE_PROBLEM_CATEGORY } from 'Queries/Categories';
 
 const getSelectedProblemCategory = problemCategory => {
   return problemCategory
@@ -120,6 +121,22 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
     });
   };
 
+  handleDeleteProblemCategory = problemCategoryId => async () => {
+    try {
+      await gqlClient.mutate({
+        mutation: DELETE_PROBLEM_CATEGORY,
+        variables: {
+          problemCategoryId,
+        },
+        refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }],
+      });
+    } catch (e) {
+      this.props.enqueueSnackbar(e.message, {
+        variant: 'error',
+      });
+    }
+  };
+
   handleSaveProblemCategoryInEdition = async () => {
     const description = computeFullProblemCategoryDescription(
       this.state.problemCategoryInEdition.type,
@@ -191,6 +208,7 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
               handleSaveProblemCategoryInEdition={this.handleSaveProblemCategoryInEdition}
               handleCreateProblemCategory={this.handleCreateProblemCategory}
               handleChangeProblemCategory={this.handleChangeProblemCategory}
+              handleDeleteProblemCategory={this.handleDeleteProblemCategory}
               handleEditProblemCategory={this.handleEditProblemCategory}
               handleSearchProblemCategory={this.handleSearchProblemCategory}
               handleSelectProblemCategory={this.handleSelectProblemCategory}

@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
 import CreateOrEditProblemCategory from './CreateOrEditProblemCategory';
 import { appColors } from 'ui';
@@ -51,6 +52,7 @@ const ProblemCategoryChangeButton = ({
   editionMode,
   handleCreateProblemCategory,
   handleChangeProblemCategory,
+  handleDeleteProblemCategory,
   handleEditProblemCategory,
   handleSaveProblemCategoryInEdition,
   handleSearchProblemCategory,
@@ -66,7 +68,6 @@ const ProblemCategoryChangeButton = ({
   problemCategoryInEdition,
   setProblemCategoryInCreation,
   setProblemCategoryInEdition,
-  setProblemCategoryInCreationType,
 }) => {
   return (
     <div>
@@ -113,9 +114,17 @@ const ProblemCategoryChangeButton = ({
                         </ListItem>
                         <IconButton
                           aria-label="Edit"
+                          title="Edit"
                           onClick={handleEditProblemCategory(problemCategory)}
                         >
                           <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Delete"
+                          title="Delete"
+                          onClick={handleDeleteProblemCategory(problemCategory.id)}
+                        >
+                          <DeleteIcon />
                         </IconButton>
                       </div>
                     ))}

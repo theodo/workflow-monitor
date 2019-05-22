@@ -34,3 +34,9 @@ export const GET_PROBLEM_CATEGORIES_PARETO = gql`
     }
   }
 `;
+
+export const DELETE_PROBLEM_CATEGORY = gql`
+  mutation DeleteProblemCategory($problemCategoryId: Int!) {
+    deleteProblemCategory(problemCategoryId: $problemCategoryId)
+  }
+`;
