@@ -31,6 +31,7 @@ ul {
 
 .TaskRow-bottom {
   display: flex;
+  margin-top: 5px;
 }
 
 .TaskRow.done {
