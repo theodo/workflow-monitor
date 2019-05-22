@@ -22,8 +22,10 @@ module.exports = {
     },
   },
   Query: {
-    problemCategories: (_, args, { user }) =>
-      problemCategoryDB.getAllByProject(user.currentProject.id),
+    problemCategories: async (_, args, { user }) => {
+      const res = await problemCategoryDB.getAllByProject(user.currentProject.id);
+      return res.map(problemCategory => problemCategory.dataValues);
+    },
 
     problemCategoriesWithPareto: (_, { startDate, endDate }, { user }) => {
       const projectId = user.currentProject.id;

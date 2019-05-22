@@ -25,8 +25,20 @@ class ProblemCategoryDB {
     return this.model.findAll();
   }
 
-  getAllByProject(projectId) {
-    return this.model.findAll({ where: { projectId } });
+  async getAllByProject(projectId) {
+    return this.model.findAll({
+      attributes: {
+        include: [[sequelize.fn('COUNT', sequelize.col('problems.id')), 'problemCount']],
+      },
+      include: [
+        {
+          model: this.db.models.problem,
+          attributes: [],
+        },
+      ],
+      where: { projectId },
+      group: ['problemCategory.id'],
+    });
   }
 
   getCountAndOvertime(projectId, startDate, endDate) {

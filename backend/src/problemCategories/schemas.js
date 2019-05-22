@@ -7,6 +7,7 @@ type ProblemCategory {
   id: Int
   description: String
   projectId: Int
+  problemCount: Int
 }
 input ProblemCategoryInput {
   id: Int
