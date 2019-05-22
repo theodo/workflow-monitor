@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   problemCategory.associate = function(models) {
     problemCategory.belongsTo(models.project, { as: 'project' });
+    problemCategory.hasMany(models.problem);
   };
   return problemCategory;
 };
