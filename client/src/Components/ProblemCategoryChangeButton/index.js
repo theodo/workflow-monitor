@@ -130,6 +130,11 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
         },
         refetchQueries: [{ query: GET_PROBLEM_CATEGORIES }],
       });
+
+      if (this.state.problemCategoryInSelection.id === problemCategoryId) {
+        this.props.onChange({ id: null, description: null });
+        this.setState({ problemCategoryInSelection: { id: null, description: null } });
+      }
     } catch (e) {
       this.props.enqueueSnackbar(e.message, {
         variant: 'error',
