@@ -11,7 +11,17 @@ import IconButton from '@material-ui/core/IconButton';
 import { connect } from 'react-redux';
 import { playOrPauseSession, updateTaskTimer } from '../MonitorActions';
 import { parseMilliSecondFromFormattedTime } from '../../../Utils/TimeUtils';
-import { TextField } from '@material-ui/core';
+import { TextField, withStyles } from '@material-ui/core';
+import { compose } from 'redux';
+
+const style = {
+  editIcon: {
+    padding: 0,
+    height: 30,
+    width: 30,
+    marginLeft: 10,
+  },
+};
 
 class TaskRow extends PureComponent {
   state = {
@@ -73,21 +83,6 @@ class TaskRow extends PureComponent {
         <div className="TaskRow-label">{this.props.task.label}</div>
         <div className="TaskRow-bottom">
           <div className="TaskRow-empty" />
-          {this.props.isCurrent && !this.state.editTimeMode && (
-            <IconButton color="primary" onClick={this.startEditTime} title="Edit time">
-              <EditIcon />
-            </IconButton>
-          )}
-          {this.props.isCurrent && this.state.editTimeMode && (
-            <>
-              <IconButton color="primary" onClick={this.saveEditedTime} title="Save time">
-                <SaveIcon />
-              </IconButton>
-              <IconButton color="primary" onClick={this.cancelEditedTime} title="Cancel">
-                <CancelIcon />
-              </IconButton>
-            </>
-          )}
           <div className="TaskRow-time">
             <div className={'TaskRow-real-time ' + this.getRealTimeClass()}>
               {this.props.isDone && formatMilliSecondToTime(this.props.task.realTime)}
@@ -118,6 +113,36 @@ class TaskRow extends PureComponent {
               </div>
             )}
           </div>
+          {this.props.isCurrent && !this.state.editTimeMode && (
+            <IconButton
+              className={this.props.classes.editIcon}
+              color="primary"
+              onClick={this.startEditTime}
+              title="Edit time"
+            >
+              <EditIcon />
+            </IconButton>
+          )}
+          {this.props.isCurrent && this.state.editTimeMode && (
+            <>
+              <IconButton
+                className={this.props.classes.editIcon}
+                color="primary"
+                onClick={this.saveEditedTime}
+                title="Save time"
+              >
+                <SaveIcon />
+              </IconButton>
+              <IconButton
+                className={this.props.classes.editIcon}
+                color="primary"
+                onClick={this.cancelEditedTime}
+                title="Cancel"
+              >
+                <CancelIcon />
+              </IconButton>
+            </>
+          )}
         </div>
       </li>
     );
@@ -135,9 +160,12 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const ConnectedTaskRow = connect(
-  null,
-  mapDispatchToProps,
+const ConnectedTaskRow = compose(
+  connect(
+    null,
+    mapDispatchToProps,
+  ),
+  withStyles(style),
 )(TaskRow);
 
 class TasksLateralPanel extends Component {
