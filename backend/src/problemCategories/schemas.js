@@ -22,5 +22,6 @@ type ProblemCategoryPareto {
 type Mutation {
   addProblemCategory(problemCategoryDescription: String): ProblemCategory
   updateProblemCategoryDescription(problemCategory: ProblemCategoryInput): Int
+  deleteProblemCategory(problemCategoryId: Int): Int
 }
 `;

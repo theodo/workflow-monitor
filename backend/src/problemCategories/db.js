@@ -48,6 +48,15 @@ class ProblemCategoryDB {
   updateDescription(problemCategoryId, description) {
     return this.model.update({ description: description }, { where: { id: problemCategoryId } });
   }
+
+  async isProblemCategoryDeletable(problemCategoryId) {
+    const relatedProblems = await this.db.models.problem.findAll({ where: { problemCategoryId } });
+    return relatedProblems.length === 0;
+  }
+
+  deleteProblemCategory(problemCategoryId) {
+    return this.model.destroy({ where: { id: problemCategoryId } });
+  }
 }
 
 module.exports = new ProblemCategoryDB(sequelize);
