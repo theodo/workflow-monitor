@@ -41,6 +41,9 @@ const style = {
   problemCategoryItemContainer: {
     display: 'flex',
   },
+  emptyDeleteIcon: {
+    width: 60,
+  },
 };
 
 const CreateOrEditProblemCategoryWithStyle = withStyles(style)(CreateOrEditProblemCategory);
@@ -119,13 +122,17 @@ const ProblemCategoryChangeButton = ({
                         >
                           <EditIcon />
                         </IconButton>
-                        <IconButton
-                          aria-label="Delete"
-                          title="Delete"
-                          onClick={handleDeleteProblemCategory(problemCategory.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        {problemCategory.problemCount ? (
+                          <div className={classes.emptyDeleteIcon} />
+                        ) : (
+                          <IconButton
+                            aria-label="Delete"
+                            title="Delete"
+                            onClick={handleDeleteProblemCategory(problemCategory.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
                       </div>
                     ))}
                 </List>

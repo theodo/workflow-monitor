@@ -20,6 +20,7 @@ export const GET_PROBLEM_CATEGORIES = gql`
     problemCategories {
       id
       description
+      problemCount
     }
   }
 `;
