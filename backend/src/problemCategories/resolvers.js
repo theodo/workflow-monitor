@@ -9,6 +9,17 @@ module.exports = {
       await problemCategoryDB.updateDescription(problemCategory.id, problemCategory.description);
       return 1;
     },
+    deleteProblemCategory: async (_, { problemCategoryId }) => {
+      const isProblemCategoryDeletable = await problemCategoryDB.isProblemCategoryDeletable(
+        problemCategoryId,
+      );
+      if (isProblemCategoryDeletable) {
+        await problemCategoryDB.deleteProblemCategory(problemCategoryId);
+        return 1;
+      } else {
+        throw Error('Cannot delete this ProblemCategory because there is a Problem related to it');
+      }
+    },
   },
   Query: {
     problemCategories: (_, args, { user }) =>
