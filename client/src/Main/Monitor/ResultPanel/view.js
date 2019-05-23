@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TicketResultsTable from 'Main/TicketResultsTable';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 const styles = () => ({
   resultPanel: {
@@ -8,17 +9,16 @@ const styles = () => ({
   },
 });
 
-class ResultPanel extends Component {
-  render() {
-    return (
-      <div>
-        <div className={this.props.classes.resultPanel}>
-          <h2>Results</h2>
-        </div>
-        {this.props.ticketId && <TicketResultsTable ticketId={this.props.ticketId} />}
+const ResultPanel = ({ classes, ticketId }) => {
+  return (
+    <>
+      {!ticketId && <LoadingSpinner absolute />}
+      <div className={classes.resultPanel}>
+        <h2>Results</h2>
       </div>
-    );
-  }
-}
+      {ticketId && <TicketResultsTable ticketId={ticketId} />}
+    </>
+  );
+};
 
 export default withStyles(styles)(ResultPanel);

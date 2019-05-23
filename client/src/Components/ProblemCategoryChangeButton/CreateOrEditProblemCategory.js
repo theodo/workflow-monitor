@@ -10,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import CloseIcon from '@material-ui/icons/Close';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import { PROBLEM_LEAN_CATEGORY } from './constants';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 const CreateOrEditProblemCategory = ({
   classes,
@@ -67,9 +68,7 @@ const CreateOrEditProblemCategory = ({
           </div>
         </div>
       ) : (
-        <div className={classes.loadingContainer}>
-          <span>Loading</span>
-        </div>
+        <LoadingSpinner size={50} />
       )}
     </div>
   );

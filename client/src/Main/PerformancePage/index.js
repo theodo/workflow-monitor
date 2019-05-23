@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import dayjs from 'dayjs';
 import { GET_DAILY_PERFORMANCE_HISTORY } from 'Queries/Tickets';
 import PerformancePage from './view';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 const DAYS_RANGE = 14;
 
@@ -85,7 +86,7 @@ class PerformancePageContainer extends React.Component {
         fetchPolicy="network-only"
       >
         {({ loading, error, data }) => {
-          if (loading) return 'Loading...';
+          if (loading) return <LoadingSpinner />;
           if (error) return 'Unexpected error';
 
           const performanceData = getPerformanceData(

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 import ProjectHistoryPage from './view';
+import LoadingSpinner from '../../Components/LoadingSpinner';
 
 class ProjectHistoryPageContainer extends Component {
   state = {
@@ -26,7 +27,7 @@ class ProjectHistoryPageContainer extends Component {
         fetchPolicy="network-only"
       >
         {({ loading, error, data, fetchMore }) => {
-          if (loading) return 'Loading...';
+          if (loading) return <LoadingSpinner />;
           if (error) return 'Unexpected error';
           const loadMore = () =>
             fetchMore({

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { GET_TICKET } from '../../Queries/Tickets';
+import { GET_TICKET } from 'Queries/Tickets';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 const flattenTasks = tasks =>
   tasks.map(task =>
@@ -26,7 +27,7 @@ const withTicketData = (WrappedComponent, ticketId) => props => (
     fetchPolicy="cache-and-network"
   >
     {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
+      if (loading) return <LoadingSpinner />;
       if (error) return 'Unexpected error';
       const flattenData = {
         ticket: {
