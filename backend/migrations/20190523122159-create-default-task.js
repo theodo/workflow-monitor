@@ -11,14 +11,17 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
       },
+      check: {
+        type: Sequelize.TEXT,
+      },
       estimatedTime: {
         type: Sequelize.INTEGER,
       },
-      defaultTaskListId: {
+      defaultTasksListId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'defaultTaskLists',
+          model: 'defaultTasksLists',
           key: 'id',
         },
       },

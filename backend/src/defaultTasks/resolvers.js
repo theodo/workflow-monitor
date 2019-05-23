@@ -1,33 +1,33 @@
-const defaultTaskListDB = require('./db');
+const defaultTasksListDB = require('./db');
 
 module.exports = {
   Mutation: {
-    saveDefaultTaskList: async (_, { defaultTaskList }, { user }) => {
+    saveDefaultTasksList: async (_, { defaultTasksList }, { user }) => {
       const project = user.currentProject;
 
-      const { id, type } = defaultTaskList;
+      const { id, defaultTasks, ...rest } = defaultTasksList;
 
-      const persistedDefaultTaskList = await defaultTaskListDB.upsert(
-        { id, type, projectId: project.id },
+      const persistedDefaultTasksList = await defaultTasksListDB.upsert(
+        { id, ...rest, projectId: project.id },
         { id },
       );
 
-      const defaultTasks = defaultTaskList.defaultTasks.map(defaultTask => ({
+      const formatedDefaultTasks = defaultTasks.map(defaultTask => ({
         ...defaultTask,
-        defaultTaskListId: persistedDefaultTaskList.id,
+        defaultTasksListId: persistedDefaultTasksList.id,
       }));
-      await defaultTaskListDB.refreshWithTasks(persistedDefaultTaskList.id, defaultTasks);
+      await defaultTasksListDB.refreshWithTasks(persistedDefaultTasksList.id, formatedDefaultTasks);
 
-      return persistedDefaultTaskList.id;
+      return persistedDefaultTasksList.id;
     },
   },
   Query: {
-    defaultTaskLists: (_, args, { user }) => {
+    defaultTasksLists: (_, args, { user }) => {
       const project = user.currentProject;
-      return defaultTaskListDB.getDefaultTaskListsByProject(project.id);
+      return defaultTasksListDB.getDefaultTasksListsByProject(project.id);
     },
-    defaultTaskList: (_, { defaultTaskListId }) => {
-      return defaultTaskListDB.getDefaultTaskList(defaultTaskListId);
+    defaultTasksList: (_, { defaultTasksListId }) => {
+      return defaultTasksListDB.getDefaultTasksList(defaultTasksListId);
     },
   },
 };
