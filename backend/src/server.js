@@ -13,6 +13,7 @@ const db = require('./datasources/db');
 const { ticketResolvers, ticketSchemas } = require('./tickets');
 const { userResolvers, userSchemas } = require('./users');
 const { problemCategoriesResolvers, problemCategoriesSchemas } = require('./problemCategories');
+const { defaultTasksResolvers, defaultTasksSchemas } = require('./defaultTasks');
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV !== 'production';
 
@@ -81,7 +82,7 @@ const defaultTypeDefs = `
 `;
 
 const typeDefs = mergeTypes(
-  [defaultTypeDefs, ticketSchemas, userSchemas, problemCategoriesSchemas],
+  [defaultTypeDefs, ticketSchemas, userSchemas, problemCategoriesSchemas, defaultTasksSchemas],
   { all: true },
 );
 
@@ -156,6 +157,7 @@ const resolvers = mergeResolvers([
   userResolvers,
   defaultResolvers,
   problemCategoriesResolvers,
+  defaultTasksResolvers,
 ]);
 
 const pubsub = new PubSub();
