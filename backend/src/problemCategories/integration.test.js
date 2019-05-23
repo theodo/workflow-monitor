@@ -15,6 +15,7 @@ const GET_CURRENT_PROJECT_PROBLEM_CATEGORIES = gql`
     problemCategories {
       id
       description
+      problemCount
     }
   }
 `;
@@ -63,18 +64,36 @@ describe('API problemCategories Tests', () => {
 
   describe('Queries', () => {
     it('should fetch all the problem categories of the current project', async () => {
+      const mockGetAllByProject = [
+        {
+          dataValues: {
+            id: 0,
+            description: 'Problem Description 1',
+            problemCount: 2,
+          },
+        },
+        {
+          dataValues: {
+            id: 1,
+            description: 'Problem Description 2',
+            problemCount: 0,
+          },
+        },
+      ];
       const problemCategories = [
         {
           id: 0,
           description: 'Problem Description 1',
+          problemCount: 2,
         },
         {
           id: 1,
           description: 'Problem Description 2',
+          problemCount: 0,
         },
       ];
 
-      db.getAllByProject.mockImplementation(async () => problemCategories);
+      db.getAllByProject.mockImplementation(async () => mockGetAllByProject);
       httpServer = await launchAPIServer();
 
       const res = await toPromise(
