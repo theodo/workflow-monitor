@@ -10,6 +10,7 @@ import { gqlClient } from 'Utils/Graphql';
 import { withSnackbar } from 'notistack';
 import { PROBLEM_LEAN_CATEGORY_VALUES } from './constants';
 import { DELETE_PROBLEM_CATEGORY } from 'Queries/Categories';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 const getSelectedProblemCategory = problemCategory => {
   return problemCategory
@@ -201,7 +202,7 @@ class ProblemCategoryChangeButtonContainer extends React.Component {
     return (
       <Query query={GET_PROBLEM_CATEGORIES}>
         {({ loading, error, data }) => {
-          if (loading) return 'Loading...';
+          if (loading) return <LoadingSpinner size={50} />;
           if (error) return 'Unexpected error';
           if (!data.problemCategories) return 'Unexpected error';
 

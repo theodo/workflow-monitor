@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import { GET_PROBLEM_CATEGORIES } from '../../../Queries/Categories';
 import { Query } from 'react-apollo';
+import LoadingSpinner from 'Components/LoadingSpinner';
 
 /* TODO: Translate and insert values below in database
 const options = [
@@ -107,7 +108,7 @@ const options = [
 const ProblemCategoryAutocompleteContainer = props => (
   <Query query={GET_PROBLEM_CATEGORIES}>
     {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
+      if (loading) return <LoadingSpinner />;
       if (error) return 'Unexpected error';
       if (!data.problemCategories) return 'Unexpected error';
       const options = data.problemCategories.map(problemCategory => ({
