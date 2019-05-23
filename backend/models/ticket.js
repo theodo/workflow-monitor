@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const ticket = sequelize.define(
     'ticket',
     {
-      description: { type: DataTypes.STRING, allowNull: false },
+      description: { type: DataTypes.TEXT, allowNull: false },
       thirdPartyId: DataTypes.STRING,
       complexity: DataTypes.INTEGER,
       status: { type: DataTypes.ENUM('PLANNING', 'DONE'), allowNull: false },
