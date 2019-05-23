@@ -1,15 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const defaultTaskList = sequelize.define(
-    'defaultTaskList',
+  const defaultTasksList = sequelize.define(
+    'defaultTasksList',
     {
-      type: DataTypes.ENUM('BEGIN', 'END'),
+      type: DataTypes.ENUM('BEGINNING', 'END'),
     },
     {},
   );
-  defaultTaskList.associate = function(models) {
-    defaultTaskList.belongsTo(models.project, { as: 'project' });
-    defaultTaskList.hasMany(models.defaultTask, { as: 'defaultTasks' });
+  defaultTasksList.associate = function(models) {
+    defaultTasksList.belongsTo(models.project, { as: 'project' });
+    defaultTasksList.hasMany(models.defaultTask, { as: 'defaultTasks' });
   };
-  return defaultTaskList;
+  return defaultTasksList;
 };

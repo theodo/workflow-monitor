@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('defaultTaskLists', {
+    return queryInterface.createTable('defaultTasksLists', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       type: {
-        type: Sequelize.ENUM('BEGIN', 'END'),
+        type: Sequelize.ENUM('BEGINNING', 'END'),
       },
       projectId: {
         allowNull: false,
@@ -30,6 +30,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('defaultTaskLists');
+    return queryInterface.dropTable('defaultTasksLists');
   },
 };

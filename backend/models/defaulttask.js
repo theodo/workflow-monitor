@@ -4,12 +4,13 @@ module.exports = (sequelize, DataTypes) => {
     'defaultTask',
     {
       description: DataTypes.TEXT,
+      check: DataTypes.TEXT,
       estimatedTime: DataTypes.INTEGER,
     },
     {},
   );
   defaultTask.associate = function(models) {
-    defaultTask.belongsTo(models.defaultTaskList, { as: 'defaultTaskList' });
+    defaultTask.belongsTo(models.defaultTasksList, { as: 'defaultTasksList' });
   };
   return defaultTask;
 };

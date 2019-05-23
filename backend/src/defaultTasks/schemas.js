@@ -1,9 +1,9 @@
 module.exports = `
 type Query {
-  defaultTaskLists: [DefaultTaskList]
-  defaultTaskList(defaultTaskListId: Int): DefaultTaskList
+  defaultTasksLists: [DefaultTasksList]
+  defaultTasksList(defaultTasksListId: Int): DefaultTasksList
 }
-type DefaultTaskList {
+type DefaultTasksList {
   id: Int
   type: String
   defaultTasks: [DefaultTask]
@@ -12,8 +12,9 @@ type DefaultTask {
     id: Int
     description: String
     estimatedTime: Int
+    check: String
 }
-input DefaultTaskListDTO {
+input DefaultTasksListDTO {
   id: Int
   type: String
   defaultTasks: [DefaultTaskDTO]
@@ -21,8 +22,9 @@ input DefaultTaskListDTO {
 input DefaultTaskDTO {
     description: String
     estimatedTime: Int
+    check: String
 }
 type Mutation {
-  saveDefaultTaskList(defaultTaskList: DefaultTaskListDTO): Int
+  saveDefaultTasksList(defaultTasksList: DefaultTasksListDTO): Int
 }
 `;

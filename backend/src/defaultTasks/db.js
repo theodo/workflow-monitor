@@ -1,14 +1,14 @@
 const { sequelize } = require('../../models');
 const { upsert } = require('../dbUtils');
 
-class defaultTaskListDB {
+class defaultTasksListDB {
   constructor(db) {
     this.db = db;
-    this.model = this.db.models.defaultTaskList;
+    this.model = this.db.models.defaultTasksList;
   }
 
-  getDefaultTaskList(defaultTaskListId) {
-    return this.model.findById(defaultTaskListId, {
+  getDefaultTasksList(defaultTasksListId) {
+    return this.model.findById(defaultTasksListId, {
       include: {
         model: this.db.models.defaultTask,
         as: 'defaultTasks',
@@ -16,7 +16,7 @@ class defaultTaskListDB {
     });
   }
 
-  getDefaultTaskListsByProject(projectId) {
+  getDefaultTasksListsByProject(projectId) {
     return this.model.findAll({
       where: { projectId },
       include: {
@@ -26,8 +26,8 @@ class defaultTaskListDB {
     });
   }
 
-  async refreshWithTasks(defaultTaskListId, defaultTasks) {
-    await this.db.models.defaultTask.destroy({ where: { defaultTaskListId } });
+  async refreshWithTasks(defaultTasksListId, defaultTasks) {
+    await this.db.models.defaultTask.destroy({ where: { defaultTasksListId } });
     defaultTasks.map(async defaultTask => {
       await this.db.models.defaultTask.create(defaultTask);
     });
@@ -38,4 +38,4 @@ class defaultTaskListDB {
   }
 }
 
-module.exports = new defaultTaskListDB(sequelize);
+module.exports = new defaultTasksListDB(sequelize);
