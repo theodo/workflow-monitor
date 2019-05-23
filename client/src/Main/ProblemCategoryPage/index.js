@@ -96,13 +96,18 @@ class ProblemCategoryPageMutationContainer extends Component {
             id: 'overtime',
             ticks: { fontSize: 14, beginAtZero: true, min: 0 },
             type: 'linear',
-            scaleLabel: { display: true, labelString: 'Overtime in hours', fontSize: 16 },
+            scaleLabel: {
+              display: true,
+              labelString: 'Overtime in hours',
+              fontSize: 14,
+            },
           },
         ],
         yAxes: [
           {
             id: 'causes',
             gridLines: { display: false },
+            ticks: { fontSize: 14 },
           },
         ],
       },
