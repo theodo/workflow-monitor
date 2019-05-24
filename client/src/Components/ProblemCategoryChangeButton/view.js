@@ -110,7 +110,12 @@ const ProblemCategoryChangeButton = ({
                       >
                         <ListItem
                           button
-                          onClick={() => handleSelectProblemCategory(problemCategory)}
+                          onClick={() =>
+                            handleSelectProblemCategory(
+                              problemCategory,
+                              problemCategoryInSelection.id === problemCategory.id,
+                            )
+                          }
                         >
                           <ListItemText primary={problemCategory.description} />
                           {problemCategoryInSelection.id === problemCategory.id && <DoneIcon />}
