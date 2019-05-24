@@ -43,10 +43,7 @@ const formatTask = ticketId => ({
       ? [
           {
             description: problems,
-            problemCategory: problemCategory && {
-              id: problemCategory.value,
-              description: problemCategory.label,
-            },
+            problemCategory,
           },
         ]
       : [],

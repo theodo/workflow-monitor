@@ -84,9 +84,9 @@ class TaskPanel extends Component {
     this.props.handleCurrentTaskChange({ problems: event.target.value });
   }
 
-  handleProblemCategoryValueChange(selectedOption) {
+  handleProblemCategoryValueChange(problemCategory) {
     this.props.handleCurrentTaskChange({
-      problemCategory: { value: selectedOption.id, label: selectedOption.description },
+      problemCategory,
     });
   }
 
