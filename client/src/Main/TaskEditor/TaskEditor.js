@@ -85,31 +85,36 @@ const cardTarget = {
 };
 
 class TaskField extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { check: props.task.check !== undefined };
-    this.toggleCheck = this.toggleCheck.bind(this);
-    this.handleInputKeyPress = this.handleInputKeyPress.bind(this);
-    this.resizeDescriptionField = this.resizeDescriptionField.bind(this);
-  }
-  toggleCheck() {
+  state = {
+    check: !!this.props.task.check,
+    description: this.props.task.description,
+    estimatedTimeText: this.props.task.estimatedTimeText,
+    checkValue: this.props.task.check,
+  };
+
+  toggleCheck = () => {
     const { task, updateTask } = this.props;
     if (this.state.check) {
-      updateTask(task.id, 'check', undefined);
+      updateTask(task.id, 'check', null);
       this.setState({ check: false });
     } else {
       this.setState({ check: true });
     }
-  }
-  handleInputKeyPress(event, addNewTask = false) {
+  };
+  handleInputKeyPress = (event, addNewTask = false) => {
     if (event.which === 13) {
       event.preventDefault();
-      if (addNewTask) this.props.addNewTask();
+      if (addNewTask) this.props.addTask();
       else this.estimatedTimeRef.focus();
     }
-  }
+  };
+  resizeDescriptionField = () => {
+    this.descriptionField.style.height = '5px';
+    this.descriptionField.style.height = this.descriptionField.scrollHeight + 'px';
+  };
+
   componentDidUpdate(prevProps) {
-    if (this.props.task && this.props.task.label !== prevProps.task.label) {
+    if (this.props.task && this.props.task.description !== prevProps.task.description) {
       this.resizeDescriptionField();
     }
   }
@@ -117,18 +122,14 @@ class TaskField extends Component {
     this.resizeDescriptionField();
   }
   shouldComponentUpdate(nextProps, prevState) {
-    if (
-      nextProps.task.description === this.props.task.description &&
-      nextProps.task.estimatedTimeText === this.props.task.estimatedTimeText &&
+    return !(
+      prevState.description === this.state.description &&
+      prevState.estimatedTimeText === this.state.estimatedTimeText &&
+      prevState.checkValue === this.state.checkValue &&
       prevState.check === this.state.check
-    )
-      return false;
-    return true;
+    );
   }
-  resizeDescriptionField() {
-    this.descriptionField.style.height = '5px';
-    this.descriptionField.style.height = this.descriptionField.scrollHeight + 'px';
-  }
+
   render() {
     const {
       task,
@@ -139,6 +140,7 @@ class TaskField extends Component {
       removeTask,
       updateTask,
     } = this.props;
+    const { check, checkValue, estimatedTimeText, description } = this.state;
     const opacity = isDragging ? 0 : 1;
 
     return connectDragPreview(
@@ -162,9 +164,10 @@ class TaskField extends Component {
                 autoFocus={!task.description}
                 className="TaskField_input TaskField_description"
                 type="text"
-                value={task.description}
+                value={description}
                 placeholder="Description"
-                onChange={event => updateTask(task.id, 'description', event.target.value)}
+                onChange={event => this.setState({ description: event.target.value })}
+                onBlur={event => updateTask(task.id, 'description', event.target.value)}
                 onClick={event => event.stopPropagation()}
                 onMouseDown={event => event.stopPropagation()}
                 onTouchStart={event => event.stopPropagation()}
@@ -174,31 +177,38 @@ class TaskField extends Component {
                 ref={ref => (this.estimatedTimeRef = ref)}
                 className="TaskField_input TaskField_estimatedTime"
                 type="number"
-                value={task.estimatedTimeText}
+                value={estimatedTimeText}
                 placeholder="Estimated time"
-                onChange={event => updateTask(task.id, 'estimatedTimeText', event.target.value)}
+                onChange={event => this.setState({ estimatedTimeText: event.target.value })}
+                onBlur={event => updateTask(task.id, 'estimatedTimeText', event.target.value)}
                 onKeyPress={event => this.handleInputKeyPress(event, true)}
               />
               <div className="TaskField_buttonsBloc">
-                {!this.state.check && (
+                {!check && (
                   <Button onClick={() => this.toggleCheck()} tabIndex="-1">
                     <CheckBoxIcon className="TaskField_addCheckIcon" />
                   </Button>
                 )}
-                <Button onClick={() => removeTask(task.id)} tabIndex="-1">
+                <Button
+                  onClick={() => {
+                    removeTask(task.id);
+                  }}
+                  tabIndex="-1"
+                >
                   <DeleteForeverIcon className="TaskField_deleteIcon" />
                 </Button>
               </div>
             </div>
-            {this.state.check && (
+            {check && (
               <div className="TaskField_mainContainer_bottom">
                 <input
                   placeholder="Check"
                   tabIndex="-1"
                   className="TaskField_input TaskField_check"
                   type="text"
-                  value={task.check}
-                  onChange={event => updateTask(task.id, 'check', event.target.value)}
+                  value={checkValue ? checkValue : ''}
+                  onChange={event => this.setState({ checkValue: event.target.value })}
+                  onBlur={event => updateTask(task.id, 'check', event.target.value)}
                 />
                 <div>
                   <button onClick={() => this.toggleCheck()} tabIndex="-1">
@@ -223,7 +233,7 @@ TaskField.propTypes = {
   moveCard: PropTypes.func.isRequired,
   removeTask: PropTypes.func.isRequired,
   updateTask: PropTypes.func.isRequired,
-  addNewTask: PropTypes.func.isRequired,
+  addTask: PropTypes.func.isRequired,
 };
 
 const TaskFieldWrapper = DropTarget('card', cardTarget, connect => ({
@@ -237,51 +247,56 @@ const TaskFieldWrapper = DropTarget('card', cardTarget, connect => ({
 );
 
 class TaskEditor extends Component {
-  constructor(props) {
-    super(props);
-    this.updateTasks = this.updateTasks.bind(this);
-    this.moveCard = this.moveCard.bind(this);
-    this.addTask = this.addTask.bind(this);
-    this.updateTask = this.updateTask.bind(this);
-    this.removeTask = this.removeTask.bind(this);
-  }
-  updateTasks(tasks) {
+  state = {
+    tasks: this.props.tasks,
+  };
+
+  updateTasks = tasks => {
     this.props.updateTasks(tasks);
-  }
-  moveCard(dragIndex, hoverIndex) {
-    const { tasks } = this.props;
+    this.setState({ tasks });
+  };
+
+  moveCard = (dragIndex, hoverIndex) => {
+    const { tasks } = this.state;
     const dragCard = tasks[dragIndex];
     const newTasks = [...tasks];
     newTasks.splice(dragIndex, 1);
     newTasks.splice(hoverIndex, 0, dragCard);
     this.updateTasks(newTasks);
-  }
-  addTask() {
+  };
+
+  addTask = () => {
     this.updateTasks([
-      ...this.props.tasks,
+      ...this.state.tasks,
       { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
     ]);
-  }
-  removeTask(taskId) {
-    this.updateTasks([...this.props.tasks.filter(task => taskId !== task.id)]);
-  }
-  updateTask(taskId, fieldName, value) {
+  };
+
+  removeTask = taskId => {
+    this.updateTasks([...this.state.tasks.filter(task => taskId !== task.id)]);
+  };
+
+  updateTask = (taskId, fieldName, value) => {
+    if (this.state.tasks.find(task => task.id === taskId)[fieldName] === value) {
+      return;
+    }
     const fieldsToAdd = { [fieldName]: value };
     if (fieldName === 'estimatedTimeText')
       fieldsToAdd.estimatedTime = value && value.length > 0 ? value * 60 * 1000 : undefined;
 
     this.updateTasks([
-      ...this.props.tasks.map(task => {
+      ...this.state.tasks.map(task => {
         if (task.id === taskId) return { ...task, ...fieldsToAdd };
         return task;
       }),
     ]);
-  }
+  };
   render() {
+    const { tasks } = this.state;
     return (
       <div className="TaskEditor">
         <div className="DropZone">
-          {this.props.tasks.map((task, i) => (
+          {tasks.map((task, i) => (
             <TaskFieldWrapper
               key={task.id}
               index={i}
@@ -289,7 +304,7 @@ class TaskEditor extends Component {
               moveCard={this.moveCard}
               removeTask={this.removeTask}
               updateTask={this.updateTask}
-              addNewTask={this.addTask}
+              addTask={this.addTask}
             />
           ))}
         </div>

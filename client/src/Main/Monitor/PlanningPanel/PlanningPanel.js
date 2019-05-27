@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -13,8 +12,9 @@ import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
 import { getTotalTime } from 'Utils/TaskUtils';
 import { filterEmptyTasks, formatStringToTasks } from 'Utils/TaskUtils';
 
-import TaskEditor from '../../TaskEditor/TaskEditor';
+import TaskEditor from 'Main/TaskEditor/TaskEditor';
 import './PlanningPanel.css';
+import withDefaultTasks from 'Main/shared/WithDefaultTasks.hoc';
 
 const planningMaxTime = 600000;
 
@@ -79,7 +79,11 @@ class PlanningPanel extends Component {
     });
   }
   buildAllTasks(tasks) {
-    return [...this.props.beginTasks, ...filterEmptyTasks(tasks), ...this.props.endTasks];
+    return [
+      ...filterEmptyTasks(this.props.beginningTasksList.tasks),
+      ...filterEmptyTasks(tasks),
+      ...filterEmptyTasks(this.props.endTasksList.tasks),
+    ];
   }
   componentWillUnmount() {
     cancelAlarm();
@@ -88,6 +92,8 @@ class PlanningPanel extends Component {
     localStorage.setItem('planningTasks', JSON.stringify(this.state.tasks));
   }
   render() {
+    const { beginningTasksList, endTasksList } = this.props;
+    const { tasks, selectedChecklist, checklists } = this.state;
     return (
       <div className="PlanningPanel">
         <Grid container spacing={24}>
@@ -106,14 +112,14 @@ class PlanningPanel extends Component {
                     <InputLabel htmlFor="selected-checklist">Import trello checklist</InputLabel>
                     <Select
                       style={{ width: 200 }}
-                      value={this.state.selectedChecklist}
+                      value={selectedChecklist}
                       onChange={this.handleTrelloChecklistSelection}
                       inputProps={{
                         name: 'checklist',
                         id: 'selected-checklist',
                       }}
                     >
-                      {this.state.checklists.map(checklist => (
+                      {checklists.map(checklist => (
                         <MenuItem key={checklist.id} value={checklist.id}>
                           {checklist.name}
                         </MenuItem>
@@ -122,14 +128,12 @@ class PlanningPanel extends Component {
                   </FormControl>
                 </Grid>
               </Grid>
-              <TaskList tasks={this.props.beginTasks} />
-              <TaskEditor tasks={this.state.tasks} updateTasks={this.handleTasksDefinitionChange} />
-              <TaskList tasks={this.props.endTasks} />
+              <TaskList tasks={filterEmptyTasks(beginningTasksList.tasks)} />
+              <TaskEditor tasks={tasks} updateTasks={this.handleTasksDefinitionChange} />
+              <TaskList tasks={filterEmptyTasks(endTasksList.tasks)} />
               <p>
                 Total estimated time :{' '}
-                {this.state.tasks
-                  ? getTotalTime(this.buildAllTasks(this.state.tasks), 'estimatedTime')
-                  : ''}
+                {tasks ? getTotalTime(this.buildAllTasks(tasks), 'estimatedTime') : ''}
               </p>
             </div>
           </Grid>
@@ -139,11 +143,4 @@ class PlanningPanel extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    beginTasks: state.SettingsReducers.beginTasks ? state.SettingsReducers.beginTasks : [],
-    endTasks: state.SettingsReducers.endTasks ? state.SettingsReducers.endTasks : [],
-  };
-};
-
-export default connect(mapStateToProps)(PlanningPanel);
+export default withDefaultTasks(PlanningPanel);

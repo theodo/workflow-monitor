@@ -55,3 +55,6 @@ export const parseMilliSecondFromFormattedTime = timeString => {
   }
   return NaN;
 };
+
+export const parseTextMinutesFromMilliSeconds = milliSeconds =>
+  Math.floor(milliSeconds / (1000 * 60)).toString();

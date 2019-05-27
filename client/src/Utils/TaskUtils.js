@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { formatMilliSecondToTime } from './TimeUtils';
+import { formatMilliSecondToTime, parseTextMinutesFromMilliSeconds } from './TimeUtils';
 
 export const formatStringToTasks = taskString => {
   const tasks = taskString
@@ -27,6 +27,27 @@ export const formatStringToTasks = taskString => {
     });
   return tasks.length > 0 ? tasks : [];
 };
+
+export const getFirstList = (tasksList, defaultTasksList) => {
+  if (!tasksList.defaultTasksList) {
+    tasksList.tasks = formatedDefaultTasksList(defaultTasksList.defaultTasks);
+    tasksList.defaultTasksList = defaultTasksList;
+  }
+  return tasksList;
+};
+
+export const formatedDefaultTasksList = list =>
+  list.map(defaultTask => ({
+    ...defaultTask,
+    id: defaultTask.id,
+    estimatedTimeText: parseTextMinutesFromMilliSeconds(defaultTask.estimatedTime),
+  }));
+
+export const formatDefaultTasksList = list =>
+  list.map(defaultTask => {
+    const { estimatedTime, description, check } = defaultTask;
+    return { estimatedTime, description, check };
+  });
 
 export const getTotalTime = (results, timeType) => {
   return formatMilliSecondToTime(
