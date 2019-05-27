@@ -80,7 +80,11 @@ class TaskRow extends PureComponent {
   render() {
     return (
       <li className={'TaskRow ' + this.getRowClass()}>
-        <div className="TaskRow-label">{this.props.task.description}</div>
+        <div className="TaskRow-label">
+          {/* TODO Remove the check and this.props.task.label, let only this.props.task.description,
+           it was quick fix for a migration issue*/}
+          {this.props.task.description ? this.props.task.description : this.props.task.label}
+        </div>
         <div className="TaskRow-bottom">
           <div className="TaskRow-empty" />
           <div className="TaskRow-time">

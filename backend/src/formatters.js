@@ -29,6 +29,7 @@ const formatFullTicket = (state, project, user, allocatedTime) => {
 
 const formatTask = ticketId => ({
   description,
+  // TODO Remove label, it was quick fix for a migration issue
   label,
   estimatedTime,
   addedOnTheFly,
@@ -36,6 +37,7 @@ const formatTask = ticketId => ({
   problems,
   problemCategory,
 }) => ({
+  // TODO Remove the check and label, let only description it was quick fix for a migration issue
   description: description ? description : label,
   estimatedTime,
   addedOnTheFly: addedOnTheFly || false,
