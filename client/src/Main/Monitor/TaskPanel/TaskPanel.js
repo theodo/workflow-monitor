@@ -104,13 +104,19 @@ class TaskPanel extends Component {
       <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
         <Grid item xs={1} />
         <Grid item xs={10}>
-          <h2>{currentTask.description}</h2>
+          {/* TODO Remove the check and currentTask.label, let only currentTask.description,
+           it was quick fix for a migration issue*/}
+          <h2>{currentTask.description ? currentTask.description : currentTask.label}</h2>
           {currentTask.estimatedTime && (
             <div>
               <h3>Estimated time : {formatMilliSecondToTime(currentTask.estimatedTime)}</h3>
               <h3>
+                {/* TODO Remove the check and currentTask.label, let only currentTask.description,
+                it was quick fix for a migration issue*/}
                 <ReverseChrono
-                  currentTaskLabel={currentTask.description}
+                  currentTaskDescription={
+                    currentTask.description ? currentTask.description : currentTask.label
+                  }
                   dateLastPause={dateLastPause}
                   estimatedTaskTime={currentTask.estimatedTime}
                   taskChrono={taskChrono}

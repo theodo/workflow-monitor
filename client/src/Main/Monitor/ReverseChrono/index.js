@@ -36,7 +36,7 @@ class ReverseChrono extends Component {
   updateDocumentTitle() {
     document.title = this.isTimeOver()
       ? formatMilliSecondToSentence(this.getTime())
-      : this.props.currentTaskLabel;
+      : this.props.currentTaskDescription;
   }
 
   getRealElapsedTime() {
