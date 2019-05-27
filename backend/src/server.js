@@ -63,7 +63,7 @@ const defaultTypeDefs = `
     thirdPartyId: String
   }
   input ProjectSpeedInput {
-    celerity: Int
+    celerity: Float
     dailyDevelopmentTime: Int
   }
   input PaginationInput {
@@ -177,12 +177,12 @@ server.express.post(`/login`, bodyParser.json(), loginRoute);
 const serverOptions = isDev
   ? { subscriptions: { onConnect: websocketAuthenticationMiddleware } }
   : {
-      https: {
-        cert: fs.readFileSync('/home/ubuntu/certificates/cert.pem', 'utf8'),
-        key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8'),
-      },
-      subscriptions: { onConnect: websocketAuthenticationMiddleware },
-    };
+    https: {
+      cert: fs.readFileSync('/home/ubuntu/certificates/cert.pem', 'utf8'),
+      key: fs.readFileSync('/home/ubuntu/certificates/privkey.pem', 'utf8'),
+    },
+    subscriptions: { onConnect: websocketAuthenticationMiddleware },
+  };
 
 module.exports = {
   server,
