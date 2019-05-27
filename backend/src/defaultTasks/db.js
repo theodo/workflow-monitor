@@ -23,6 +23,7 @@ class defaultTasksListDB {
         model: this.db.models.defaultTask,
         as: 'defaultTasks',
       },
+      order: [[{ model: this.db.models.defaultTask, as: 'defaultTasks' }, 'id', 'ASC']],
     });
   }
 
