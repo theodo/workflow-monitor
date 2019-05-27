@@ -118,7 +118,7 @@ class TaskField extends Component {
   }
   shouldComponentUpdate(nextProps, prevState) {
     if (
-      nextProps.task.label === this.props.task.label &&
+      nextProps.task.description === this.props.task.description &&
       nextProps.task.estimatedTimeText === this.props.task.estimatedTimeText &&
       prevState.check === this.state.check
     )
@@ -159,12 +159,12 @@ class TaskField extends Component {
             <div className="TaskField_mainContainer_top">
               <textarea
                 ref={ref => (this.descriptionField = ref)}
-                autoFocus={!task.label}
+                autoFocus={!task.description}
                 className="TaskField_input TaskField_description"
                 type="text"
-                value={task.label}
+                value={task.description}
                 placeholder="Description"
-                onChange={event => updateTask(task.id, 'label', event.target.value)}
+                onChange={event => updateTask(task.id, 'description', event.target.value)}
                 onClick={event => event.stopPropagation()}
                 onMouseDown={event => event.stopPropagation()}
                 onTouchStart={event => event.stopPropagation()}
@@ -259,7 +259,7 @@ class TaskEditor extends Component {
   addTask() {
     this.updateTasks([
       ...this.props.tasks,
-      { id: uuid(), label: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
+      { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
     ]);
   }
   removeTask(taskId) {

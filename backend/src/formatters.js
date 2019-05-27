@@ -28,6 +28,7 @@ const formatFullTicket = (state, project, user, allocatedTime) => {
 };
 
 const formatTask = ticketId => ({
+  description,
   label,
   estimatedTime,
   addedOnTheFly,
@@ -35,7 +36,7 @@ const formatTask = ticketId => ({
   problems,
   problemCategory,
 }) => ({
-  description: label,
+  description: description ? description : label,
   estimatedTime,
   addedOnTheFly: addedOnTheFly || false,
   problems:
