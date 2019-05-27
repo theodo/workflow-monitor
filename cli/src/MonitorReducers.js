@@ -62,7 +62,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
     newState = {
       ...state,
       currentStep: MONITOR_STEPS.WORKFLOW,
-      tasks: [{id: uuid(), label: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
+      tasks: [{id: uuid(), description: 'Planning', realTime: calculateCurrentTaskTime(state.taskChrono, now) }, ...action.tasks],
       currentTaskIndex: 1,
       taskChrono: {
         dateLastStart: now,

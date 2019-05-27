@@ -35,7 +35,7 @@ const render = (newState) => {
     case MONITOR_STEPS.WORKFLOW:
       console.log(`${state.currentTrelloCard.name} - Task ${state.currentTaskIndex}/${state.tasks.length}`);
       console.log(`\n`);
-      console.log(state.tasks[state.currentTaskIndex].label);
+      console.log(state.tasks[state.currentTaskIndex].description);
       console.log(`\n`);
       break;
     case MONITOR_STEPS.RESULTS:
