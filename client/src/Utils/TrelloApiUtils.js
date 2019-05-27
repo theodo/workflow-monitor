@@ -30,7 +30,7 @@ export const saveResultsInTrello = (cardId, results) => {
       var realTime = task.realTime ? ' (' + formatMilliSecondToTime(task.realTime) + ')' : '';
       var problems = task.problems && task.problems.length > 0 ? ' pb : ' + task.problems : '';
       var checkItem = {
-        name: task.label + realTime + problems,
+        name: task.description + realTime + problems,
       };
       return p.then(() => myPromise(checklist.id, checkItem));
     }, Promise.resolve());

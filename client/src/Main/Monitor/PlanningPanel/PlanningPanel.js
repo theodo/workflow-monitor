@@ -22,7 +22,7 @@ const TaskList = ({ tasks }) => (
   <ul className="TaskList">
     {tasks.map(task => (
       <li key={task.id}>
-        {task.label}
+        {task.description}
         {task.estimatedTime ? ' (' + task.estimatedTime / 60000 + ')' : ''}
       </li>
     ))}

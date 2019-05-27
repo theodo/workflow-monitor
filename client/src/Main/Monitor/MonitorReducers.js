@@ -111,7 +111,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
         tasks: [
           {
             id: uuid(),
-            label: 'Planning',
+            description: 'Planning',
             realTime: calculateCurrentTaskTime(state.taskChrono, now),
           },
           ...action.tasks,

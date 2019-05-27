@@ -104,13 +104,13 @@ class TaskPanel extends Component {
       <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
         <Grid item xs={1} />
         <Grid item xs={10}>
-          <h2>{currentTask.label}</h2>
+          <h2>{currentTask.description}</h2>
           {currentTask.estimatedTime && (
             <div>
               <h3>Estimated time : {formatMilliSecondToTime(currentTask.estimatedTime)}</h3>
               <h3>
                 <ReverseChrono
-                  currentTaskLabel={currentTask.label}
+                  currentTaskLabel={currentTask.description}
                   dateLastPause={dateLastPause}
                   estimatedTaskTime={currentTask.estimatedTime}
                   taskChrono={taskChrono}

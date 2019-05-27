@@ -5,18 +5,21 @@ export const formatStringToTasks = taskString => {
   const tasks = taskString
     .split(/\n/)
     .filter(line => line.length > 0)
-    .map(taskLabel => {
-      if (!taskLabel.match(/\([0-9]+\)$/)) return { id: uuid(), label: taskLabel, problems: '' };
-      const timeIndex = taskLabel.lastIndexOf('(');
+    .map(taskDescription => {
+      if (!taskDescription.match(/\([0-9]+\)$/))
+        return { id: uuid(), description: taskDescription, problems: '' };
+      const timeIndex = taskDescription.lastIndexOf('(');
       const estimatedTime =
-        60 * 1000 * parseInt(taskLabel.substring(timeIndex + 1, taskLabel.length - 1), 10);
+        60 *
+        1000 *
+        parseInt(taskDescription.substring(timeIndex + 1, taskDescription.length - 1), 10);
       const estimatedTimeText = parseInt(
-        taskLabel.substring(timeIndex + 1, taskLabel.length - 1),
+        taskDescription.substring(timeIndex + 1, taskDescription.length - 1),
         10,
       );
       return {
         id: uuid(),
-        label: taskLabel.substr(0, timeIndex),
+        description: taskDescription.substr(0, timeIndex),
         problems: '',
         estimatedTime,
         estimatedTimeText,
@@ -34,4 +37,5 @@ export const getTotalTime = (results, timeType) => {
   );
 };
 
-export const filterEmptyTasks = tasks => tasks.filter(task => task.label && task.label.length > 0);
+export const filterEmptyTasks = tasks =>
+  tasks.filter(task => task.description && task.description.length > 0);

@@ -80,7 +80,7 @@ class TaskRow extends PureComponent {
   render() {
     return (
       <li className={'TaskRow ' + this.getRowClass()}>
-        <div className="TaskRow-label">{this.props.task.label}</div>
+        <div className="TaskRow-label">{this.props.task.description}</div>
         <div className="TaskRow-bottom">
           <div className="TaskRow-empty" />
           <div className="TaskRow-time">
