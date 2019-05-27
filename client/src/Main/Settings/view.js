@@ -5,11 +5,14 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
-import { filterEmptyTasks } from 'Utils/TaskUtils';
-
 import Project from './Project';
 import TaskEditor from '../TaskEditor/TaskEditor';
 import './Settings.css';
+import { SAVE_DEFAULT_TASKS_LIST } from 'Queries/DefaultTasksLists';
+import { formatDefaultTasksList } from 'Utils/TaskUtils';
+import { gqlClient } from 'Utils/Graphql';
+import withDefaultTasks from 'Main/shared/WithDefaultTasks.hoc';
+import { compose } from 'redux';
 
 const styles = () => ({
   mv25: {
@@ -19,31 +22,32 @@ const styles = () => ({
 });
 
 class Settings extends Component {
-  constructor(props) {
-    super(props);
-    this.handleTasksChange = this.handleTasksChange.bind(this);
-    this.copyToken = this.copyToken.bind(this);
-    this.state = {
-      beginTasks: this.props.settings.beginTasks ? this.props.settings.beginTasks : [],
-      endTasks: this.props.settings.endTasks ? this.props.settings.endTasks : [],
-    };
-  }
-
-  async handleTasksChange(taskCategory, tasks) {
-    await this.setState({ [taskCategory]: tasks });
-    this.props.saveSettings({
-      beginTasks: filterEmptyTasks(this.state.beginTasks),
-      endTasks: filterEmptyTasks(this.state.endTasks),
+  handleTasksChange = async (tasksList, tasks, type) => {
+    const defaultTasksList = tasksList
+      ? {
+          id: tasksList.id,
+          type: tasksList.type,
+          defaultTasks: formatDefaultTasksList(tasks),
+        }
+      : {
+          type,
+          defaultTasks: formatDefaultTasksList(tasks),
+        };
+    await gqlClient.mutate({
+      mutation: SAVE_DEFAULT_TASKS_LIST,
+      variables: {
+        defaultTasksList,
+      },
     });
-  }
+  };
 
-  copyToken() {
+  copyToken = () => {
     copy(localStorage.getItem('jwt_token'));
     alert('Token copied');
-  }
+  };
 
   render() {
-    const { classes } = this.props;
+    const { classes, beginningTasksList, endTasksList } = this.props;
     return (
       <div className="Settings">
         <Grid container spacing={24}>
@@ -54,13 +58,17 @@ class Settings extends Component {
             <h2>Add your default tasks :</h2>
             <h3>Start tasks</h3>
             <TaskEditor
-              tasks={this.state.beginTasks}
-              updateTasks={tasks => this.handleTasksChange('beginTasks', tasks)}
+              tasks={beginningTasksList.tasks}
+              updateTasks={tasks =>
+                this.handleTasksChange(beginningTasksList.defaultTasksList, tasks, 'BEGINNING')
+              }
             />
             <h3>End tasks</h3>
             <TaskEditor
-              tasks={this.state.endTasks}
-              updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
+              tasks={endTasksList.tasks}
+              updateTasks={tasks =>
+                this.handleTasksChange(endTasksList.defaultTasksList, tasks, 'END')
+              }
             />
             <Divider variant="middle" className={classes.mv25} />
             <h2>Copy CLI token :</h2>
@@ -75,4 +83,7 @@ class Settings extends Component {
   }
 }
 
-export default withStyles(styles)(Settings);
+export default compose(
+  withStyles(styles),
+  withDefaultTasks,
+)(Settings);
