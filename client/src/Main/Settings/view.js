@@ -24,7 +24,7 @@ class Settings extends Component {
           <Grid item xs={10} lg={8}>
             <Project />
             <Divider variant="middle" className={classes.mv25} />
-            <h2>Add your default tasks :</h2>
+            <h2>Edit your project default tasks</h2>
             <h3>Start tasks</h3>
             <TaskEditor
               tasks={beginningTasksList.tasks}

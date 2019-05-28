@@ -123,22 +123,36 @@ class PlanningPanel extends Component {
                 </Grid>
               </Grid>
               <h5>Start Tasks</h5>
-              <TaskEditor
-                tasks={beginningTasks}
-                updateTasks={tasks => this.handleTasksChange('beginningTasks', tasks)}
-                isDefaultTask
-              />
+              {beginningTasks.length === 0 ? (
+                <div style={{ fontStyle: 'italic', fontSize: '12px', marginTop: '5px' }}>
+                  Your default tasks are now related to your team project! Go to your settings page
+                  to add start tasks.
+                </div>
+              ) : (
+                <TaskEditor
+                  tasks={beginningTasks}
+                  updateTasks={tasks => this.handleTasksChange('beginningTasks', tasks)}
+                  isDefaultTask
+                />
+              )}
               <h5>Tickets Tasks</h5>
               <TaskEditor
                 tasks={ticketTasks}
                 updateTasks={tasks => this.handleTasksChange('ticketTasks', tasks)}
               />
               <h5>End Tasks</h5>
-              <TaskEditor
-                tasks={endTasks}
-                updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
-                isDefaultTask
-              />
+              {endTasks.length === 0 ? (
+                <div style={{ fontStyle: 'italic', fontSize: '12px', marginTop: '5px' }}>
+                  Your default tasks are now related to your team project! Go to the settings page
+                  to add end tasks.
+                </div>
+              ) : (
+                <TaskEditor
+                  tasks={endTasks}
+                  updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
+                  isDefaultTask
+                />
+              )}
               <p>
                 Total estimated time :{' '}
                 {ticketTasks ? getTotalTime(this.buildAllTasks(ticketTasks), 'estimatedTime') : ''}
