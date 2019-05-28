@@ -12,25 +12,18 @@ const db = require('./datasources/db');
 
 const { ticketResolvers, ticketSchemas } = require('./tickets');
 const { userResolvers, userSchemas } = require('./users');
+const { projectResolvers, projectSchemas } = require('./projects');
 const { problemCategoriesResolvers, problemCategoriesSchemas } = require('./problemCategories');
 const { defaultTasksResolvers, defaultTasksSchemas } = require('./defaultTasks');
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV !== 'production';
 
-const Project = db.getORM().models.project;
 const Ticket = db.getORM().models.ticket;
 const Task = db.getORM().models.task;
 const Problem = db.getORM().models.problem;
 
 const defaultTypeDefs = `
-  type Project {
-    id: Int
-    name: String
-    dailyDevelopmentTime: Int
-    celerity: Int
-    thirdPartyType: String
-    thirdPartyId: String
-  }
+  
   type Task {
     id: Int
     description: String
@@ -58,14 +51,7 @@ const defaultTypeDefs = `
     description: String
     problemCategory: ProblemCategoryInput
   }
-  input ProjectInput {
-    name: String
-    thirdPartyId: String
-  }
-  input ProjectSpeedInput {
-    celerity: Float
-    dailyDevelopmentTime: Int
-  }
+ 
   input PaginationInput {
     limit: Int = 0
     offset: Int = 0
@@ -73,8 +59,6 @@ const defaultTypeDefs = `
   type Mutation {
     updateCurrentState(state: String!): Int,
     updateTask(task: TaskInput!): Task,
-    selectProject(project: ProjectInput): Project,
-    setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput!): Int
   }
   type Subscription {
     state: String!
@@ -82,7 +66,14 @@ const defaultTypeDefs = `
 `;
 
 const typeDefs = mergeTypes(
-  [defaultTypeDefs, ticketSchemas, userSchemas, problemCategoriesSchemas, defaultTasksSchemas],
+  [
+    defaultTypeDefs,
+    ticketSchemas,
+    userSchemas,
+    problemCategoriesSchemas,
+    defaultTasksSchemas,
+    projectSchemas,
+  ],
   { all: true },
 );
 
@@ -120,27 +111,6 @@ const defaultResolvers = {
       }
       return taskToUpdate;
     },
-    selectProject: (_, { project }, { user }) => {
-      project.thirdPartyType = 'TRELLO';
-      return Project.findOrCreate({
-        where: { thirdPartyId: project.thirdPartyId },
-        defaults: { ...project },
-      }).spread(project => {
-        user.setCurrentProject(project.id);
-        return project;
-      });
-    },
-    setCurrentProjectSpeed: async (_, { projectSpeed }, { user }) => {
-      const project = user.get('currentProject');
-      Project.update(
-        {
-          celerity: projectSpeed.celerity,
-          dailyDevelopmentTime: projectSpeed.dailyDevelopmentTime,
-        },
-        { where: { id: project.id } },
-      );
-      return 1;
-    },
   },
   Subscription: {
     state: {
@@ -158,6 +128,7 @@ const resolvers = mergeResolvers([
   defaultResolvers,
   problemCategoriesResolvers,
   defaultTasksResolvers,
+  projectResolvers,
 ]);
 
 const pubsub = new PubSub();
