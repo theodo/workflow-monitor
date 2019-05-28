@@ -14,6 +14,7 @@
     height: 40px;
     resize: none;
     box-sizing: border-box;
+  background: rgba(0,0,0,0);
 }
 .TaskField_estimatedTime {
   text-align: center;
@@ -23,6 +24,7 @@
   border-left: 0;
   flex-grow: 1;
   width:100px;
+  background: rgba(0,0,0,0);
 }
 
 .TaskField_mainContainer {
@@ -47,6 +49,7 @@
   display: inline-block;
   height: 36px;
   padding: 0 10px;
+  background: rgba(0,0,0,0);
 }
 
 .TaskEditor {

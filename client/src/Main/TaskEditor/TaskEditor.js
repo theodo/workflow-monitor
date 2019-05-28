@@ -19,7 +19,6 @@ const dashedBlocStyle = {
 
 const taskFieldStyle = {
   padding: 0,
-  backgroundColor: 'white',
 };
 
 const addTaskButtonStyle = {
@@ -140,13 +139,15 @@ class TaskField extends Component {
       connectDragPreview,
       removeTask,
       updateTask,
+      noAdd,
     } = this.props;
     const { check, checkValue, estimatedTimeText, description } = this.state;
     const opacity = isDragging ? 0 : 1;
+    const backgroundColor = noAdd ? '#f2f2f2' : 'white';
 
     return connectDragPreview(
       connectDropTarget(
-        <div style={{ ...dashedBlocStyle, ...taskFieldStyle, opacity }}>
+        <div style={{ ...dashedBlocStyle, ...taskFieldStyle, opacity, backgroundColor }}>
           {connectDragSource(
             <div className="TaskField_dragPoint">
               <IconButton
@@ -164,7 +165,6 @@ class TaskField extends Component {
                 ref={ref => (this.descriptionField = ref)}
                 autoFocus={!task.description}
                 className="TaskField_input TaskField_description"
-                type="text"
                 value={description}
                 placeholder="Description"
                 onChange={event => this.setState({ description: event.target.value })}
@@ -299,24 +299,26 @@ class TaskEditor extends Component {
   };
   render() {
     const { tasks } = this.state;
+    const { noAdd } = this.props;
+    const taskFieldProps = {
+      moveCard: this.moveCard,
+      removeTask: this.removeTask,
+      updateTask: this.updateTask,
+      addTask: this.addTask,
+      noAdd,
+    };
     return (
       <div className="TaskEditor">
         <div className="DropZone">
           {tasks.map((task, i) => (
-            <TaskFieldWrapper
-              key={task.id}
-              index={i}
-              task={task}
-              moveCard={this.moveCard}
-              removeTask={this.removeTask}
-              updateTask={this.updateTask}
-              addTask={this.addTask}
-            />
+            <TaskFieldWrapper key={task.id} index={i} task={task} {...taskFieldProps} />
           ))}
         </div>
-        <div style={{ ...dashedBlocStyle, ...addTaskButtonStyle }} onClick={this.addTask}>
-          Add task
-        </div>
+        {!noAdd && (
+          <div style={{ ...dashedBlocStyle, ...addTaskButtonStyle }} onClick={this.addTask}>
+            Add task
+          </div>
+        )}
       </div>
     );
   }

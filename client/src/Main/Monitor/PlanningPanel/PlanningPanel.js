@@ -18,30 +18,17 @@ import withDefaultTasks from 'Main/shared/WithDefaultTasks.hoc';
 
 const planningMaxTime = 600000;
 
-const TaskList = ({ tasks }) => (
-  <ul className="TaskList">
-    {tasks.map(task => (
-      <li key={task.id}>
-        {task.description}
-        {task.estimatedTime ? ' (' + task.estimatedTime / 60000 + ')' : ''}
-      </li>
-    ))}
-  </ul>
-);
-
 class PlanningPanel extends Component {
   constructor(props) {
     super(props);
-    this.handleTasksDefinitionChange = this.handleTasksDefinitionChange.bind(this);
-    this.handleTrelloChecklistSelection = this.handleTrelloChecklistSelection.bind(this);
-    this.buildAllTasks = this.buildAllTasks.bind(this);
-    this.savePlanningTask = this.savePlanningTask.bind(this);
     this.savePlanningTask = debounce(1000, this.savePlanningTask);
     const tasks = localStorage.getItem('planningTasks')
       ? JSON.parse(localStorage.getItem('planningTasks'))
       : [];
     this.state = {
       tasks,
+      beginningTasks: filterEmptyTasks(props.beginningTasksList.tasks),
+      endTasks: filterEmptyTasks(props.endTasksList.tasks),
       checklists: [],
       selectedChecklist: '',
     };
@@ -51,6 +38,7 @@ class PlanningPanel extends Component {
       this.setState({ checklists });
     });
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.dateLastPause && !this.props.dateLastPause) {
       cancelAlarm();
@@ -58,15 +46,24 @@ class PlanningPanel extends Component {
       initAlarm(planningMaxTime - nextProps.taskChrono.elapsedTime, false);
     }
   }
-  handleTasksDefinitionChange(tasks) {
-    this.setState({ tasks }, this.savePlanningTask);
+
+  componentWillUnmount() {
+    cancelAlarm();
+  }
+
+  handleTasksChange = async (key, tasks) => {
+    await this.setState({ [key]: tasks });
+    if (key === 'tasks') {
+      this.savePlanningTask();
+    }
     this.props.handlePlanningPanelChange({
       planningPanelChanges: {
-        tasks: this.buildAllTasks(tasks),
+        tasks: this.buildAllTasks(),
       },
     });
-  }
-  handleTrelloChecklistSelection(event) {
+  };
+
+  handleTrelloChecklistSelection = event => {
     this.setState({ selectedChecklist: event.target.value });
     window.Trello.get(`/checklists/${event.target.value}/checkItems`).then(checklist => {
       let tasksAsString = '';
@@ -77,23 +74,20 @@ class PlanningPanel extends Component {
         });
       this.handleTasksDefinitionChange(formatStringToTasks(tasksAsString));
     });
-  }
-  buildAllTasks(tasks) {
+  };
+  buildAllTasks = () => {
     return [
-      ...filterEmptyTasks(this.props.beginningTasksList.tasks),
-      ...filterEmptyTasks(tasks),
-      ...filterEmptyTasks(this.props.endTasksList.tasks),
+      ...filterEmptyTasks(this.state.beginningTasks),
+      ...filterEmptyTasks(this.state.tasks),
+      ...filterEmptyTasks(this.state.endTasks),
     ];
-  }
-  componentWillUnmount() {
-    cancelAlarm();
-  }
-  savePlanningTask() {
+  };
+
+  savePlanningTask = () => {
     localStorage.setItem('planningTasks', JSON.stringify(this.state.tasks));
-  }
+  };
   render() {
-    const { beginningTasksList, endTasksList } = this.props;
-    const { tasks, selectedChecklist, checklists } = this.state;
+    const { tasks, selectedChecklist, checklists, beginningTasks, endTasks } = this.state;
     return (
       <div className="PlanningPanel">
         <Grid container spacing={24}>
@@ -102,7 +96,7 @@ class PlanningPanel extends Component {
             <div className="PlanningPanel-content">
               <Grid container spacing={0}>
                 <Grid item xs={8}>
-                  <h2>Task list :</h2>
+                  <h2>Task list</h2>
                 </Grid>
                 <Grid item xs={4} className="PlanningPanel-save-button-container">
                   <Button variant="contained" color="primary" component={Link} to="/settings">
@@ -128,9 +122,23 @@ class PlanningPanel extends Component {
                   </FormControl>
                 </Grid>
               </Grid>
-              <TaskList tasks={filterEmptyTasks(beginningTasksList.tasks)} />
-              <TaskEditor tasks={tasks} updateTasks={this.handleTasksDefinitionChange} />
-              <TaskList tasks={filterEmptyTasks(endTasksList.tasks)} />
+              <h5>Start Tasks :</h5>
+              <TaskEditor
+                tasks={beginningTasks}
+                updateTasks={tasks => this.handleTasksChange('beginningTasks', tasks)}
+                noAdd
+              />
+              <h5>Tickets Tasks :</h5>
+              <TaskEditor
+                tasks={tasks}
+                updateTasks={tasks => this.handleTasksChange('tasks', tasks)}
+              />
+              <h5>End Tasks :</h5>
+              <TaskEditor
+                tasks={endTasks}
+                updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
+                noAdd
+              />
               <p>
                 Total estimated time :{' '}
                 {tasks ? getTotalTime(this.buildAllTasks(tasks), 'estimatedTime') : ''}
