@@ -8,20 +8,16 @@ import { GET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
 import { SET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
 
 class ProjectHistoryPageContainer extends React.Component {
-  constructor() {
-    super();
-    gqlClient
-      .query({
-        query: GET_PROJECT_PERFORMANCE_TYPE,
-      })
-      .then(
-        response =>
-          (this.state = {
-            ...this.state,
-            performanceType: response.data.getProjectPerformanceType,
-          }),
-      );
-  }
+  state = {
+    performanceType: 'CASPR_TIME',
+  };
+
+  componentWillMount = async () => {
+    const response = await gqlClient.query({
+      query: GET_PROJECT_PERFORMANCE_TYPE,
+    });
+    this.setState({ performanceType: response.data.getProjectPerformanceType });
+  };
 
   setPerformanceType = performanceType => {
     this.setState({ performanceType });

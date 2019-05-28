@@ -58,22 +58,17 @@ const getPerformanceData = (performanceHistory, startDate) => {
 };
 
 class PerformancePageContainer extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      endDate: dayjs(),
-    };
-    gqlClient
-      .query({
-        query: GET_PROJECT_PERFORMANCE_TYPE,
-      })
-      .then(response => {
-        this.state = {
-          ...this.state,
-          performanceType: response.data.getProjectPerformanceType,
-        };
-      });
-  }
+  state = {
+    endDate: dayjs(),
+    performanceType: 'CASPR_TIME',
+  };
+
+  componentWillMount = async () => {
+    const response = await gqlClient.query({
+      query: GET_PROJECT_PERFORMANCE_TYPE,
+    });
+    this.setState({ performanceType: response.data.getProjectPerformanceType });
+  };
 
   setPerformanceType = performanceType => {
     this.setState({ performanceType });
