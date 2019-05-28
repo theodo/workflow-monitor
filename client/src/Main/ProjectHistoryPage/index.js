@@ -1,16 +1,38 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Query } from 'react-apollo';
 import { GET_TICKETS_HISTORY } from '../../Queries/Tickets';
 import ProjectHistoryPage from './view';
 import LoadingSpinner from '../../Components/LoadingSpinner';
+import { gqlClient } from 'Utils/Graphql';
+import { GET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
+import { SET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
 
-class ProjectHistoryPageContainer extends Component {
-  state = {
-    performanceType: 'casprTime',
-  };
+class ProjectHistoryPageContainer extends React.Component {
+  constructor() {
+    super();
+    gqlClient
+      .query({
+        query: GET_PROJECT_PERFORMANCE_TYPE,
+      })
+      .then(
+        response =>
+          (this.state = {
+            ...this.state,
+            performanceType: response.data.getProjectPerformanceType,
+          }),
+      );
+  }
 
   setPerformanceType = performanceType => {
     this.setState({ performanceType });
+
+    gqlClient.mutate({
+      mutation: SET_PROJECT_PERFORMANCE_TYPE,
+      variables: {
+        projectPerformanceType: performanceType,
+      },
+      refetchQueries: [{ query: GET_PROJECT_PERFORMANCE_TYPE }],
+    });
   };
 
   goToTicket = ticketId => (window.location.hash = `#/history/${ticketId}`);
