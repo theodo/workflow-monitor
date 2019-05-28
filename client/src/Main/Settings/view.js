@@ -6,8 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Project from './Project';
 import TaskEditor from '../TaskEditor/TaskEditor';
 import './Settings.css';
-import withDefaultTasks from 'Main/shared/WithDefaultTasks.hoc';
-import { compose } from 'redux';
 
 const styles = () => ({
   mv25: {
@@ -31,14 +29,14 @@ class Settings extends Component {
             <TaskEditor
               tasks={beginningTasksList.tasks}
               updateTasks={tasks =>
-                handleTasksChange(beginningTasksList.defaultTasksList.id, 'BEGINNING', tasks)
+                handleTasksChange(beginningTasksList.defaultTasksList, 'BEGINNING', tasks)
               }
             />
             <h3>End tasks</h3>
             <TaskEditor
               tasks={endTasksList.tasks}
               updateTasks={tasks =>
-                handleTasksChange(endTasksList.defaultTasksList.id, 'END', tasks)
+                handleTasksChange(endTasksList.defaultTasksList, 'END', tasks)
               }
             />
             <Divider variant="middle" className={classes.mv25} />
@@ -54,7 +52,4 @@ class Settings extends Component {
   }
 }
 
-export default compose(
-  withStyles(styles),
-  withDefaultTasks,
-)(Settings);
+export default withStyles(styles)(Settings);
