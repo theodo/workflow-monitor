@@ -35,9 +35,7 @@ class Settings extends Component {
             <h3>End tasks</h3>
             <TaskEditor
               tasks={endTasksList.tasks}
-              updateTasks={tasks =>
-                handleTasksChange(endTasksList.defaultTasksList, 'END', tasks)
-              }
+              updateTasks={tasks => handleTasksChange(endTasksList.defaultTasksList, 'END', tasks)}
             />
             <Divider variant="middle" className={classes.mv25} />
             <h2>Copy CLI token :</h2>

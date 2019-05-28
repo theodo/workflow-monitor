@@ -104,6 +104,7 @@ class TaskField extends Component {
   handleInputKeyPress = (event, addNewTask = false) => {
     if (event.which === 13) {
       event.preventDefault();
+      // if addNewTask add a task with skipUpdate = true to avoid the concurrency with the onBlur event
       if (addNewTask) this.props.addTask(true);
       else this.estimatedTimeRef.focus();
     }
@@ -251,8 +252,10 @@ class TaskEditor extends Component {
     tasks: this.props.tasks,
   };
 
-  updateTasks = tasks => {
-    this.props.updateTasks(tasks);
+  updateTasks = (tasks, skipUpdate) => {
+    if (!skipUpdate) {
+      this.props.updateTasks(tasks);
+    }
     this.setState({ tasks });
   };
 
@@ -266,25 +269,13 @@ class TaskEditor extends Component {
   };
 
   addTask = skipUpdate => {
-    if (skipUpdate) {
-      this.setState({
-        tasks: [
-          ...this.state.tasks,
-          {
-            id: uuid(),
-            description: '',
-            problems: '',
-            estimatedTimeText: '',
-            checks: ['mon check'],
-          },
-        ],
-      });
-    } else {
-      this.updateTasks([
+    this.updateTasks(
+      [
         ...this.state.tasks,
         { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
-      ]);
-    }
+      ],
+      skipUpdate,
+    );
   };
 
   removeTask = taskId => {
