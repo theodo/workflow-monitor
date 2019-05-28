@@ -22,11 +22,11 @@ class PlanningPanel extends Component {
   constructor(props) {
     super(props);
     this.savePlanningTask = debounce(1000, this.savePlanningTask);
-    const tasks = localStorage.getItem('planningTasks')
+    const ticketTasks = localStorage.getItem('planningTasks')
       ? JSON.parse(localStorage.getItem('planningTasks'))
       : [];
     this.state = {
-      tasks,
+      ticketTasks,
       beginningTasks: filterEmptyTasks(props.beginningTasksList.tasks),
       endTasks: filterEmptyTasks(props.endTasksList.tasks),
       checklists: [],
@@ -51,9 +51,9 @@ class PlanningPanel extends Component {
     cancelAlarm();
   }
 
-  handleTasksChange = async (key, tasks) => {
-    await this.setState({ [key]: tasks });
-    if (key === 'tasks') {
+  handleTasksChange = async (taskType, tasks) => {
+    await this.setState({ [taskType]: tasks });
+    if (taskType === 'ticketTasks') {
       this.savePlanningTask();
     }
     this.props.handlePlanningPanelChange({
@@ -78,16 +78,16 @@ class PlanningPanel extends Component {
   buildAllTasks = () => {
     return [
       ...filterEmptyTasks(this.state.beginningTasks),
-      ...filterEmptyTasks(this.state.tasks),
+      ...filterEmptyTasks(this.state.ticketTasks),
       ...filterEmptyTasks(this.state.endTasks),
     ];
   };
 
   savePlanningTask = () => {
-    localStorage.setItem('planningTasks', JSON.stringify(this.state.tasks));
+    localStorage.setItem('planningTasks', JSON.stringify(this.state.ticketTasks));
   };
   render() {
-    const { tasks, selectedChecklist, checklists, beginningTasks, endTasks } = this.state;
+    const { beginningTasks, ticketTasks, endTasks, selectedChecklist, checklists } = this.state;
     return (
       <div className="PlanningPanel">
         <Grid container spacing={24}>
@@ -122,26 +122,26 @@ class PlanningPanel extends Component {
                   </FormControl>
                 </Grid>
               </Grid>
-              <h5>Start Tasks :</h5>
+              <h5>Start Tasks</h5>
               <TaskEditor
                 tasks={beginningTasks}
                 updateTasks={tasks => this.handleTasksChange('beginningTasks', tasks)}
-                noAdd
+                isDefaultTask
               />
-              <h5>Tickets Tasks :</h5>
+              <h5>Tickets Tasks</h5>
               <TaskEditor
-                tasks={tasks}
-                updateTasks={tasks => this.handleTasksChange('tasks', tasks)}
+                tasks={ticketTasks}
+                updateTasks={tasks => this.handleTasksChange('ticketTasks', tasks)}
               />
-              <h5>End Tasks :</h5>
+              <h5>End Tasks</h5>
               <TaskEditor
                 tasks={endTasks}
                 updateTasks={tasks => this.handleTasksChange('endTasks', tasks)}
-                noAdd
+                isDefaultTask
               />
               <p>
                 Total estimated time :{' '}
-                {tasks ? getTotalTime(this.buildAllTasks(tasks), 'estimatedTime') : ''}
+                {ticketTasks ? getTotalTime(this.buildAllTasks(ticketTasks), 'estimatedTime') : ''}
               </p>
             </div>
           </Grid>
