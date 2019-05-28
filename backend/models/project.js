@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
       thirdPartyId: { type: DataTypes.STRING, unique: true },
       celerity: { type: DataTypes.FLOAT, defaultValue: 6.0 },
       dailyDevelopmentTime: { type: DataTypes.INTEGER, defaultValue: 21600000 }, // 6 * 3600 * 1000
+      performance_type: {
+        type: DataTypes.ENUM('CASPR_TIME', 'CELERITY_TYPE'),
+        defaultValue: 'CELERITY_TYPE',
+      },
     },
     {},
   );
