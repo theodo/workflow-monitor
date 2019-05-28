@@ -104,7 +104,7 @@ class TaskField extends Component {
   handleInputKeyPress = (event, addNewTask = false) => {
     if (event.which === 13) {
       event.preventDefault();
-      if (addNewTask) this.props.addTask();
+      if (addNewTask) this.props.addTask(true);
       else this.estimatedTimeRef.focus();
     }
   };
@@ -265,11 +265,26 @@ class TaskEditor extends Component {
     this.updateTasks(newTasks);
   };
 
-  addTask = () => {
-    this.updateTasks([
-      ...this.state.tasks,
-      { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
-    ]);
+  addTask = skipUpdate => {
+    if (skipUpdate) {
+      this.setState({
+        tasks: [
+          ...this.state.tasks,
+          {
+            id: uuid(),
+            description: '',
+            problems: '',
+            estimatedTimeText: '',
+            checks: ['mon check'],
+          },
+        ],
+      });
+    } else {
+      this.updateTasks([
+        ...this.state.tasks,
+        { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
+      ]);
+    }
   };
 
   removeTask = taskId => {
