@@ -9,7 +9,7 @@ const didTicketSucceed = (ticket, referenceTime) => {
 
 const TicketHistoryContainer = ({ performanceType, ticket, ...props }) => {
   const referenceTime =
-    performanceType === 'celerityTime' ? ticket.allocatedTime : ticket.estimatedTime;
+    performanceType === 'CELERITY_TIME' ? ticket.allocatedTime : ticket.estimatedTime;
 
   return (
     <TicketHistory

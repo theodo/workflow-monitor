@@ -1,7 +1,10 @@
 import React from 'react';
 import { Query } from 'react-apollo';
+import { gqlClient } from 'Utils/Graphql';
 import dayjs from 'dayjs';
 import { GET_DAILY_PERFORMANCE_HISTORY } from 'Queries/Tickets';
+import { GET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
+import { SET_PROJECT_PERFORMANCE_TYPE } from 'Queries/Projects';
 import PerformancePage from './view';
 import LoadingSpinner from 'Components/LoadingSpinner';
 
@@ -59,12 +62,29 @@ class PerformancePageContainer extends React.Component {
     super();
     this.state = {
       endDate: dayjs(),
-      performanceType: 'casprTime',
     };
+    gqlClient
+      .query({
+        query: GET_PROJECT_PERFORMANCE_TYPE,
+      })
+      .then(response => {
+        this.state = {
+          ...this.state,
+          performanceType: response.data.getProjectPerformanceType,
+        };
+      });
   }
 
   setPerformanceType = performanceType => {
     this.setState({ performanceType });
+
+    gqlClient.mutate({
+      mutation: SET_PROJECT_PERFORMANCE_TYPE,
+      variables: {
+        projectPerformanceType: performanceType,
+      },
+      refetchQueries: [{ query: GET_PROJECT_PERFORMANCE_TYPE }],
+    });
   };
 
   slideDateRangeWindow = direction => () => {

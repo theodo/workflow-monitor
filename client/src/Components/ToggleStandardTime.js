@@ -42,13 +42,13 @@ class ToggleStandardTime extends React.Component {
         onChange={this.handlePerformanceTypeChange}
       >
         <TooltipToggleButton
-          value="celerityTime"
+          value="CELERITY_TIME"
           title="Ticket is KO when dev time is greater than ticket points converted to time"
         >
           Celerity Time
         </TooltipToggleButton>
         <TooltipToggleButton
-          value="casprTime"
+          value="CASPR_TIME"
           title="Ticket is KO when dev time is over Caspr planning estimation"
         >
           Caspr Time

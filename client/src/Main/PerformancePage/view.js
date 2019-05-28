@@ -69,7 +69,7 @@ const chartOptions = {
 
 const PerformanceChart = ({ performanceType, chartInput }) => {
   const ordinatesData =
-    performanceType === 'celerityTime'
+    performanceType === 'CELERITY_TIME'
       ? chartInput.celerityFailedTicketsCount
       : chartInput.casprFailedTicketsCount;
 
