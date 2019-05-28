@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       celerity: { type: DataTypes.FLOAT, defaultValue: 6.0 },
       dailyDevelopmentTime: { type: DataTypes.INTEGER, defaultValue: 21600000 }, // 6 * 3600 * 1000
       performanceType: {
-        type: DataTypes.ENUM('CASPR_TIME', 'CELERITY_TYPE'),
-        defaultValue: 'CELERITY_TYPE',
+        type: DataTypes.ENUM('CASPR_TIME', 'CELERITY_TIME'),
+        defaultValue: 'CELERITY_TIME',
       },
     },
     {},
