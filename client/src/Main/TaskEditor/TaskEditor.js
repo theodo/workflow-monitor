@@ -139,11 +139,11 @@ class TaskField extends Component {
       connectDragPreview,
       removeTask,
       updateTask,
-      noAdd,
+      isDefaultTask,
     } = this.props;
     const { check, checkValue, estimatedTimeText, description } = this.state;
     const opacity = isDragging ? 0 : 1;
-    const backgroundColor = noAdd ? '#f2f2f2' : 'white';
+    const backgroundColor = isDefaultTask ? '#f2f2f2' : 'white';
 
     return connectDragPreview(
       connectDropTarget(
@@ -299,13 +299,13 @@ class TaskEditor extends Component {
   };
   render() {
     const { tasks } = this.state;
-    const { noAdd } = this.props;
+    const { isDefaultTask } = this.props;
     const taskFieldProps = {
       moveCard: this.moveCard,
       removeTask: this.removeTask,
       updateTask: this.updateTask,
       addTask: this.addTask,
-      noAdd,
+      isDefaultTask,
     };
     return (
       <div className="TaskEditor">
@@ -314,7 +314,7 @@ class TaskEditor extends Component {
             <TaskFieldWrapper key={task.id} index={i} task={task} {...taskFieldProps} />
           ))}
         </div>
-        {!noAdd && (
+        {!isDefaultTask && (
           <div style={{ ...dashedBlocStyle, ...addTaskButtonStyle }} onClick={this.addTask}>
             Add task
           </div>

@@ -14,7 +14,7 @@
     height: 40px;
     resize: none;
     box-sizing: border-box;
-  background: rgba(0,0,0,0);
+    background: rgba(0,0,0,0);
 }
 .TaskField_estimatedTime {
   text-align: center;
