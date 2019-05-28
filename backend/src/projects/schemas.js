@@ -1,10 +1,7 @@
 module.exports = `
 type Query {
-  dailyPerformanceHistory(startDate: String, endDate: String): [DailyTicketPerformance]
-  tickets(pagination: PaginationInput): TicketList
-  ticket(ticketId: Int): Ticket
+  getProjectPerformanceType: String
 }
-
 type Project {
   id: Int
   name: String
@@ -23,8 +20,9 @@ input ProjectSpeedInput {
   dailyDevelopmentTime: Int
 }
 type Mutation {
-  selectProject(project: ProjectInput): Project,
+  selectProject(project: ProjectInput): Project
   setCurrentProjectSpeed(projectSpeed: ProjectSpeedInput!): Int
+  setProjectPerformanceType(projectPerformanceType: String!): Int
 }
 
 `;

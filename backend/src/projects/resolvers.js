@@ -2,9 +2,9 @@ const projectDB = require('./db');
 
 module.exports = {
   Mutation: {
-    selectProject: async (_, { project }, { user }) => {
+    selectProject: (_, { project }, { user }) => {
       project.thirdPartyType = 'TRELLO';
-      return await projectDB.findOrCreateProject(project, user);
+      return projectDB.findOrCreateProject(project, user);
     },
     setCurrentProjectSpeed: async (_, { projectSpeed }, { user }) => {
       const project = user.get('currentProject');
@@ -14,6 +14,17 @@ module.exports = {
         project.id,
       );
       return 1;
+    },
+    setProjectPerformanceType: async (_, { projectPerformanceType }, { user }) => {
+      const project = user.get('currentProject');
+      await projectDB.setProjectPerformanceType(projectPerformanceType, project.id);
+      return 1;
+    },
+  },
+  Query: {
+    getProjectPerformanceType: (_, args, { user }) => {
+      const project = user.currentProject;
+      return project.performanceType;
     },
   },
 };

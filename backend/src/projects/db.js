@@ -6,6 +6,15 @@ class projectsDB {
     this.model = this.db.models.project;
   }
 
+  setProjectPerformanceType(projectPerformanceType, projectId) {
+    return this.model.update(
+      {
+        performanceType: projectPerformanceType,
+      },
+      { where: { id: projectId } },
+    );
+  }
+
   updateProject(projectCelerity, projectDailyDevelopmentTime, projectId) {
     return this.model.update(
       {
