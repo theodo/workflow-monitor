@@ -7,16 +7,11 @@
   <body>
     <h1>Bonjour tout le Monde!</h1>
     <div>
-      We are using node
-      <script>
-        document.write(process.versions.node);</script
-      >, Chrome
-      <script>
-        document.write(process.versions.chrome);</script
-      >, and Electron
-      <script>
-        document.write(process.versions.electron);</script
-      >.
+      <label for="example">Enter JWT token</label>
+      <input id="jwt-token-input" type="text" name="text" />
+    </div>
+    <div>
+      <button id="jwt-token-submit">Save</button>
     </div>
     <div>
       <p style="font-weight: bold">Ticket</p>
