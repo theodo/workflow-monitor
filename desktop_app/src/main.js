@@ -1,13 +1,16 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-let main = require('./cli.js');
+const { stateSubscription, gqlClient } = require('./api');
+const gql = require('graphql-tag');
+const MonitorReducers = require('./MonitorReducers');
+const casprCli = require('./cli');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win;
+let window;
 
-createWindow = () => {
+const main = () => {
   // Create the browser window.
-  win = new BrowserWindow({
+  window = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -15,21 +18,21 @@ createWindow = () => {
     }
   });
 
-  win.loadFile('src/index.html');
+  window.loadFile('src/index.html');
 
-  win.webContents.openDevTools();
+  window.webContents.openDevTools();
 
-  win.on('closed', () => {
-    win = null;
+  window.on('closed', () => {
+    window = null;
   });
 
-  main();
-  win.webContents.on('did-finish-load', () => {
-    win.webContents.send('current-task-update', 'hello');
+  window.webContents.on('did-finish-load', () => {
+    window.webContents.send('current-task-update', 'hello');
+    casprCli(window);
   });
 };
 
-app.on('ready', createWindow);
+app.on('ready', main);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -38,7 +41,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (win === null) {
+  if (window === null) {
     createWindow();
   }
 });
