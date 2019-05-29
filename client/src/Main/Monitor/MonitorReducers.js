@@ -1,5 +1,5 @@
+import { UPDATE_CURRENT_STATE } from 'Queries/Tickets';
 import uuid from 'uuid';
-import gql from 'graphql-tag';
 
 import { sendEvent } from 'Utils/AnalyticsUtils';
 import { gqlClient } from 'Utils/Graphql';
@@ -294,11 +294,10 @@ const MonitorReducers = (state = currentInitialState, action) => {
   ) {
     gqlClient
       .mutate({
-        mutation: gql`
-          mutation {
-            updateCurrentState(state:${JSON.stringify(JSON.stringify(newState))})
-          }
-        `,
+        mutation: UPDATE_CURRENT_STATE,
+        variables: {
+          state: JSON.stringify(newState),
+        },
       })
       .then(() => {});
   }

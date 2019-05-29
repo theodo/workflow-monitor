@@ -1,5 +1,5 @@
+import { SAVE_TICKET, SUBSCRIBE_STATE } from 'Queries/Tickets';
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
 import { gqlClient } from 'Utils/Graphql';
 import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/Button';
@@ -136,11 +136,7 @@ class Monitor extends Component {
     };
     subscriptionClient
       .subscribe({
-        query: gql`
-          subscription {
-            state
-          }
-        `,
+        query: SUBSCRIBE_STATE,
         variables: {},
       })
       .subscribe(
@@ -157,11 +153,10 @@ class Monitor extends Component {
     if (prevProps.step === MONITOR_STEPS.WORKFLOW && this.props.step === MONITOR_STEPS.RESULTS) {
       gqlClient
         .mutate({
-          mutation: gql`
-        mutation {
-          saveTicket(state:${JSON.stringify(JSON.stringify(this.props.monitorState))})
-        }
-        `,
+          mutation: SAVE_TICKET,
+          variables: {
+            state: JSON.stringify(this.props.monitorState),
+          },
         })
         .then(result => {
           this.props.setTicketId(result.data.saveTicket);

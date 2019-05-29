@@ -1,15 +1,11 @@
+import { SET_TICKET_THIRD_PARTY_ID } from 'Queries/Tickets';
 import React, { useState, useEffect } from 'react';
-import gql from 'graphql-tag';
 import { gqlClient } from 'Utils/Graphql';
 
 const setIdShortAndThirdPartyId = async (ticket, setIdShort) => {
   const trelloTicket = await window.Trello.get(`/cards/${ticket.thirdPartyId}`);
   gqlClient.mutate({
-    mutation: gql`
-      mutation($ticketId: Int!, $idShort: String!) {
-        setTicketThirdPartyId(ticketId: $ticketId, idShort: $idShort)
-      }
-    `,
+    mutation: SET_TICKET_THIRD_PARTY_ID,
     variables: {
       ticketId: ticket.id,
       idShort: trelloTicket.idShort,
