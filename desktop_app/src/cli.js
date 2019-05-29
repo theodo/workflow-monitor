@@ -1,4 +1,4 @@
-const readline = require('readline');
+const { ipcMain, globalShortcut } = require('electron');
 const { stateSubscription, gqlClient } = require('./api');
 const gql = require('graphql-tag');
 const MonitorReducers = require('./MonitorReducers');
@@ -10,14 +10,16 @@ const clear = () => {
   console.log('\x1Bc');
 };
 
-const main = () => {
+let store = MonitorReducers();
+
+const casprCli = window => {
   // askCredentials();
-  let store = MonitorReducers();
   // clear();
   // if (backMocked) {
   //   store = MonitorReducers(store, {type: 'UPDATE', state: data});
   //   render(store);
   // } else {
+  console.log('hey');
   gqlClient
     .query({
       query: gql`
@@ -31,8 +33,7 @@ const main = () => {
     .then(({ data: { currentUser: { state } } }) => {
       if (state) {
         store = MonitorReducers(store, { type: 'UPDATE', state: JSON.parse(state) });
-        // render(store);
-        console.log(store);
+        window.webContents.send('new-state', store);
       }
     })
     .catch(error => console.log(error));
@@ -41,41 +42,50 @@ const main = () => {
     {
       next(data) {
         store = MonitorReducers(store, { type: 'UPDATE', state: JSON.parse(data.data.state) });
-        // render(store);
-        console.log(store);
+        window.webContents.send('new-state', store);
       }
     },
     () => console.log('error')
   );
-  // }
 
-  // readline.emitKeypressEvents(process.stdin);
-  // process.stdin.resume();
-  // process.stdin.setRawMode(true);
-  // process.stdin.on('keypress', (str, key) => {
-  //   if (key.ctrl && key.name === 'c') {
-  //     process.exit();
-  //   } else {
-  //     if (store.currentStep == 'WORKFLOW') {
-  //       switch (key.name) {
-  //         case 'n':
-  //           store = MonitorReducers(store, { type: 'NEXT_TASK' });
-  //           break;
-  //         case 'p':
-  //           if (store.currentTaskIndex > 1) store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
-  //           break;
-  //         case 'space':
-  //           store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION' });
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //     render(store);
-  //   }
-  // });
+  ipcMain.on('previous-task', () => {
+    previousTaskTrigger(window);
+  });
 
-  console.log('Waiting for ticket start...');
+  ipcMain.on('next-task', () => {
+    nextTaskTrigger(window);
+  });
+
+  ipcMain.on('play-pause', () => {
+    playPauseTrigger(window);
+  });
+
+  globalShortcut.register('Alt+Shift+P', () => {
+    previousTaskTrigger(window);
+  });
+
+  globalShortcut.register('Alt+Shift+N', () => {
+    nextTaskTrigger(window);
+  });
+
+  globalShortcut.register('Alt+Shift+Space', () => {
+    playPauseTrigger(window);
+  });
 };
 
-module.exports = main;
+const previousTaskTrigger = window => {
+  store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
+  window.webContents.send('new-state', store);
+};
+
+const nextTaskTrigger = window => {
+  store = MonitorReducers(store, { type: 'NEXT_TASK' });
+  window.webContents.send('new-state', store);
+};
+
+const playPauseTrigger = window => {
+  store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION' });
+  window.webContents.send('new-state', store);
+};
+
+module.exports = casprCli;

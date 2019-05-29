@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Caspr Desktop</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <h1>Bonjour tout le Monde!</h1>
     <div>
       We are using node
       <script>
@@ -19,13 +19,18 @@
       >.
     </div>
     <div>
+      <p style="font-weight: bold">Ticket</p>
+      <p id="current-ticket"></p>
+    </div>
+    <div>
+      <p style="font-weight: bold">Task</p>
       <p id="current-task"></p>
     </div>
+    <button id="previous-task">Previous</button>
+    <button id="next-task">Next</button>
+    <button id="play-pause">Play / Pause</button>
+    <script>
+      require('./renderer.js');
+    </script>
   </body>
-  <script>
-    require('electron').ipcRenderer.on('current-task-update', (event, message) => {
-      console.log(message);
-      document.getElementById('current-task').innerHTML = message;
-    });
-  </script>
 </html>

@@ -12,7 +12,7 @@ const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api
 const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInRyZWxsb0lkIjoiNTY0OWFhODM5MTRiYTA2ZmRjYjE5YjVjIiwiaWF0IjoxNTU5MDUxNTM2fQ.4BuOAYXHVdxzDJK9vlv6KsfRJw1bAOhCKT7JVeG1ylo';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInRyZWxsb0lkIjoiNTY0OWFhODM5MTRiYTA2ZmRjYjE5YjVjIiwiaWF0IjoxNTU5MTE0MjkxfQ.-Sj0UkMsdgEkgFbIRJCNLVZJh7h5VkBAoPdGoJMuy10';
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
