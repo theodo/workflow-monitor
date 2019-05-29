@@ -41,6 +41,12 @@ const styles = theme => ({
   textDecorationReset: {
     textDecoration: 'none',
   },
+  fixPaddingBugMaterialUiV4: {
+    [theme.breakpoints.up('sm')]: {
+      paddingLeft: 24,
+      paddingRight: 24,
+    },
+  },
   root: {
     display: 'flex',
     height: '100%,',
@@ -190,7 +196,12 @@ export class Main extends Component {
               onClick={this.preventOn(!isProjectSelected)}
               className={classes.textDecorationReset}
             >
-              <ListItem selected={isCurrentPage('')} disabled={!isProjectSelected} button>
+              <ListItem
+                selected={isCurrentPage('')}
+                disabled={!isProjectSelected}
+                button
+                className={classes.fixPaddingBugMaterialUiV4}
+              >
                 <ListItemIcon>
                   <TrelloBoardIcon size="25px" color={appColors.darkGrey} />
                 </ListItemIcon>
@@ -206,6 +217,7 @@ export class Main extends Component {
                 selected={isCurrentPage('monitor')}
                 disabled={!isProjectSelected || !isTrelloCardSelected}
                 button
+                className={classes.fixPaddingBugMaterialUiV4}
               >
                 <ListItemIcon>
                   <ChecklistIcon size="25px" color={appColors.darkGrey} />
@@ -218,7 +230,12 @@ export class Main extends Component {
               onClick={this.preventOn(!isProjectSelected)}
               className={classes.textDecorationReset}
             >
-              <ListItem selected={isCurrentPage('history')} disabled={!isProjectSelected} button>
+              <ListItem
+                selected={isCurrentPage('history')}
+                disabled={!isProjectSelected}
+                button
+                className={classes.fixPaddingBugMaterialUiV4}
+              >
                 <ListItemIcon>
                   <HistoryIcon />
                 </ListItemIcon>
@@ -230,7 +247,11 @@ export class Main extends Component {
               onClick={this.preventOn(!isProjectSelected)}
               className={classes.textDecorationReset}
             >
-              <ListItem selected={isCurrentPage('performance')} button>
+              <ListItem
+                selected={isCurrentPage('performance')}
+                button
+                className={classes.fixPaddingBugMaterialUiV4}
+              >
                 <ListItemIcon>
                   <LineChartIcon size="25px" color={appColors.darkGrey} />
                 </ListItemIcon>
@@ -246,6 +267,7 @@ export class Main extends Component {
                 selected={isCurrentPage('problem-categories')}
                 disabled={!isProjectSelected}
                 button
+                className={classes.fixPaddingBugMaterialUiV4}
               >
                 <ListItemIcon>
                   <KaizenIcon color={appColors.lightBlack} />
@@ -254,7 +276,11 @@ export class Main extends Component {
               </ListItem>
             </Link>
             <Link to="/settings" className={classes.textDecorationReset}>
-              <ListItem selected={isCurrentPage('settings')} button>
+              <ListItem
+                selected={isCurrentPage('settings')}
+                button
+                className={classes.fixPaddingBugMaterialUiV4}
+              >
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>

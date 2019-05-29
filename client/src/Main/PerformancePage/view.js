@@ -107,7 +107,7 @@ const PerformancePage = ({
   return (
     <div className={classes.chartContainer}>
       <div className={classes.performanceToggler}>
-        <h3 className={classes.title}>Performance Indicator</h3>
+        <h2 className={classes.title}>Performance Indicator</h2>
         <ToggleStandardTime
           initialPerformanceType={performanceType}
           setPerformanceType={setPerformanceType}
