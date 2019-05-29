@@ -165,11 +165,11 @@ const mapDispatchToProps = dispatch => {
 };
 
 const ConnectedTaskRow = compose(
+  withStyles(style),
   connect(
     null,
     mapDispatchToProps,
   ),
-  withStyles(style),
 )(TaskRow);
 
 class TasksLateralPanel extends Component {

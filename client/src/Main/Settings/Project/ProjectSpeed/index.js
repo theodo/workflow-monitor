@@ -1,7 +1,10 @@
+import { withStyles } from '@material-ui/core';
+import { withSnackbar } from 'notistack/build';
 import { connect } from 'react-redux';
 import { saveProjectSpeedSettings } from 'Login/LoginActions';
+import { compose } from 'redux';
 
-import ProjectSpeed from './view';
+import ProjectSpeed, { styles } from './view';
 
 const mapStateToProps = state => {
   return {
@@ -15,7 +18,11 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withStyles(styles),
+  withSnackbar,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
 )(ProjectSpeed);

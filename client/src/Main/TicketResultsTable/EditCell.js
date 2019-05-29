@@ -29,7 +29,7 @@ const MultilineEditCell = ({ value, onValueChange }) => (
       multiline
       onChange={event => onValueChange(event.target.value)}
       type="text"
-      value={value}
+      value={value ? value : ''}
     />
   </TableCell>
 );

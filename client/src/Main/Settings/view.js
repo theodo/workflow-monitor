@@ -19,7 +19,7 @@ class Settings extends Component {
     const { classes, beginningTasksList, endTasksList, handleTasksChange, copyToken } = this.props;
     return (
       <div className="Settings">
-        <Grid container spacing={24}>
+        <Grid container spacing={3}>
           <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <Project />
