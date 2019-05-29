@@ -1,6 +1,6 @@
+import { SELECT_PROJECT } from 'Queries/Projects';
 import React, { Component } from 'react';
 import Select from 'react-select';
-import gql from 'graphql-tag';
 import { withStyles } from '@material-ui/core/styles';
 import { withSnackbar } from 'notistack';
 import ProjectSpeed from './ProjectSpeed';
@@ -59,15 +59,7 @@ class Projects extends Component {
 
     gqlClient
       .mutate({
-        mutation: gql`
-          mutation($project: ProjectInput) {
-            selectProject(project: $project) {
-              id
-              name
-              thirdPartyId
-            }
-          }
-        `,
+        mutation: SELECT_PROJECT,
         variables: {
           project: graphqlProject,
         },

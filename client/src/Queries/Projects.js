@@ -17,3 +17,13 @@ export const GET_PROJECT_PERFORMANCE_TYPE = gql`
     getProjectPerformanceType
   }
 `;
+
+export const SELECT_PROJECT = gql`
+  mutation($project: ProjectInput) {
+    selectProject(project: $project) {
+      id
+      name
+      thirdPartyId
+    }
+  }
+`;
