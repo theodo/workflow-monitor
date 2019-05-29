@@ -23,7 +23,7 @@ const DurationEditCell = ({ value, onValueChange }) => (
   </TableCell>
 );
 
-const MultilineEditCell = ({ value, onValueChange, ...props }) => (
+const MultilineEditCell = ({ value, onValueChange }) => (
   <TableCell>
     <TextField
       multiline

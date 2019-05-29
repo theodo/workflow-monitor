@@ -173,9 +173,6 @@ const ConnectedTaskRow = compose(
 )(TaskRow);
 
 class TasksLateralPanel extends Component {
-  isNotTaskInResults(task) {
-    return this.props.results.find(arrayTask => arrayTask.id === task.id) === undefined;
-  }
   render() {
     return (
       <div className="TasksLateralPanel">
