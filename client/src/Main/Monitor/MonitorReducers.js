@@ -14,9 +14,7 @@ import {
   UPDATE,
   BACK_TO_PLANNING,
   SET_CURRENT_TASK_FIELDS,
-  SET_TASK_FIELDS,
   SET_TICKET_ID,
-  SAVE_RESULTS,
   UPDATE_TASK_TIMER,
 } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
@@ -268,9 +266,6 @@ const MonitorReducers = (state = currentInitialState, action) => {
     case UPDATE:
       newState = action.state;
       break;
-    case SET_TASK_FIELDS:
-      newState = updateTask(state, action.taskIndex, action.fields);
-      break;
     case SET_TICKET_ID:
       newState = {
         ...state,
@@ -280,18 +275,11 @@ const MonitorReducers = (state = currentInitialState, action) => {
     case SET_CURRENT_TASK_FIELDS:
       newState = updateTask(state, state.currentTaskIndex, action.fields);
       break;
-    case SAVE_RESULTS:
-      newState = state;
-      break;
     default:
       newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
-  if (
-    action.type !== UPDATE &&
-    action.type !== SET_CURRENT_TASK_FIELDS &&
-    action.type !== SET_TASK_FIELDS
-  ) {
+  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS) {
     gqlClient
       .mutate({
         mutation: UPDATE_CURRENT_STATE,
