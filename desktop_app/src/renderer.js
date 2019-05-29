@@ -15,10 +15,16 @@ ipcRenderer.on('new-state', (event, newState) => {
     case MONITOR_STEPS.WORKFLOW:
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = state.tasks[state.currentTaskIndex].description;
+      new Notification(state.currentTrelloCard.name, {
+        body: state.tasks[state.currentTaskIndex].description
+      });
       break;
     case MONITOR_STEPS.RESULTS:
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = 'Done';
+      new Notification(state.currentTrelloCard.name, {
+        body: 'Ticket done!'
+      });
       break;
     default:
       document.getElementById('current-ticket').innerHTML = 'Waiting for ticket start';

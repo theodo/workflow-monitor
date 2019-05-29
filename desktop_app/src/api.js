@@ -8,7 +8,7 @@ const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
 const { getToken } = require('./auth.js');
 
-const dev = false;
+const dev = true;
 const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
 const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
 
