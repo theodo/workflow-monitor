@@ -15,7 +15,7 @@ ipcRenderer.on('new-state', (event, newState) => {
   switch (state.currentStep) {
     case MONITOR_STEPS.WORKFLOW:
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;
-      document.getElementById('current-task').innerHTML = state.tasks[state.currentTaskIndex].label;
+      document.getElementById('current-task').innerHTML = state.tasks[state.currentTaskIndex].description;
       break;
     case MONITOR_STEPS.RESULTS:
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;

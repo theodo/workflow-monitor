@@ -6,18 +6,15 @@ const { WebSocketLink } = require('apollo-link-ws');
 const gql = require('graphql-tag');
 const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
+const { getToken } = require('./auth.js');
 
 const dev = true;
 const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
 const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInRyZWxsb0lkIjoiNTY0OWFhODM5MTRiYTA2ZmRjYjE5YjVjIiwiaWF0IjoxNTU5MTE0MjkxfQ.-Sj0UkMsdgEkgFbIRJCNLVZJh7h5VkBAoPdGoJMuy10';
-
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  // const token = getToken();
-
+  const token = getToken();
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -32,7 +29,7 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: token
+      authToken: getToken()
     }
   },
   webSocketImpl: ws
