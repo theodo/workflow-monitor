@@ -17,28 +17,35 @@ const style = {
   },
 };
 
-const ProblemCategoryPage = props => (
-  <Grid container spacing={0} className={props.classes.fullPageHeightStyle}>
+const ProblemCategoryPage = ({
+  classes,
+  handleDateChange,
+  startDate,
+  endDate,
+  chartData,
+  chartOptions,
+}) => (
+  <Grid container spacing={0} className={classes.fullPageHeightStyle}>
     <Grid item xs={1} />
     <Grid item xs={10}>
-      <h3 className={props.classes.title}>Pareto of Problem Categories</h3>
+      <h3 className={classes.title}>Pareto of Problem Categories</h3>
       <>
         <DatePicker
-          className={props.classes.datePicker}
+          className={classes.datePicker}
           margin="normal"
-          label={props.startDate ? 'From' : 'From start'}
-          value={props.startDate}
-          onChange={date => props.handleDateChange('startDate', date)}
+          label={startDate ? 'From' : 'From start'}
+          value={startDate}
+          onChange={date => handleDateChange('startDate', date)}
         />
         <DatePicker
-          className={props.classes.datePicker}
+          className={classes.datePicker}
           margin="normal"
-          label={props.endDate ? 'To' : 'to now'}
-          value={props.endDate}
-          onChange={date => props.handleDateChange('endDate', date)}
+          label={endDate ? 'To' : 'to now'}
+          value={endDate}
+          onChange={date => handleDateChange('endDate', date)}
         />
       </>
-      <HorizontalBar beginAtZero data={props.chartData} options={props.chartOptions} />
+      <HorizontalBar beginAtZero data={chartData} options={chartOptions} />
     </Grid>
     <Grid item xs={1} />
   </Grid>

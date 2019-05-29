@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { gqlClient } from 'Utils/Graphql';
-import {
-  GET_PROBLEM_CATEGORIES,
-  GET_PROBLEM_CATEGORIES_PARETO,
-  ADD_PROBLEM_CATEGORY,
-} from 'Queries/Categories';
-import { GET_TICKETS_HISTORY } from 'Queries/Tickets';
+import { GET_PROBLEM_CATEGORIES_PARETO } from 'Queries/Categories';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 import { appColors } from 'ui';
 import ProblemCategoryPage from './view';
@@ -49,24 +43,6 @@ class ProblemCategoryPageContainer extends Component {
 class ProblemCategoryPageMutationContainer extends Component {
   state = {
     loading: false,
-  };
-  addProblemCategory = description => {
-    this.setState({ loading: true });
-    gqlClient
-      .mutate({
-        mutation: ADD_PROBLEM_CATEGORY,
-        variables: {
-          description,
-        },
-        refetchQueries: [
-          { query: GET_PROBLEM_CATEGORIES },
-          { query: GET_PROBLEM_CATEGORIES_PARETO },
-          { query: GET_TICKETS_HISTORY },
-        ],
-      })
-      .then(() => {
-        this.setState({ loading: false });
-      });
   };
   render() {
     const { loading: loadingQuery, problemCategories, ...restProps } = this.props;
@@ -126,7 +102,6 @@ class ProblemCategoryPageMutationContainer extends Component {
     return (
       <ProblemCategoryPage
         {...restProps}
-        addProblemCategory={this.addProblemCategory}
         chartData={chartData}
         chartOptions={chartOptions}
         loading={loadingQuery || loadingMutation}
