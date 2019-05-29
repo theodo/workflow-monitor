@@ -5,12 +5,9 @@ export const PREVIOUS_TASK = 'PREVIOUS_TASK';
 export const RESET_MONITOR = 'RESET_MONITOR';
 export const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
 export const UPDATE_TASK_TIMER = 'UPDATE_TASK_TIMER';
-export const SET_CURRENT_TRELLO_CARD = 'SET_CURRENT_TRELLO_CARD';
 export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
 export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
-export const SET_TASK_FIELDS = 'SET_TASK_FIELDS';
 export const UPDATE = 'UPDATE';
-export const SAVE_RESULTS = 'SAVE_RESULTS';
 export const SET_TICKET_ID = 'SET_TICKET_ID';
 
 export function initSession() {
@@ -74,14 +71,6 @@ export function setCurrentTaskFields(fields) {
   };
 }
 
-export function setTaskFields(taskIndex, fields) {
-  return {
-    type: SET_TASK_FIELDS,
-    taskIndex,
-    fields,
-  };
-}
-
 export function setTicketId(ticketId) {
   return {
     type: SET_TICKET_ID,
@@ -93,11 +82,5 @@ export function update(state) {
   return {
     type: UPDATE,
     state,
-  };
-}
-
-export function saveResults() {
-  return {
-    type: SAVE_RESULTS,
   };
 }
