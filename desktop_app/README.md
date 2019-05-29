@@ -1,0 +1,1 @@
+To start the project, launch `npm install` then `npm start`
