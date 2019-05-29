@@ -1,7 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { stateSubscription, gqlClient } = require('./api');
-const gql = require('graphql-tag');
-const MonitorReducers = require('./MonitorReducers');
+const { app, BrowserWindow } = require('electron');
 const casprCli = require('./cli');
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -19,6 +16,8 @@ const main = () => {
   });
 
   window.loadFile('src/index.html');
+
+  // window.webContents.openDevTools();
 
   window.on('closed', () => {
     window = null;

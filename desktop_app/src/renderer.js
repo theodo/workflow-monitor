@@ -1,4 +1,6 @@
 const { ipcRenderer } = require('electron');
+const { formatMilliSecondToTime } = require('./Utils/TimeUtils');
+const { getTimer } = require('./Utils/Chrono');
 
 const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
@@ -11,19 +13,29 @@ let state = {};
 ipcRenderer.on('new-state', (event, newState) => {
   state = newState;
 
+  console.log(state);
   switch (state.currentStep) {
     case MONITOR_STEPS.WORKFLOW:
+      const currentTask = state.tasks[state.currentTaskIndex];
+
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;
-      document.getElementById('current-task').innerHTML = state.tasks[state.currentTaskIndex].description;
-      new Notification(state.currentTrelloCard.name, {
-        body: state.tasks[state.currentTaskIndex].description
+      document.getElementById('current-task').innerHTML = currentTask.description;
+
+      const sessionStatus = state.dateLastPause ? 'paused' : 'running';
+      const elapsedTime = formatMilliSecondToTime(getTimer(state.taskChrono, state.dateLastPause));
+      const estimatedTime = formatMilliSecondToTime(currentTask.estimatedTime);
+
+      new Notification(`Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`, {
+        body: state.tasks[state.currentTaskIndex].description,
+        silent: true
       });
       break;
     case MONITOR_STEPS.RESULTS:
       document.getElementById('current-ticket').innerHTML = state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = 'Done';
       new Notification(state.currentTrelloCard.name, {
-        body: 'Ticket done!'
+        body: 'Ticket done!',
+        silent: true
       });
       break;
     default:
