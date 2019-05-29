@@ -252,6 +252,10 @@ class TaskEditor extends Component {
     tasks: this.props.tasks,
   };
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ tasks: nextProps.tasks });
+  }
+
   updateTasks = (tasks, skipUpdate) => {
     if (!skipUpdate) {
       this.props.updateTasks(tasks);

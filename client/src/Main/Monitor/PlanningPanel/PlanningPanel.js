@@ -72,7 +72,7 @@ class PlanningPanel extends Component {
         .forEach(task => {
           tasksAsString += `${task.name}\n`;
         });
-      this.handleTasksDefinitionChange(formatStringToTasks(tasksAsString));
+      this.handleTasksChange('ticketTasks', formatStringToTasks(tasksAsString));
     });
   };
   buildAllTasks = () => {
