@@ -9,7 +9,6 @@ const MONITOR_STEPS = {
 let state = {};
 
 ipcRenderer.on('new-state', (event, newState) => {
-  console.log(newState);
   state = newState;
 
   switch (state.currentStep) {
@@ -25,6 +24,11 @@ ipcRenderer.on('new-state', (event, newState) => {
       document.getElementById('current-ticket').innerHTML = 'Waiting for ticket start';
       break;
   }
+});
+
+document.getElementById('jwt-token-submit').addEventListener('click', () => {
+  console.log(document.getElementById('jwt-token-input').value);
+  ipcRenderer.send('jwt-token-update', document.getElementById('jwt-token-input').value);
 });
 
 document.getElementById('previous-task').addEventListener('click', () => {
