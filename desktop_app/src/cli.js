@@ -1,6 +1,7 @@
 const { ipcMain, globalShortcut } = require('electron');
 const { stateSubscription, gqlClient } = require('./api');
 const gql = require('graphql-tag');
+const storage = require('electron-json-storage-sync');
 const MonitorReducers = require('./MonitorReducers');
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
@@ -20,6 +21,10 @@ const casprCli = window => {
   //   render(store);
   // } else {
   console.log('hey');
+  storage.set(
+    'jwt_token',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjksInRyZWxsb0lkIjoiNTY0OWFhODM5MTRiYTA2ZmRjYjE5YjVjIiwiaWF0IjoxNTU5MTM0MzQxfQ.LjgksdeQZ-NFDcvK7oEpBZ8JUBzXZTYrN0kRoT3LMNU'
+  );
   gqlClient
     .query({
       query: gql`
