@@ -101,7 +101,7 @@ class TaskPanel extends Component {
   render() {
     const { currentTask, dateLastPause, taskChrono } = this.props;
     return (
-      <Grid className="TaskPanel" container spacing={24} style={fullPageHeightStyle}>
+      <Grid className="TaskPanel" container spacing={3} style={fullPageHeightStyle}>
         <Grid item xs={1} />
         <Grid item xs={10}>
           {/* TODO Remove the check and currentTask.label, let only currentTask.description,
@@ -139,7 +139,7 @@ class TaskPanel extends Component {
               />
             </div>
           )}
-          <Grid container spacing={24} alignItems="center">
+          <Grid container spacing={3} alignItems="center">
             <Grid item xs={7}>
               <h3>Root cause (why the problem occurred)</h3>
               <TextField

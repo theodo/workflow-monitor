@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
-import { Input, withStyles, Button, TextField } from '@material-ui/core';
+import { Input, Button, TextField } from '@material-ui/core';
 import { gqlClient } from 'Utils/Graphql';
-import { withSnackbar } from 'notistack';
 import { SET_PROJECT_SPEED } from '../../../../Queries/Projects';
 
-const styles = () => ({
+export const styles = () => ({
   mt10: {
     marginTop: '10px',
   },
@@ -96,4 +95,4 @@ class ProjectSpeed extends Component {
   }
 }
 
-export default withStyles(styles)(withSnackbar(ProjectSpeed));
+export default ProjectSpeed;

@@ -18,6 +18,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HistoryIcon from '@material-ui/icons/History';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { compose } from 'redux';
 
 import { ChecklistIcon, KaizenIcon, LineChartIcon, TrelloBoardIcon } from 'ui/Icons';
 import { appColors } from 'ui';
@@ -83,9 +84,9 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: theme.spacing.unit * 7,
+    width: theme.spacing(7),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing.unit * 9,
+      width: theme.spacing(9),
     },
   },
   toolbar: {
@@ -292,4 +293,7 @@ const mapStateToProps = state => ({
   isTrelloCardSelected: !!state.MonitorReducers.currentTrelloCard,
 });
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Main));
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps),
+)(Main);

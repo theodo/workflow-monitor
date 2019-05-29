@@ -90,7 +90,7 @@ class PlanningPanel extends Component {
     const { beginningTasks, ticketTasks, endTasks, selectedChecklist, checklists } = this.state;
     return (
       <div className="PlanningPanel">
-        <Grid container spacing={24}>
+        <Grid container spacing={3}>
           <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <div className="PlanningPanel-content">

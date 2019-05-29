@@ -1,8 +1,11 @@
+import { withStyles } from '@material-ui/core';
 import { initSession } from 'Main/Monitor/MonitorActions';
 import { selectProject } from 'Login/LoginActions';
+import { withSnackbar } from 'notistack/build';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 
-import Project from './view';
+import Project, { styles } from './view';
 import { saveSettings } from '../SettingsActions';
 
 const mapStateToProps = state => {
@@ -21,7 +24,11 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withStyles(styles),
+  withSnackbar,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
 )(Project);

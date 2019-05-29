@@ -1,13 +1,11 @@
 import { SELECT_PROJECT } from 'Queries/Projects';
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { withStyles } from '@material-ui/core/styles';
-import { withSnackbar } from 'notistack';
 import ProjectSpeed from './ProjectSpeed';
 
 import { gqlClient } from 'Utils/Graphql';
 
-const styles = () => ({
+export const styles = () => ({
   mt10: {
     marginTop: '10px',
   },
@@ -91,4 +89,4 @@ class Projects extends Component {
   }
 }
 
-export default withStyles(styles)(withSnackbar(Projects));
+export default Projects;
