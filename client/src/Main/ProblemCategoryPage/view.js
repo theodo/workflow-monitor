@@ -28,7 +28,7 @@ const ProblemCategoryPage = ({
   <Grid container spacing={0} className={classes.fullPageHeightStyle}>
     <Grid item xs={1} />
     <Grid item xs={10}>
-      <h3 className={classes.title}>Pareto of Problem Categories</h3>
+      <h2 className={classes.title}>Pareto of Problem Categories</h2>
       <>
         <DatePicker
           className={classes.datePicker}

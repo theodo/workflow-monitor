@@ -8,15 +8,22 @@ const fullPageHeightStyle = {
   overflow: 'auto',
 };
 
+const pageHeader = {
+  display: 'flex',
+  justifyContent: 'space-between',
+};
+
 const BackLink = props => <Link to="/history" {...props} />;
 
 class TicketPage extends React.Component {
   render() {
     return (
       <div style={fullPageHeightStyle}>
-        <h3>
-          <Button component={BackLink}>Back</Button> {this.props.ticketData.description}
-        </h3>
+        <div style={pageHeader}>
+          <Button component={BackLink}>Back</Button>
+          <h2>{this.props.ticketData.description}</h2>
+          <div />
+        </div>
         <TicketResultsTable ticketId={this.props.ticketData.id} />
       </div>
     );

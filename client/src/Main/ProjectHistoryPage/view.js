@@ -41,7 +41,7 @@ const ProjectHistoryPage = ({
     <Grid container spacing={0} className={classes.fullPageHeightStyle}>
       <Grid item xs={1} />
       <Grid item xs={10}>
-        <h3>Ticket history</h3>
+        <h2>Ticket history</h2>
         <ToggleStandardTime
           initialPerformanceType={performanceType}
           setPerformanceType={setPerformanceType}
