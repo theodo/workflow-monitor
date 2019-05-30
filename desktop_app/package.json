@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "build --dir",
-    "dist": "build"
+    "dist": "electron-builder --dmg"
   },
   "build": {
     "appId": "app.electron.caspr",
