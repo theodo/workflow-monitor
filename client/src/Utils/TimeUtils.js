@@ -58,3 +58,7 @@ export const parseMilliSecondFromFormattedTime = timeString => {
 
 export const parseTextMinutesFromMilliSeconds = milliSeconds =>
   Math.floor(milliSeconds / (1000 * 60)).toString();
+
+export const OffSetHours = () => {
+  return (new Date(0).getHours() - new Date(0).getUTCHours()) * 60 * 60 * 1000;
+};
