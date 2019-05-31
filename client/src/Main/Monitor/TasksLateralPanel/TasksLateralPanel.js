@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 
-import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+import { formatMilliSecondToTime, OffSetHours } from 'Utils/TimeUtils';
 
 import Chrono, { getTimer } from '../Chrono/Chrono';
 import './TasksLateralPanel.css';
@@ -10,8 +10,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import IconButton from '@material-ui/core/IconButton';
 import { connect } from 'react-redux';
 import { playOrPauseSession, updateTaskTimer } from '../MonitorActions';
-import { parseMilliSecondFromFormattedTime } from '../../../Utils/TimeUtils';
-import { TextField, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
+import { KeyboardTimePicker } from '@material-ui/pickers';
 import { compose } from 'redux';
 
 const style = {
@@ -35,21 +35,28 @@ class TaskRow extends PureComponent {
       this.setState({
         wasPausedBeforeEdit: true,
         editTimeMode: true,
-        editedTime: getTimer(this.props.taskChrono, this.props.dateLastPause),
+        editedTime: new Date(
+          getTimer(this.props.taskChrono, this.props.dateLastPause) - OffSetHours(),
+        ),
       });
     } else {
       this.props.playOrPauseSession();
       this.setState({
         wasPausedBeforeEdit: false,
         editTimeMode: true,
-        editedTime: getTimer(this.props.taskChrono, this.props.dateLastPause),
+        editedTime: new Date(
+          getTimer(this.props.taskChrono, this.props.dateLastPause) - OffSetHours(),
+        ),
       });
     }
   };
 
   saveEditedTime = () => {
     this.setState({ ...this.state, editTimeMode: false });
-    const delta = getTimer(this.props.taskChrono, this.props.dateLastPause) - this.state.editedTime;
+    const delta =
+      getTimer(this.props.taskChrono, this.props.dateLastPause) -
+      OffSetHours() -
+      new Date(this.state.editedTime);
     this.props.updateTaskTimer(delta);
     if (!this.state.wasPausedBeforeEdit) {
       this.props.playOrPauseSession();
@@ -57,9 +64,16 @@ class TaskRow extends PureComponent {
   };
 
   handleTimerChange = time => {
+    // time is a dayjs date which is set to the current date with only the hours, minutes and seconds set corresponding to the input
+    const newTime = new Date(
+      time.hour() * 60 * 60 * 1000 +
+        time.minute() * 60 * 1000 +
+        time.second() * 1000 -
+        OffSetHours(),
+    );
     this.setState({
       ...this.state,
-      editedTime: time,
+      editedTime: newTime,
     });
   };
 
@@ -98,16 +112,13 @@ class TaskRow extends PureComponent {
                 />
               )}
               {this.props.isCurrent && this.state.editTimeMode && (
-                <TextField
-                  id="time"
-                  type="time"
-                  value={formatMilliSecondToTime(this.state.editedTime)}
-                  onChange={event =>
-                    this.handleTimerChange(parseMilliSecondFromFormattedTime(event.target.value))
-                  }
-                  inputProps={{
-                    step: 1,
-                  }}
+                <KeyboardTimePicker
+                  ampm={false}
+                  format="HH:mm:ss"
+                  views={['hours', 'minutes', 'seconds']}
+                  label="Timer"
+                  value={this.state.editedTime}
+                  onChange={time => this.handleTimerChange(time)}
                 />
               )}
             </div>
