@@ -1,20 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { hash } from 'bcrypt';
-
-import { UserRepository } from './user.repository';
-import { UserDto } from './interfaces/user.dto';
-
-const SALT_ROUNDS = 10;
+import { User } from './user.entity';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(@Inject('UserRepository') private readonly userRepository: typeof User) {}
+  createUser = async (user: User) => {
+    return await this.userRepository.create(user);
+  };
 
-  createUser = async (userDto: UserDto) => {
-    const plainPassword = userDto.password;
-    const encryptedPassword = await hash(plainPassword, SALT_ROUNDS);
-    const createdUser = await this.userRepository.save({ ...userDto, password: encryptedPassword });
-    const { password, ...createdUserDto } = createdUser;
-    return createdUserDto;
+  findUser = async (userTrelloId: string) => {
+    return this.userRepository.findOne({
+      where: { trelloId: userTrelloId },
+    });
+  };
+
+  // TODO: add include
+  findOrCreateUser = async (userTrelloId: string, fullName: string) => {
+    const response = await this.userRepository.findOrCreate({
+      where: { trelloId: userTrelloId },
+      defaults: { fullName },
+    });
+    return response[0];
   };
 }

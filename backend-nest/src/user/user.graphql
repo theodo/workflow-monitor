@@ -1,0 +1,10 @@
+type Query {
+  hello: String!
+  currentUser: User
+}
+type User {
+  id: String,
+  fullName: String,
+  trelloId: String,
+  state: String,
+}
