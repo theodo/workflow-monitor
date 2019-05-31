@@ -1,6 +1,7 @@
+import { KeyboardTimePicker } from '@material-ui/pickers';
 import React, { Component } from 'react';
-import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
-import { Input, Button, TextField } from '@material-ui/core';
+import { OffSetHours, resetDayjsDateToUnixEpoch } from 'Utils/TimeUtils';
+import { Button, TextField } from '@material-ui/core';
 import { gqlClient } from 'Utils/Graphql';
 import { SET_PROJECT_SPEED } from '../../../../Queries/Projects';
 
@@ -17,8 +18,8 @@ export const styles = () => ({
   mr40: {
     marginRight: 40,
   },
-  w40: {
-    width: '40px',
+  w150: {
+    width: '150px',
   },
 });
 
@@ -59,31 +60,29 @@ class ProjectSpeed extends Component {
   render() {
     return (
       <div>
-        <label htmlFor="project-celerity" className={this.props.classes.mr20}>
-          <span>Project celerity :</span>
-        </label>
-        <Input
-          className={`${this.props.classes.mr40} ${this.props.classes.w40}`}
+        <TextField
+          className={`${this.props.classes.mr40} ${this.props.classes.w150}`}
           id="project-celerity"
           name="project-celerity"
           type="number"
+          label="Project celerity :"
           min="0"
           step="0.1"
           value={this.state.celerity}
           onChange={event => this.onSelectedProjectCelerityChange(event.target.value)}
         />
-        <label htmlFor="project-work-hours-per-day" className={this.props.classes.mr20}>
-          <span>Work hours per day :</span>
-        </label>
-        <TextField
+        <KeyboardTimePicker
           className={this.props.classes.mr40}
           id="project-work-hours-per-day"
           name="project-work-hours-per-day"
-          type="time"
-          value={formatMilliSecondToTime(this.state.dailyDevelopmentTime)}
-          onChange={event =>
+          ampm={false}
+          format="HH:mm"
+          views={['hours', 'minutes']}
+          label="Work hours per day :"
+          value={new Date(this.state.dailyDevelopmentTime - OffSetHours())}
+          onChange={time =>
             this.onSelectedProjectDailyDevelopmentTimeChange(
-              parseMilliSecondFromFormattedTime(event.target.value),
+              resetDayjsDateToUnixEpoch(time).getTime(),
             )
           }
         />

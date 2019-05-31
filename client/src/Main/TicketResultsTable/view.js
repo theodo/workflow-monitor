@@ -10,7 +10,7 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 import { setFavicon } from 'Utils/FaviconUtils';
 import Cell from './Cell';
-import { EditCell } from './EditCell';
+import EditCell from './EditCell';
 import { Command } from './Command';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
 
@@ -53,8 +53,8 @@ class TicketResultsTable extends React.Component {
       { name: 'problemCategory', title: 'Problem Category' },
     ],
     tableColumnExtensions: [
-      { columnName: 'realTime', width: 110 },
-      { columnName: 'estimatedTime', width: 110 },
+      { columnName: 'realTime', width: 150 },
+      { columnName: 'estimatedTime', width: 150 },
     ],
   };
 
