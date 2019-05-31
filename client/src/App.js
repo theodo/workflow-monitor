@@ -7,7 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import { Route, Switch } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DayJsUtils from '@date-io/dayjs';
 
 import { gqlClient } from 'Utils/Graphql';
