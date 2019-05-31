@@ -11,6 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    // TODO: put this secret in the .env file....
     JwtModule.register({
       secret: 'JWT_SECRET',
       signOptions: {
