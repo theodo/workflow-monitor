@@ -1,4 +1,4 @@
 export interface JwtPayload {
-  user_id: number;
-  exp: number;
+  id: string;
+  trelloId: string;
 }

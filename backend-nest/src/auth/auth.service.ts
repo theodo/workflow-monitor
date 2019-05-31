@@ -1,75 +1,41 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
-import { Credentials } from './interfaces/credentials.dto';
+import { UserService } from '../user/user.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { User } from '../user/user.entity';
-import { UserRepository } from '../user/user.repository';
-import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
-import { JwtToken } from './interfaces/jwt-token.interface';
-import { compare } from 'bcrypt';
-
-const ACCESS_TOKEN_MINUTES_TO_LIVE = 10;
-const REFRESH_TOKEN_MINUTES_TO_LIVE = 525600; // 1 year
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userRepository: UserRepository,
+    private readonly http: HttpService,
+    private readonly userDB: UserService,
   ) {}
 
-  async checkCredentials(credentials: Credentials): Promise<JwtToken> {
-    let user: User;
-    try {
-      user = await this.userRepository.findOneOrFail({ email: credentials.email });
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new NotFoundException();
-      }
-      throw error;
+  login = async req => {
+    const trelloToken = req.body.trelloToken;
+    // TODO: put this key in an .env file!
+    const trelloKey = '0314242ee352e79b01e16d6c79a6dee9';
+    const response = await this.http
+      .get(`https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`)
+      .toPromise();
+    if (response && response.status === 200) {
+      const user = await this.userDB.findOrCreateUser(response.data.id, response.data.fullName);
+      const loginView = {
+        user,
+        jwt: this.jwtService.sign({ id: user.id, trelloId: response.data.id }),
+      };
+      return loginView;
+    } else {
+      throw new UnauthorizedException(`Not authorized!`);
     }
-    const areCredentialsValid = await compare(credentials.password, user.password);
-    if (!areCredentialsValid) {
+  };
+
+  validateUser = async (payload: JwtPayload) => {
+    const user = await this.userDB.findUser(payload.trelloId);
+    if (user) {
+      return user;
+    } else {
       throw new UnauthorizedException();
     }
-
-    return {
-        access: this.createJwt(user, ACCESS_TOKEN_MINUTES_TO_LIVE),
-        refresh: this.createJwt(user, REFRESH_TOKEN_MINUTES_TO_LIVE),
-    };
-  }
-
-  async checkRefreshToken(refreshToken: JwtPayload): Promise<string> {
-    try {
-      const now = new Date();
-
-      if (now.getTime() / 1000 > refreshToken.exp) {
-        throw new UnauthorizedException();
-      }
-
-      const user = await this.userRepository.findOneOrFail(refreshToken.user_id);
-      return this.createJwt(user, ACCESS_TOKEN_MINUTES_TO_LIVE);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new UnauthorizedException();
-      }
-      throw error;
-    }
-  }
-
-  createJwt(user: User, minutesToLive): string {
-    return this.jwtService.sign({ user_id: user.id }, { expiresIn: minutesToLive * 60 });
-  }
-
-  async validateUser(payload: JwtPayload): Promise<User> {
-    try {
-      return await this.userRepository.findOneOrFail(payload.user_id);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new UnauthorizedException();
-      }
-      throw error;
-    }
-  }
+  };
 }
