@@ -1,7 +1,18 @@
+import { KeyboardTimePicker } from '@material-ui/pickers';
 import React from 'react';
-import { TableCell, TextField } from '@material-ui/core';
-import { formatMilliSecondToTime, parseMilliSecondFromFormattedTime } from 'Utils/TimeUtils';
+import { TableCell, TextField, withStyles } from '@material-ui/core';
+import { OffSetHours, resetDayjsDateToUnixEpoch } from 'Utils/TimeUtils';
 import ProblemCategoryChangeButton from 'Components/ProblemCategoryChangeButton';
+
+const styles = {
+  timeCell: {
+    paddingLeft: 8,
+    paddingRight: 12,
+  },
+  timePicker: {
+    width: 130,
+  },
+};
 
 const ProblemCategoryEditCell = ({ value, onValueChange }) => (
   <TableCell>
@@ -9,16 +20,16 @@ const ProblemCategoryEditCell = ({ value, onValueChange }) => (
   </TableCell>
 );
 
-const DurationEditCell = ({ value, onValueChange }) => (
-  <TableCell>
-    <TextField
-      id="time"
-      type="time"
-      value={formatMilliSecondToTime(value)}
-      onChange={event => onValueChange(parseMilliSecondFromFormattedTime(event.target.value))}
-      inputProps={{
-        step: 1,
-      }}
+const DurationEditCell = ({ value, onValueChange, classes, column }) => (
+  <TableCell className={classes.timeCell}>
+    <KeyboardTimePicker
+      className={classes.timePicker}
+      ampm={false}
+      format="HH:mm:ss"
+      views={['hours', 'minutes', 'seconds']}
+      label={column.name === 'estimatedTime' ? 'Estimated Time' : 'Real Time'}
+      value={new Date(value - OffSetHours())}
+      onChange={time => onValueChange(resetDayjsDateToUnixEpoch(time).getTime())}
     />
   </TableCell>
 );
@@ -34,7 +45,7 @@ const MultilineEditCell = ({ value, onValueChange }) => (
   </TableCell>
 );
 
-export const EditCell = props => {
+const EditCell = props => {
   if (props.column.name === 'problemCategory') {
     return <ProblemCategoryEditCell {...props} />;
   } else if (props.column.name === 'estimatedTime' || props.column.name === 'realTime') {
@@ -42,3 +53,5 @@ export const EditCell = props => {
   }
   return <MultilineEditCell {...props} />;
 };
+
+export default withStyles(styles)(EditCell);

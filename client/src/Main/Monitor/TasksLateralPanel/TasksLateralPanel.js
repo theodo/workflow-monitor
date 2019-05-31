@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 
-import { formatMilliSecondToTime, OffSetHours } from 'Utils/TimeUtils';
+import { formatMilliSecondToTime, OffSetHours, resetDayjsDateToUnixEpoch } from 'Utils/TimeUtils';
 
 import Chrono, { getTimer } from '../Chrono/Chrono';
 import './TasksLateralPanel.css';
@@ -65,15 +65,10 @@ class TaskRow extends PureComponent {
 
   handleTimerChange = time => {
     // time is a dayjs date which is set to the current date with only the hours, minutes and seconds set corresponding to the input
-    const newTime = new Date(
-      time.hour() * 60 * 60 * 1000 +
-        time.minute() * 60 * 1000 +
-        time.second() * 1000 -
-        OffSetHours(),
-    );
+    // It is needed to reset it to the unix epoch to get the right number of milliseconds
     this.setState({
       ...this.state,
-      editedTime: newTime,
+      editedTime: resetDayjsDateToUnixEpoch(time, OffSetHours()),
     });
   };
 

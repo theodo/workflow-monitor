@@ -62,3 +62,8 @@ export const parseTextMinutesFromMilliSeconds = milliSeconds =>
 export const OffSetHours = () => {
   return (new Date(0).getHours() - new Date(0).getUTCHours()) * 60 * 60 * 1000;
 };
+
+export const resetDayjsDateToUnixEpoch = (date, offset = 0) =>
+  new Date(
+    date.hour() * 60 * 60 * 1000 + date.minute() * 60 * 1000 + date.second() * 1000 - offset,
+  );
