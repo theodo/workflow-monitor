@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { HorizontalBar } from 'react-chartjs-2';
-import { DatePicker } from 'material-ui-pickers';
+import { DatePicker } from '@material-ui/pickers';
 import { withStyles } from '@material-ui/core/styles';
 
 const style = {
