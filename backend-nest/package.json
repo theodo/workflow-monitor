@@ -13,7 +13,7 @@
     "test:migration:run": "ts-node -r dotenv-safe/config node_modules/.bin/typeorm migration:run dotenv_config_path=.env.test",
     "schema:drop": "ts-node node_modules/.bin/typeorm schema:drop",
     "test:schema:drop": "ts-node -r dotenv-safe/config node_modules/.bin/typeorm schema:drop dotenv_config_path=.env.test",
-    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start": "nodemon",
     "start:dev": "nodemon",
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && npm run build",

@@ -7,7 +7,7 @@ import { DatabaseModule } from 'src/database/database.module';
 @Module({
   imports: [
     GraphQLModule.forRoot({
-      typePaths: ['../**/*.graphql'],
+      typePaths: [__dirname + '/../**/*.graphql'],
       context: ({ req }) => ({ req }),
     }),
     DatabaseModule,
