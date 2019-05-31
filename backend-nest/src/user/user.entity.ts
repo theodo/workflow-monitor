@@ -1,19 +1,24 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
+@Table({ tableName: 'users-test' })
+export class User extends Model<User> {
+  @Column({
+    type: DataType.NUMERIC,
+    allowNull: false,
+    autoIncrement: true,
+    unique: true,
+    primaryKey: true,
+  })
   id: number;
 
-  @Column({ length: 50 })
-  name: string;
+  @Column({ type: DataType.STRING, unique: true })
+  trelloId: string;
 
-  @Column({ length: 100 })
-  password: string;
+  @Column({ type: DataType.STRING, allowNull: false })
+  fullName: string;
 
-  @Column({ length: 100 })
-  email: string;
-
-  @Column('simple-array')
-  roles: string[];
+  @Column({
+    type: DataType.TEXT,
+  })
+  state: string;
 }

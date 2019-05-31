@@ -1,6 +1,6 @@
 export class UserDto {
-  readonly name: string;
-  readonly email: string;
-  readonly password: string;
-  readonly roles: string[];
+  readonly id: string;
+  readonly fullName: string;
+  readonly trelloId: string;
+  readonly state: string;
 }
