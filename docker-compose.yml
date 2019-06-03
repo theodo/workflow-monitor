@@ -17,7 +17,7 @@ services:
     volumes:
       - ./backend-nest:/app
     ports:
-      - "8000:8000"
+      - "4000:4000"
     depends_on:
       - postgresql
   react:
