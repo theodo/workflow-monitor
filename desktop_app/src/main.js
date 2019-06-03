@@ -1,5 +1,19 @@
 const { app, BrowserWindow } = require('electron');
 const casprCli = require('./cli');
+const DEV = 'DEV';
+const PROD = 'PROD';
+
+const env = DEV;
+
+if (env === DEV) {
+  const electron = require('electron');
+
+// Enable live reload for Electron too
+  require('electron-reload')(__dirname, {
+    // Note that the path to electron may vary according to the main file
+    electron: require(`${__dirname}/../node_modules/electron`)
+  });
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -27,6 +41,10 @@ const main = () => {
     window.webContents.send('current-task-update', 'hello');
     casprCli(window);
   });
+
+  if (env === DEV) {
+    window.webContents.openDevTools();
+  }
 };
 
 app.on('ready', main);
