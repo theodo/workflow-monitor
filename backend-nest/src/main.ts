@@ -16,6 +16,6 @@ async function bootstrap() {
   app.useGlobalFilters(new EntityNotFoundFilter());
   app.useGlobalFilters(new QueryFailedFilter());
 
-  await app.listen(8000);
+  await app.listen(4000);
 }
 bootstrap();
