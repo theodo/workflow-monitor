@@ -1,3 +1,5 @@
+const { env, DEV } = require( './main.js');
+
 const { ApolloClient } = require('apollo-client');
 const ws = require('ws');
 const { createHttpLink } = require('apollo-link-http');
@@ -8,9 +10,9 @@ const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
 const { getToken } = require('./auth.js');
 
-const dev = false;
-const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
-const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
+
+const HTTP_API_URL = env === DEV ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
+const WS_API_URL = env === DEV ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
