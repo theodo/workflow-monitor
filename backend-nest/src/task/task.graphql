@@ -1,0 +1,19 @@
+type Task {
+    id: Int
+    description: String
+    estimatedTime: Int,
+    realTime: Int,
+    addedOnTheFly: Boolean,
+  }
+  input TaskInput {
+    id: Int,
+    ticketId: Int,
+    description: String,
+    estimatedTime: Int,
+    realTime: Int,
+    addedOnTheFly: Boolean,
+  }
+   type Mutation {
+    updateCurrentState(state: String!): Int,
+    updateTask(task: TaskInput!): Task,
+  }
