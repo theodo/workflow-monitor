@@ -26,7 +26,7 @@ export class AuthService {
       };
       return loginView;
     } else {
-      throw new UnauthorizedException(`Not authorized!`);
+      throw new UnauthorizedException('User not authorized!');
     }
   };
 
@@ -35,7 +35,7 @@ export class AuthService {
     if (user) {
       return user;
     } else {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User not authorized!');
     }
   };
 }
