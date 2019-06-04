@@ -7,7 +7,7 @@ const verifyJWTToken = (token, callback) => {
 };
 
 const authenticationMiddleware = (req, res, next) => {
-  let authorization = req.headers.authentication;
+  let authorization = req.headers.authorization;
   const bearerLength = 'Bearer '.length;
   if (authorization && authorization.length > bearerLength) {
     const token = authorization.slice(bearerLength);
