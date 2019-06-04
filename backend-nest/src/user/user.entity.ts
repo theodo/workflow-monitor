@@ -1,11 +1,11 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { Ticket } from 'src/ticket/ticket.entity';
 
 @Table({ tableName: 'users-test' })
 export class User extends Model<User> {
   @Column({
-    type: DataType.NUMERIC,
+    type: DataType.INTEGER,
     allowNull: false,
-    autoIncrement: true,
     unique: true,
     primaryKey: true,
   })
@@ -21,4 +21,7 @@ export class User extends Model<User> {
     type: DataType.TEXT,
   })
   state: string;
+
+  @HasMany(() => Ticket, 'userId')
+  tickets: Ticket[];
 }
