@@ -13,7 +13,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: '/api/',
+  uri: '/api/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -25,7 +25,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      Authentication: token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
     },
   };
 });
