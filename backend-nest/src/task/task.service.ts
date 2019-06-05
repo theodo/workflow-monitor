@@ -1,6 +1,7 @@
 import { Task } from './task.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { Ticket } from '../ticket/ticket.entity';
+import { Problem } from '../problem/problem.entity';
 
 @Injectable()
 export class TaskService {
@@ -60,7 +61,7 @@ export class TaskService {
 
   async updateTask(task: Task) {
     const taskToUpdate = await Task.findById(task.id, {
-      // include: [{ model: Problem, as: 'problems' }],
+      include: [{ model: Problem, as: 'problems' }],
     });
     const ticketToUpdate = await Ticket.findById(task.ticket.id);
     const updatedEstimatedTime =
