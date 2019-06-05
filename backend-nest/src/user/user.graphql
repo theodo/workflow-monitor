@@ -7,4 +7,5 @@ type User {
   fullName: String,
   trelloId: String,
   state: String,
+  currentProject: Project
 }
