@@ -11,8 +11,8 @@ import {
 import { Project } from '../project/project.entity';
 import { DefaultTask } from '../defaultTask/defaultTask.entity';
 
-@Table({ tableName: 'defaulTaskList5-test' })
-export class DefaultTaskList extends Model<DefaultTaskList> {
+@Table({ tableName: 'defaultTaskLists' })
+export class DefaultTasksList extends Model<DefaultTasksList> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -30,7 +30,7 @@ export class DefaultTaskList extends Model<DefaultTaskList> {
   @BelongsTo(() => Project, 'projectId')
   project: Project;
 
-  @HasMany(() => DefaultTask, 'defaultTaskListId')
+  @HasMany(() => DefaultTask, 'defaultTasksListId')
   defaultTasks: DefaultTask[];
 
   @CreatedAt
