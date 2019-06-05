@@ -1,11 +1,22 @@
-import { Table, Column, Model, DataType, HasMany, BelongsTo } from 'sequelize-typescript';
-import { Ticket } from 'src/ticket/ticket.entity';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  BelongsTo,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
+import { Ticket } from '../ticket/ticket.entity';
+import { Problem } from '../problem/problem.entity';
 
-@Table({ tableName: 'task-test' })
+@Table({ tableName: 'task4-test' })
 export class Task extends Model<Task> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    autoIncrement: true,
     unique: true,
     primaryKey: true,
   })
@@ -28,9 +39,13 @@ export class Task extends Model<Task> {
   @BelongsTo(() => Ticket, 'ticketId')
   ticket: Ticket;
 
-  // @HasMany(() => Problem, 'taskId')
-  // TODO: implement :
-  // task.associate = function(models) {
-  //   task.hasMany(models.problem, { as: 'problems', onDelete: 'cascade', hooks: true });
-  // };
+  // TODO: onDelete: 'cascade', hooks: true
+  @HasMany(() => Problem, 'taskId')
+  problems: Problem[];
+
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
 }
