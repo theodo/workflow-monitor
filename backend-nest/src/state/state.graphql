@@ -1,0 +1,6 @@
+type Mutation {
+    updateCurrentState(state: String!): Int,
+  }
+type Subscription {
+    state: String!
+  }
