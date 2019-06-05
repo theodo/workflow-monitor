@@ -1,12 +1,23 @@
-import { Table, Column, Model, DataType, HasMany, BelongsTo } from 'sequelize-typescript';
-import { Task } from 'src/task/task.entity';
-import { User } from 'src/user/user.entity';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  BelongsTo,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
+import { Task } from '../task/task.entity';
+import { User } from '../user/user.entity';
+import { Project } from '../project/project.entity';
 
-@Table({ tableName: 'ticket-test' })
+@Table({ tableName: 'ticket4-test' })
 export class Ticket extends Model<Ticket> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    autoIncrement: true,
     unique: true,
     primaryKey: true,
   })
@@ -62,13 +73,12 @@ export class Ticket extends Model<Ticket> {
   @BelongsTo(() => User, 'userId')
   user: User;
 
-  // @BelongsTo(() => Project, 'projectId')
-  // project: Project;
+  @BelongsTo(() => Project, 'projectId')
+  project: Project;
 
-  // TODO: implement
-  // ticket.associate = function(models) {
-  //   ticket.belongsTo(models.project, { as: 'project' });
-  //   ticket.belongsTo(models.user, { as: 'user' });
-  //   ticket.hasMany(models.task, { as: 'tasks' });
-  // };
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
 }
