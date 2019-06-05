@@ -2,7 +2,9 @@ import { Ticket } from './ticket.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { upsert } from '../database/database.utils';
 import { TaskService } from '../task/task.service';
-import { Task } from 'src/task/task.entity';
+import { Task } from '../task/task.entity';
+import { Problem } from '../problem/problem.entity';
+import { ProblemCategory } from '../problemCategory/problemCategory.entity';
 
 const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
   SELECT date("createdAt") as "creationDay",
@@ -59,34 +61,36 @@ export class TicketService {
   };
 
   getTicket(ticketId): any {
-    // return this.ticketRepository.findById(ticketId, {
-    //   include: {
-    //     model: this.taskRepository,
-    //     as: 'tasks',
-    //     // include: {
-    //     //   model: this.db.models.problem,
-    //     //   as: 'problems',
-    //     //   include: {
-    //     //     model: this.db.models.problemCategory,
-    //     //     as: 'problemCategory',
-    //     //   },
-    //     // },
-    //   },
-    // });
-
-    return this.ticketRepository.findById(ticketId);
+    return this.ticketRepository.findById(ticketId, {
+      include: [
+        {
+          model: this.taskRepository,
+          as: 'tasks',
+          include: [
+            {
+              model: Problem,
+              as: 'problems',
+              include: [
+                {
+                  model: ProblemCategory,
+                  as: 'problemCategory',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   }
 
-  // TODO: implement after implementing Project
-
-  // getTicketsByProject(projectId, limit, offset) {
-  //   return this.ticketRepository.findAndCountAll({
-  //     where: { projectId },
-  //     limit,
-  //     order: [['createdAt', 'DESC']],
-  //     offset,
-  //   });
-  // }
+  async getTicketsByProject(projectId, limit, offset) {
+    return this.ticketRepository.findAndCountAll({
+      where: { id: projectId },
+      limit,
+      order: [['createdAt', 'DESC']],
+      offset,
+    });
+  }
 
   updateThirdPartyId(ticketId, thirdPartyId): any {
     return this.ticketRepository.update({ thirdPartyId }, { where: { id: ticketId } });
@@ -108,12 +112,7 @@ export class TicketService {
   };
 
   async saveTicket(user, state) {
-    // const project = user.currentProject;
-    const project = {
-      id: 1,
-      celerity: 6,
-      dailyDevelopmentTime: 3600000,
-    };
+    const project = user.currentProject;
     const jsState = JSON.parse(state);
     const allocatedTime = this.getAllocatedTimeFromPointsAndCelerity(
       jsState.currentTrelloCard.ticketPoints,
