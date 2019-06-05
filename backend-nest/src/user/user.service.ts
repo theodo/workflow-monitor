@@ -1,5 +1,6 @@
 import { User } from './user.entity';
 import { Inject, Injectable } from '@nestjs/common';
+import { Project } from '../project/project.entity';
 
 @Injectable()
 export class UserService {
@@ -11,14 +12,25 @@ export class UserService {
   findUser = async (userTrelloId: string) => {
     return this.userRepository.findOne({
       where: { trelloId: userTrelloId },
+      include: [
+        {
+          model: Project,
+          as: 'currentProject',
+        },
+      ],
     });
   };
 
-  // TODO: add include
   findOrCreateUser = async (userTrelloId: string, fullName: string) => {
     const response = await this.userRepository.findOrCreate({
       where: { trelloId: userTrelloId },
       defaults: { fullName },
+      include: [
+        {
+          model: Project,
+          as: 'currentProject',
+        },
+      ],
     });
     return response[0];
   };
