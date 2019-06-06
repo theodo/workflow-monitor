@@ -13,6 +13,9 @@ export class ProblemCategoryResolver {
   @UseGuards(GraphqlAuthGuard)
   async problemCategories(@CurrentUser() user: User) {
     const res = await this.problemCategoryService.getAllByProject(user.currentProject.id);
+    if (!res) {
+      return [];
+    }
     return res.map(problemCategory => problemCategory.dataValues);
   }
 

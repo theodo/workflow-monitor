@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Problem } from '../problem/problem.entity';
 import { ProblemCategory } from './problemCategory.entity';
-import sequelize = require('sequelize');
+import { Sequelize } from 'sequelize-typescript';
 
 const SELECT_PROBLEM_CATEGORY_COUNT_AND_OVERTIME_QUERY = `
   SELECT "categories".id, "categories"."description", COUNT("problemsWithOvertime"."problemCategoryId"),
@@ -31,12 +31,10 @@ export class ProblemCategoryService {
   }
 
   async getAllByProject(projectId) {
-    return this.problemCategoryRepository.findAll({
-      // attributes: [
-      //   {
-      //     include: [sequelize.fn('COUNT', sequelize.col('problems.id')), 'problemCount'],
-      //   },
-      // ],
+    const problemsByProject = await this.problemCategoryRepository.findAll({
+      attributes: {
+        include: [[Sequelize.fn('COUNT', Sequelize.col('problems.id')), 'problemCount']],
+      },
       include: [
         {
           model: this.problemRepository,
@@ -44,9 +42,10 @@ export class ProblemCategoryService {
           attributes: [],
         },
       ],
-      where: { id: projectId },
-      group: ['problemCategory.id'],
+      where: { projectId },
+      group: ['ProblemCategory.id'],
     });
+    return problemsByProject ? problemsByProject : [];
   }
 
   getCountAndOvertime(projectId, startDate, endDate): any {
@@ -76,10 +75,7 @@ export class ProblemCategoryService {
   }
 
   async isProblemCategoryDeletable(problemCategoryId) {
-    // const relatedProblems = await this.problemRepository.findAll({ where: { problemCategoryId } });
-    const relatedProblems = await this.problemRepository.findAll({
-      where: { id: problemCategoryId },
-    });
+    const relatedProblems = await this.problemRepository.findAll({ where: { problemCategoryId } });
     return relatedProblems.length === 0;
   }
 
