@@ -8,6 +8,7 @@ import { DefaultTaskModule } from '../defaultTask/defaultTask.module';
 import { ProblemCategoryModule } from '../problemCategory/problemCategory.module';
 import { ProjectModule } from '../project/project.module';
 import { StateModule } from '../state/state.module';
+import { TaskModule } from '../task/task.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StateModule } from '../state/state.module';
     UserModule,
     AuthModule,
     TicketModule,
+    TaskModule,
     DefaultTaskModule,
     ProblemCategoryModule,
     ProjectModule,

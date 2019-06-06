@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Resolver, Mutation } from '@nestjs/graphql';
+import { Query, Resolver, Mutation, Args } from '@nestjs/graphql';
 import { GraphqlAuthGuard } from '../auth/gqlAuthguard';
 import { User as CurrentUser } from '../user/user.decorator';
 import { User } from '../user/user.entity';
@@ -11,7 +11,7 @@ export class TaskResolvers {
   constructor(private readonly taskService: TaskService) {}
   @Mutation()
   @UseGuards(GraphqlAuthGuard)
-  async saveTicket(task: Task) {
+  async updateTask(@Args('task') task: Task) {
     return await this.taskService.updateTask(task);
   }
 }
