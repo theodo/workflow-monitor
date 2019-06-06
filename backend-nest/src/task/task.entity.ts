@@ -7,11 +7,12 @@ import {
   BelongsTo,
   CreatedAt,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Ticket } from '../ticket/ticket.entity';
 import { Problem } from '../problem/problem.entity';
 
-@Table({ tableName: 'task4-test' })
+@Table({ tableName: 'tasks' })
 export class Task extends Model<Task> {
   @Column({
     type: DataType.INTEGER,
@@ -38,6 +39,10 @@ export class Task extends Model<Task> {
 
   @BelongsTo(() => Ticket, 'ticketId')
   ticket: Ticket;
+
+  @ForeignKey(() => Ticket)
+  @Column
+  ticketId: number;
 
   // TODO: onDelete: 'cascade', hooks: true
   @HasMany(() => Problem, 'taskId')
