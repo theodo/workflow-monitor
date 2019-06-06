@@ -18,7 +18,7 @@ export const databaseProviders = [
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: config.dialect,
-        host: config.host,
+        host: env === 'development' ? 'postgresql' : config.host,
         port: 5432,
         username: config.username,
         password: config.password,
