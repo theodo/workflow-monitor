@@ -31,7 +31,7 @@ class ProjectSpeed extends Component {
 
   updateProjectSpeed = () => {
     const projectSpeed = {
-      celerity: this.state.celerity,
+      celerity: parseFloat(this.state.celerity),
       dailyDevelopmentTime: this.state.dailyDevelopmentTime,
     };
     gqlClient

@@ -38,7 +38,7 @@ class TicketResultsTableContainer extends Component {
         {
           query: GET_TICKET,
           variables: {
-            ticketId: this.props.ticketId,
+            ticketId: parseInt(this.props.ticketId),
           },
         },
       ],
