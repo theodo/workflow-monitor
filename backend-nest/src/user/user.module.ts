@@ -4,7 +4,7 @@ import { UserResolvers } from './user.resolver';
 import { DatabaseModule } from '../database/database.module';
 import { usersProvider } from './user.provider';
 import { PassportModule } from '@nestjs/passport';
-import { projectsProvider } from 'src/project/project.provider';
+import { projectsProvider } from '../project/project.provider';
 
 @Module({
   imports: [HttpModule, DatabaseModule, PassportModule.register({ defaultStrategy: 'jwt' })],
