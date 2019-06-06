@@ -3,7 +3,7 @@
     "username": "caspr",
     "password": "caspr",
     "database": "caspr",
-    "host": "postgresql",
+    "host": "localhost",
     "dialect": "postgres"
   },
   "local": {
