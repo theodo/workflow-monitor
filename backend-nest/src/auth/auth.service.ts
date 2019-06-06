@@ -1,7 +1,11 @@
 import { Injectable, UnauthorizedException, HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+
+interface JwtPayload {
+  id: string;
+  trelloId: string;
+}
 
 @Injectable()
 export class AuthService {
