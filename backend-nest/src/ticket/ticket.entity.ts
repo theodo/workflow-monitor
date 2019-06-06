@@ -7,12 +7,13 @@ import {
   BelongsTo,
   CreatedAt,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Task } from '../task/task.entity';
 import { User } from '../user/user.entity';
 import { Project } from '../project/project.entity';
 
-@Table({ tableName: 'ticket4-test' })
+@Table({ tableName: 'tickets' })
 export class Ticket extends Model<Ticket> {
   @Column({
     type: DataType.INTEGER,
@@ -75,6 +76,14 @@ export class Ticket extends Model<Ticket> {
 
   @BelongsTo(() => Project, 'projectId')
   project: Project;
+
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
+
+  @ForeignKey(() => Project)
+  @Column
+  projectId: number;
 
   @CreatedAt
   createdAt: Date;

@@ -27,7 +27,7 @@ export class TicketService {
     private readonly taskService: TaskService,
   ) {}
 
-  getDailyPerformanceHistory(startDate, endDate, projectId): any {
+  async getDailyPerformanceHistory(startDate, endDate, projectId) {
     return this.ticketRepository.sequelize.query(SELECT_DAILY_PERFORMANCE_HISTORY_QUERY, {
       replacements: { projectId, startDate, endDate },
       type: this.ticketRepository.sequelize.QueryTypes.SELECT,
@@ -60,11 +60,11 @@ export class TicketService {
     };
   };
 
-  getTicket(ticketId): any {
-    return this.ticketRepository.findById(ticketId, {
+  async getTicket(ticketId) {
+    return this.ticketRepository.findByPk(ticketId, {
       include: [
         {
-          model: this.taskRepository,
+          model: Task,
           as: 'tasks',
           include: [
             {
@@ -85,14 +85,14 @@ export class TicketService {
 
   async getTicketsByProject(projectId, limit, offset) {
     return this.ticketRepository.findAndCountAll({
-      where: { id: projectId },
+      where: { projectId },
       limit,
       order: [['createdAt', 'DESC']],
       offset,
     });
   }
 
-  updateThirdPartyId(ticketId, thirdPartyId): any {
+  async updateThirdPartyId(ticketId, thirdPartyId) {
     return this.ticketRepository.update({ thirdPartyId }, { where: { id: ticketId } });
   }
 
@@ -112,6 +112,7 @@ export class TicketService {
   };
 
   async saveTicket(user, state) {
+    // TODO: Refactor this part, use object instead of state string
     const project = user.currentProject;
     const jsState = JSON.parse(state);
     const allocatedTime = this.getAllocatedTimeFromPointsAndCelerity(
