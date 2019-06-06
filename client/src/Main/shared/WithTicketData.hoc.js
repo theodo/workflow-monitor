@@ -22,7 +22,7 @@ const withTicketData = (WrappedComponent, ticketId) => props => (
   <Query
     query={GET_TICKET}
     variables={{
-      ticketId: ticketId,
+      ticketId: parseInt(ticketId),
     }}
     fetchPolicy="cache-and-network"
   >
