@@ -7,11 +7,12 @@ import {
   BelongsTo,
   CreatedAt,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Project } from '../project/project.entity';
 import { DefaultTask } from '../defaultTask/defaultTask.entity';
 
-@Table({ tableName: 'defaultTaskLists' })
+@Table({ tableName: 'defaultTasksLists' })
 export class DefaultTasksList extends Model<DefaultTasksList> {
   @Column({
     type: DataType.INTEGER,
@@ -26,6 +27,10 @@ export class DefaultTasksList extends Model<DefaultTasksList> {
     type: DataType.ENUM('BEGINNING', 'END'),
   })
   type: string;
+
+  @ForeignKey(() => Project)
+  @Column
+  projectId: number;
 
   @BelongsTo(() => Project, 'projectId')
   project: Project;

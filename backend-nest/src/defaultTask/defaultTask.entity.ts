@@ -6,10 +6,11 @@ import {
   BelongsTo,
   CreatedAt,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
-import { DefaultTaskList } from '../defaultTaskList/defaultTaskList.entity';
+import { DefaultTasksList } from '../defaultTasksList/defaultTasksList.entity';
 
-@Table({ tableName: 'defaultTask5-test' })
+@Table({ tableName: 'defaultTasks' })
 export class DefaultTask extends Model<DefaultTask> {
   @Column({
     type: DataType.INTEGER,
@@ -31,8 +32,12 @@ export class DefaultTask extends Model<DefaultTask> {
   })
   estimatedTime: number;
 
-  @BelongsTo(() => DefaultTaskList, 'defaultTaskListId')
-  defaultTaskList: DefaultTaskList;
+  @ForeignKey(() => DefaultTasksList)
+  @Column
+  defaultTasksListId: number;
+
+  @BelongsTo(() => DefaultTasksList, 'defaultTasksListId')
+  defaultTasksList: DefaultTasksList;
 
   @CreatedAt
   createdAt: Date;

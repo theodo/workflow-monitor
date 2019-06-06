@@ -4,7 +4,7 @@ import { DefaultTaskResolvers } from './defaultTask.resolver';
 import { DatabaseModule } from '../database/database.module';
 import { defaultTasksProvider } from './defaultTask.provider';
 import { PassportModule } from '@nestjs/passport';
-import { DefaultTaskListsProvider } from 'src/defaultTaskList/defaultTaskList.provider';
+import { DefaultTasksListsProvider } from '../defaultTasksList/defaultTasksList.provider';
 
 @Module({
   imports: [HttpModule, DatabaseModule, PassportModule.register({ defaultStrategy: 'jwt' })],
@@ -12,7 +12,7 @@ import { DefaultTaskListsProvider } from 'src/defaultTaskList/defaultTaskList.pr
     DefaultTaskResolvers,
     DefaultTaskService,
     ...defaultTasksProvider,
-    ...DefaultTaskListsProvider,
+    ...DefaultTasksListsProvider,
   ],
   exports: [DefaultTaskResolvers, DefaultTaskService, ...defaultTasksProvider],
 })
