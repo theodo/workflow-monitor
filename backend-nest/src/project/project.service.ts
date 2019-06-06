@@ -24,7 +24,7 @@ export class ProjectService {
     );
   }
 
-  findOrCreateProject(project, user): any {
+  async findOrCreateProject(project, user) {
     return this.projectRepository
       .findOrCreate({
         where: { thirdPartyId: project.thirdPartyId },
