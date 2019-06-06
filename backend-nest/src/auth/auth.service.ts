@@ -17,8 +17,7 @@ export class AuthService {
 
   login = async req => {
     const trelloToken = req.body.trelloToken;
-    // TODO: put this key in an .env file!
-    const trelloKey = '0314242ee352e79b01e16d6c79a6dee9';
+    const trelloKey = process.env.TRELLO_KEY;
     const response = await this.http
       .get(`https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`)
       .toPromise();

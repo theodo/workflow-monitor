@@ -9,6 +9,17 @@ services:
       - POSTGRES_DB=caspr
     ports:
       - "5432:5432"
+  # backend:
+  #   build: ./backend
+  #   command: yarn start
+  #   environment:
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./backend:/app
+  #   ports:
+  #     - "4000:4000"
+  #   depends_on:
+  #     - postgresql
   backend:
     build: ./backend-nest
     command: npm run start:dev

@@ -21,6 +21,7 @@ let store = createStore(
   AppReducer /* preloadedState, */,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
+require('dotenv').config();
 
 class App extends Component {
   render() {
