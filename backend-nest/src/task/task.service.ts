@@ -5,7 +5,10 @@ import { Problem } from '../problem/problem.entity';
 
 @Injectable()
 export class TaskService {
-  constructor(@Inject('TaskRepository') private readonly taskRepository: typeof Task) {}
+  constructor(
+    @Inject('TaskRepository') private readonly taskRepository: typeof Task,
+    @Inject('ProblemRepository') private readonly problemRepository: typeof Problem,
+  ) {}
 
   getTotatlTimeFromTasks = (tasks, key) =>
     tasks.reduce((total, task) => (task[key] ? total + task[key] : total), 0);
@@ -37,7 +40,6 @@ export class TaskService {
   formatTasks = (state, ticket) => {
     const { tasks } = state;
     const { id: ticketId } = ticket;
-
     return tasks.map(this.formatTask(ticketId));
   };
 
@@ -46,24 +48,23 @@ export class TaskService {
     formattedTasks.map(async formattedTask => {
       const task = await this.taskRepository.create(formattedTask);
 
-      formattedTask.problems.map(async formattedProblem => {
+      await formattedTask.problems.map(async formattedProblem => {
         formattedProblem.taskId = task.id;
-
-        // TODO: uncomment this after adding problem module
-
-        // const problem = await this.db.models.problem.create(formattedProblem);
-        // formattedProblem.problemCategory &&
-        //   problem.setProblemCategory(formattedProblem.problemCategory.id);
-        // await problem.save();
+        const problem = await this.problemRepository.create(formattedProblem);
+        if (formattedProblem.problemCategory) {
+          await problem.set('problemCategoryId', formattedProblem.problemCategory.id);
+        }
+        await problem.save();
       });
     });
   }
 
   async updateTask(task: Task) {
-    const taskToUpdate = await Task.findById(task.id, {
+    const taskToUpdate = await Task.findByPk(task.id, {
       include: [{ model: Problem, as: 'problems' }],
     });
-    const ticketToUpdate = await Ticket.findById(task.ticket.id);
+    const ticketToUpdate = await Ticket.findByPk(task.ticketId);
+
     const updatedEstimatedTime =
       ticketToUpdate.estimatedTime + task.estimatedTime - taskToUpdate.estimatedTime;
     const updatedRealTime = ticketToUpdate.realTime + task.realTime - taskToUpdate.realTime;
@@ -71,20 +72,19 @@ export class TaskService {
       estimatedTime: updatedEstimatedTime,
       realTime: updatedRealTime,
     });
-    await taskToUpdate.update(task);
 
-    // TODO: implement after adding Problems:
-
-    // await Problem.destroy({ where: { taskId: taskToUpdate.id } });
-    // if (task.problems) {
-    //   for (let formattedProblem of task.problems) {
-    //     formattedProblem.taskId = taskToUpdate.id;
-    //     const problem = await Problem.create(formattedProblem);
-    //     formattedProblem.problemCategory &&
-    //       (await problem.setProblemCategory(formattedProblem.problemCategory.id));
-    //     await problem.save();
-    //   }
-    // }
+    await taskToUpdate.update({ ...task });
+    await Problem.destroy({ where: { taskId: taskToUpdate.id } });
+    if (task.problems) {
+      for (const formattedProblem of task.problems) {
+        formattedProblem.taskId = taskToUpdate.id;
+        const problem = await Problem.create(formattedProblem);
+        if (formattedProblem.problemCategory) {
+          await problem.set('problemCategoryId', formattedProblem.problemCategory.id);
+        }
+        await problem.save();
+      }
+    }
     return taskToUpdate;
   }
 }

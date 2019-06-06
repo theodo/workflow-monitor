@@ -4,6 +4,7 @@ type Task {
     estimatedTime: Int,
     realTime: Int,
     addedOnTheFly: Boolean,
+    problems: [Problem]
   }
   input TaskInput {
     id: Int,
@@ -12,6 +13,7 @@ type Task {
     estimatedTime: Int,
     realTime: Int,
     addedOnTheFly: Boolean,
+    problems: [ProblemInput]
   }
    type Mutation {
     updateCurrentState(state: String!): Int,
