@@ -6,6 +6,7 @@ type DefaultTasksList {
   id: Int
   type: String
   defaultTasks: [DefaultTask]
+  projectId: Int
 }
 type DefaultTask {
     id: Int
