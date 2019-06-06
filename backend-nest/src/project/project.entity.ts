@@ -8,9 +8,9 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { User } from '../user/user.entity';
-import { ProblemCategory } from 'src/problemCategory/problemCategory.entity';
+import { ProblemCategory } from '../problemCategory/problemCategory.entity';
 
-@Table({ tableName: 'project4-test' })
+@Table({ tableName: 'projects' })
 export class Project extends Model<Project> {
   @Column({
     type: DataType.INTEGER,
