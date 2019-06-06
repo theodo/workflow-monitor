@@ -7,11 +7,12 @@ import {
   HasMany,
   BelongsTo,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Task } from '../task/task.entity';
 import { ProblemCategory } from '../problemCategory/problemCategory.entity';
 
-@Table({ tableName: 'problem4-test' })
+@Table({ tableName: 'problems' })
 export class Problem extends Model<Problem> {
   @Column({
     type: DataType.INTEGER,
@@ -22,11 +23,24 @@ export class Problem extends Model<Problem> {
   })
   id: number;
 
-  @BelongsTo(() => ProblemCategory, 'ProblemCategoryId')
+  @Column({
+    type: DataType.TEXT,
+  })
+  description: string;
+
+  @ForeignKey(() => ProblemCategory)
+  @Column
+  problemCategoryId: number;
+
+  @ForeignKey(() => Task)
+  @Column
+  taskId: number;
+
+  @BelongsTo(() => ProblemCategory, 'problemCategoryId')
   problemCategory: ProblemCategory;
 
   // TODO: check where to add the { onDelete: 'cascade' } info
-  @BelongsTo(() => Task, 'TaskId')
+  @BelongsTo(() => Task, 'taskId')
   task: Task;
 
   @CreatedAt

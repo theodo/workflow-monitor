@@ -7,11 +7,12 @@ import {
   BelongsTo,
   CreatedAt,
   UpdatedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Problem } from '../problem/problem.entity';
 import { Project } from '../project/project.entity';
 
-@Table({ tableName: 'problemCategory4-test' })
+@Table({ tableName: 'problemCategories' })
 export class ProblemCategory extends Model<ProblemCategory> {
   @Column({
     type: DataType.INTEGER,
@@ -22,11 +23,20 @@ export class ProblemCategory extends Model<ProblemCategory> {
   })
   id: number;
 
-  @HasMany(() => Problem, 'ProblemCategoryId')
+  @Column({
+    type: DataType.STRING,
+  })
+  description: string;
+
+  @HasMany(() => Problem, 'problemCategoryId')
   problems: Problem[];
 
-  @BelongsTo(() => Project, 'ProjectId')
+  @BelongsTo(() => Project, 'projectId')
   project: Project;
+
+  @ForeignKey(() => Project)
+  @Column
+  projectId: number;
 
   @CreatedAt
   createdAt: Date;
