@@ -13,7 +13,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: '/api/graphql',
+  uri: process.env.REACT_APP_IS_NEST_BACKEND === 'true' ? '/api/graphql' : '/api/',
 });
 
 const httpLink = errorLink.concat(link);

@@ -7,18 +7,22 @@ import { ProblemCategory } from '../problemCategory/problemCategory.entity';
 import { DefaultTask } from '../defaultTask/defaultTask.entity';
 import { Problem } from '../problem/problem.entity';
 import { DefaultTasksList } from '../defaultTasksList/defaultTasksList.entity';
+import configObject from '../../config/config.json';
+
+const env = process.env.NODE_ENV || 'production';
+const config = configObject[env];
 
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',
     useFactory: async () => {
       const sequelize = new Sequelize({
-        dialect: 'postgres',
-        host: 'postgresql',
+        dialect: config.dialect,
+        host: config.host,
         port: 5432,
-        username: 'caspr',
-        password: 'caspr',
-        database: 'caspr',
+        username: config.username,
+        password: config.password,
+        database: config.database,
       });
       sequelize.addModels([
         User,
