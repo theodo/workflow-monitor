@@ -16,10 +16,10 @@ export class DefaultTaskResolvers {
       return [];
     }
     const project = user.currentProject;
-    const defaultTaskLists = await this.defaultTaskService.getDefaultTasksListsByProject(
+    const defaultTasksLists = await this.defaultTaskService.getDefaultTasksListsByProject(
       project.id,
     );
-    return defaultTaskLists ? defaultTaskLists : [];
+    return defaultTasksLists ? defaultTasksLists : [];
   }
 
   @Query()
