@@ -6,7 +6,7 @@ import { Project } from '../project/project.entity';
 import { ProblemCategory } from '../problemCategory/problemCategory.entity';
 import { DefaultTask } from '../defaultTask/defaultTask.entity';
 import { Problem } from '../problem/problem.entity';
-import { DefaultTaskList } from 'src/defaultTaskList/defaultTaskList.entity';
+import { DefaultTasksList } from '../defaultTasksList/defaultTasksList.entity';
 
 export const databaseProviders = [
   {
@@ -27,7 +27,7 @@ export const databaseProviders = [
         Project,
         ProblemCategory,
         DefaultTask,
-        DefaultTaskList,
+        DefaultTasksList,
         Problem,
       ]);
       await sequelize.sync();
