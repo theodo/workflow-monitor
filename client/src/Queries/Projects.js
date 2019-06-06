@@ -7,7 +7,7 @@ export const SET_PROJECT_SPEED = gql`
 `;
 
 export const SET_PROJECT_PERFORMANCE_TYPE = gql`
-  mutation setCurrentProjectSpeed($projectPerformanceType: String!) {
+  mutation setProjectPerformanceType($projectPerformanceType: String!) {
     setProjectPerformanceType(projectPerformanceType: $projectPerformanceType)
   }
 `;

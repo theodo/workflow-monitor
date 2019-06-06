@@ -21,11 +21,11 @@ const styles = {
 };
 
 const getDisplayedDate = (index, ticketsTable) => {
-  const currentDate = new Date(ticketsTable[index].createdAt).toDateString();
+  const currentDate = new Date(parseInt(ticketsTable[index].createdAt)).toDateString();
 
   if (index === 0) return currentDate;
 
-  const previousDate = new Date(ticketsTable[index - 1].createdAt).toDateString();
+  const previousDate = new Date(parseInt(ticketsTable[index - 1].createdAt)).toDateString();
   return previousDate !== currentDate ? currentDate : null;
 };
 
@@ -52,7 +52,9 @@ const ProjectHistoryPage = ({
             return (
               <div key={ticket.id}>
                 {dateToDiplay && (
-                  <div className={classes.date}>{new Date(ticket.createdAt).toDateString()}</div>
+                  <div className={classes.date}>
+                    {new Date(parseInt(ticket.createdAt)).toDateString()}
+                  </div>
                 )}
                 <TicketHistory
                   ticket={ticket}
