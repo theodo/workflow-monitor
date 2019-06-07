@@ -39,8 +39,7 @@ export class Problem extends Model<Problem> {
   @BelongsTo(() => ProblemCategory, 'problemCategoryId')
   problemCategory: ProblemCategory;
 
-  // TODO: check where to add the { onDelete: 'cascade' } info
-  @BelongsTo(() => Task, 'taskId')
+  @BelongsTo(() => Task, { foreignKey: 'taskId', onDelete: 'cascade' })
   task: Task;
 
   @CreatedAt

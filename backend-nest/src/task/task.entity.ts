@@ -44,8 +44,7 @@ export class Task extends Model<Task> {
   @Column
   ticketId: number;
 
-  // TODO: onDelete: 'cascade', hooks: true
-  @HasMany(() => Problem, 'taskId')
+  @HasMany(() => Problem, { foreignKey: 'taskId', onDelete: 'cascade', hooks: true })
   problems: Problem[];
 
   @CreatedAt
