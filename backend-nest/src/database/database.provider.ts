@@ -34,7 +34,6 @@ export const databaseProviders = [
         DefaultTasksList,
         Problem,
       ]);
-      await sequelize.sync();
       return sequelize;
     },
   },
