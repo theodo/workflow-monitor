@@ -5,6 +5,8 @@ import { TaskService } from '../task/task.service';
 import { Task } from '../task/task.entity';
 import { Problem } from '../problem/problem.entity';
 import { ProblemCategory } from '../problemCategory/problemCategory.entity';
+import { User } from '../user/user.entity';
+import { Project } from '../project/project.entity';
 
 const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
   SELECT date("createdAt") as "creationDay",
@@ -34,7 +36,7 @@ export class TicketService {
     });
   }
 
-  formatFullTicket = (state, project, user, allocatedTime) => {
+  formatFullTicket = (state, project: Project, user, allocatedTime) => {
     const {
       currentTrelloCard: { idShort: thirdPartyId, name: description, ticketPoints: points },
       tasks,
@@ -60,7 +62,7 @@ export class TicketService {
     };
   };
 
-  async getTicket(ticketId) {
+  async getTicket(ticketId: number) {
     return this.ticketRepository.findByPk(ticketId, {
       include: [
         {
@@ -100,7 +102,11 @@ export class TicketService {
     return upsert(this.ticketRepository, value, condition);
   }
 
-  getAllocatedTimeFromPointsAndCelerity = (points, celerity, dailyDevelopmentTime) => {
+  getAllocatedTimeFromPointsAndCelerity = (
+    points: number,
+    celerity: number,
+    dailyDevelopmentTime: number,
+  ) => {
     if (points === null) {
       return null;
     }
@@ -111,7 +117,7 @@ export class TicketService {
     return Math.round((points / celerity) * dailyDevelopmentTime);
   };
 
-  async saveTicket(user, state) {
+  async saveTicket(user: User, state: string) {
     // TODO: Refactor this part, use object instead of state string
     const project = user.currentProject;
     const jsState = JSON.parse(state);
