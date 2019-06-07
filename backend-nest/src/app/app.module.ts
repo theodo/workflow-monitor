@@ -9,13 +9,31 @@ import { ProblemCategoryModule } from '../problemCategory/problemCategory.module
 import { ProjectModule } from '../project/project.module';
 import { StateModule } from '../state/state.module';
 import { TaskModule } from '../task/task.module';
+import jwt from 'jsonwebtoken';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       typePaths: [__dirname + '/../**/*.graphql'],
-      context: ({ req }) => ({ req }),
+      context: ({ req, connection }) => {
+        if (connection) {
+          return { ...req, userId: connection.context.userId };
+        } else {
+          return { req };
+        }
+      },
       installSubscriptionHandlers: true,
+      subscriptions: {
+        onConnect: connectionParams => {
+          if (connectionParams[`authToken`]) {
+            const payload = jwt.verify(connectionParams[`authToken`], process.env.JWT_SECRET);
+            return {
+              userId: payload[`id`],
+            };
+          }
+          throw new Error('Missing auth token!');
+        },
+      },
     }),
     DatabaseModule,
     UserModule,

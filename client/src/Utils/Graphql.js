@@ -36,7 +36,11 @@ export const gqlClient = new ApolloClient({
 });
 
 const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
-const WS_API_URL = dev ? 'ws://localhost:4000/' : `wss://${window.location.hostname}/api/`;
+const WS_API_URL = dev
+  ? process.env.REACT_APP_IS_NEST_BACKEND
+    ? 'ws://localhost:4000/graphql'
+    : 'ws://localhost:4000/'
+  : `wss://${window.location.hostname}/api/`;
 
 const wsLink = new WebSocketLink({
   uri: WS_API_URL,
