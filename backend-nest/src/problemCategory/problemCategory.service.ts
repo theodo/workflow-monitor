@@ -10,7 +10,7 @@ const SELECT_PROBLEM_CATEGORY_COUNT_AND_OVERTIME_QUERY = `
   INNER JOIN (
     SELECT "problems".id, "problems"."problemCategoryId", "tasks"."realTime" - "tasks"."estimatedTime" AS "overtime"
     FROM "tasks", "problems"
-    WHERE "problems"."taskId" = "tasks".id AND "tasks"."estimatedTime" < "tasks"."realTime" 
+    WHERE "problems"."taskId" = "tasks".id AND "tasks"."estimatedTime" < "tasks"."realTime"
     AND "tasks"."createdAt" > :startDate AND "tasks"."createdAt" < :endDate
   ) as "problemsWithOvertime"
   ON "categories".id = "problemsWithOvertime"."problemCategoryId"
