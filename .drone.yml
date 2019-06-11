@@ -10,7 +10,7 @@ steps:
     settings:
       restore: true
       mount:
-        - ./backend/node_modules
+        - ./backend-nest/node_modules
         - ./client/node_modules
 
   - name: install-backend
@@ -18,7 +18,7 @@ steps:
     environment:
       NODE_ENV: development
     commands:
-      - cd backend
+      - cd backend-nest
       - npm install
     depends_on:
       - restore-cache
@@ -28,7 +28,7 @@ steps:
     environment:
       NODE_ENV: development
     commands:
-      - cd backend
+      - cd backend-nest
       - npm run lint
     depends_on:
       - install-backend
@@ -38,7 +38,7 @@ steps:
     environment:
       NODE_ENV: development
     commands:
-      - cd backend
+      - cd backend-nest
       - npm run test
     depends_on:
       - install-backend
@@ -80,7 +80,7 @@ steps:
     settings:
       rebuild: true
       mount:
-        - ./backend/node_modules
+        - ./backend-nest/node_modules
         - ./client/node_modules
     depends_on:
       - install-backend
