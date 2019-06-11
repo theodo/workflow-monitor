@@ -13,7 +13,10 @@
     "interface-name": [false],
     "arrow-parens": false,
     "object-literal-sort-keys": false,
-    "semicolon": [true, "ignore-bound-class-methods"]
+    "semicolon": [true, "always", "ignore-bound-class-methods"]
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["*.json", "**/*.json"]
+  }
 }
