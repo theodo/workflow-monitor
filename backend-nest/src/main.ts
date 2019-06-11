@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv-safe';
-dotenv.config();
+// tslint:disable-next-line: no-var-requires
+require('dotenv').config();
 
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
