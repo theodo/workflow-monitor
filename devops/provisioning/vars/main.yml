@@ -7,7 +7,7 @@ apt_specific_packages:
 
 update_apt_cache: yes
 
-nodejs_version: "8.x"
+nodejs_version: "10.x"
 certbot_admin_email: "nicolasb@theodo.fr"
 
 # List of databases to be created

@@ -8,6 +8,8 @@ export class AuthController {
 
   @Post()
   async login(@Req() req): Promise<{ user: User; jwt: string }> {
+    // tslint:disable-next-line: no-console
+    console.log('Login');
     return await this.authService.login(req);
   }
 }
