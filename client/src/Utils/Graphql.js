@@ -40,6 +40,8 @@ const WS_API_URL = dev
   ? process.env.REACT_APP_IS_NEST_BACKEND
     ? 'ws://localhost:4000/graphql'
     : 'ws://localhost:4000/'
+  : process.env.REACT_APP_IS_NEST_BACKEND
+  ? `wss://${window.location.hostname}/api/graphql`
   : `wss://${window.location.hostname}/api/`;
 
 const wsLink = new WebSocketLink({
