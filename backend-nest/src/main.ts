@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv-safe';
-dotenv.config({ path: __dirname + '/.env' });
+import dotenv from 'dotenv-safe';
+dotenv.config();
 
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
