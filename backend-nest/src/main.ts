@@ -1,4 +1,4 @@
-import dotenv from 'dotenv-safe';
+import * as dotenv from 'dotenv-safe';
 dotenv.config();
 
 import { NestFactory } from '@nestjs/core';
