@@ -22,9 +22,15 @@ module.exports = {
     },
   },
   Query: {
-    defaultTasksLists: (_, args, { user }) => {
+    defaultTasksLists: async (_, args, { user }) => {
+      if (!user.currentProject) {
+        return [];
+      }
       const project = user.currentProject;
-      return defaultTasksListDB.getDefaultTasksListsByProject(project.id);
+      const defaultTasksLists = await this.defaultTasksListDB.getDefaultTasksListsByProject(
+        project.id,
+      );
+      return defaultTasksLists ? defaultTasksLists : [];
     },
     defaultTasksList: (_, { defaultTasksListId }) => {
       return defaultTasksListDB.getDefaultTasksList(defaultTasksListId);
