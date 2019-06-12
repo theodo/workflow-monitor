@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly http: HttpService,
-    private readonly userDB: UserService,
+    private readonly userService: UserService,
   ) {}
 
   login = async req => {
@@ -21,20 +21,27 @@ export class AuthService {
     const response = await this.http
       .get(`https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`)
       .toPromise();
+
+    console.log(response);
     if (response && response.status === 200) {
-      const user = await this.userDB.findOrCreateUser(response.data.id, response.data.fullName);
+      const user = await this.userService.findOrCreateUser(
+        response.data.id,
+        response.data.fullName,
+      );
       const loginView = {
         user,
         jwt: this.jwtService.sign({ id: user.id, trelloId: response.data.id }),
       };
       return loginView;
     } else {
+      console.log('throw');
       throw new UnauthorizedException('User not authorized!');
+      console.log('throw');
     }
   };
 
   validateUser = async (payload: JwtPayload) => {
-    const user = await this.userDB.findUser(payload.trelloId);
+    const user = await this.userService.findUser(payload.trelloId);
     if (user) {
       return user;
     } else {
