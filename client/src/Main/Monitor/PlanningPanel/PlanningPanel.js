@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core';
 import { debounce } from 'throttle-debounce';
 
 import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
@@ -17,6 +18,13 @@ import './PlanningPanel.css';
 import withDefaultTasks from 'Main/shared/WithDefaultTasks.hoc';
 
 const planningMaxTime = 600000;
+
+const styles = () => ({
+  spacing: {
+    width: '100%',
+    margin: 0,
+  },
+});
 
 class PlanningPanel extends Component {
   constructor(props) {
@@ -88,9 +96,10 @@ class PlanningPanel extends Component {
   };
   render() {
     const { beginningTasks, ticketTasks, endTasks, selectedChecklist, checklists } = this.state;
+    const { classes } = this.props;
     return (
       <div className="PlanningPanel">
-        <Grid container spacing={3}>
+        <Grid className={classes.spacing} container spacing={3}>
           <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <div className="PlanningPanel-content">
@@ -165,4 +174,4 @@ class PlanningPanel extends Component {
   }
 }
 
-export default withDefaultTasks(PlanningPanel);
+export default withStyles(styles)(withDefaultTasks(PlanningPanel));
