@@ -40,6 +40,7 @@
     "cookie-parser": "^1.4.4",
     "dotenv-safe": "^6.1.0",
     "graphql": "^14.3.1",
+    "graphql-import": "^0.7.1",
     "graphql-tools": "^4.0.4",
     "lodash": "^4.17.11",
     "passport": "^0.4.0",

@@ -22,7 +22,6 @@ export class AuthService {
       .get(`https://api.trello.com/1/members/me?key=${trelloKey}&token=${trelloToken}`)
       .toPromise();
 
-    console.log(response);
     if (response && response.status === 200) {
       const user = await this.userService.findOrCreateUser(
         response.data.id,
@@ -34,9 +33,7 @@ export class AuthService {
       };
       return loginView;
     } else {
-      console.log('throw');
       throw new UnauthorizedException('User not authorized!');
-      console.log('throw');
     }
   };
 
