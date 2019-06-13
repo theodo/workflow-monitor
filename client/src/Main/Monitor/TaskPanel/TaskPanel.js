@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { withStyles } from '@material-ui/core';
 
 import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
@@ -28,6 +29,13 @@ const fullPageHeightStyle = {
   height: '100%',
   overflow: 'auto',
 };
+
+const styles = () => ({
+  spacing: {
+    width: '100%',
+    margin: 0,
+  },
+});
 
 class TaskPanel extends Component {
   constructor(props) {
@@ -99,9 +107,14 @@ class TaskPanel extends Component {
   }
 
   render() {
-    const { currentTask, dateLastPause, taskChrono } = this.props;
+    const { currentTask, dateLastPause, taskChrono, classes } = this.props;
     return (
-      <Grid className="TaskPanel" container spacing={3} style={fullPageHeightStyle}>
+      <Grid
+        className={`TaskPanel ${classes.spacing}`}
+        container
+        spacing={3}
+        style={fullPageHeightStyle}
+      >
         <Grid item xs={1} />
         <Grid item xs={10}>
           {/* TODO Remove the check and currentTask.label, let only currentTask.description,
@@ -172,4 +185,4 @@ class TaskPanel extends Component {
   }
 }
 
-export default TaskPanel;
+export default withStyles(styles)(TaskPanel);

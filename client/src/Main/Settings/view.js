@@ -12,6 +12,10 @@ const styles = () => ({
     marginTop: '25px',
     marginBottom: '25px',
   },
+  spacing: {
+    width: '100%',
+    margin: 0,
+  },
 });
 
 class Settings extends Component {
@@ -19,7 +23,7 @@ class Settings extends Component {
     const { classes, beginningTasksList, endTasksList, handleTasksChange, copyToken } = this.props;
     return (
       <div className="Settings">
-        <Grid container spacing={3}>
+        <Grid className={classes.spacing} container spacing={3}>
           <Grid item xs={1} lg={2} />
           <Grid item xs={10} lg={8}>
             <Project />
