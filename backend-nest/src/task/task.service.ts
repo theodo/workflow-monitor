@@ -43,12 +43,19 @@ export class TaskService {
     return tasks.map(this.formatTask(ticketId));
   };
 
-  async refreshWithTasks(ticketId, formattedTasks) {
+  async refreshWithTasks(ticketId: number, formattedTasks: any[]) {
     await this.taskRepository.destroy({ where: { ticketId } });
-    formattedTasks.map(async formattedTask => {
-      const task = await this.taskRepository.create(formattedTask);
+    formattedTasks.reduce(async (previousPromise, formattedTask) => {
+      if (previousPromise) {
+        await previousPromise;
+      }
+      return this.createTask(formattedTask);
+    }, Promise.resolve());
+  }
 
-      await formattedTask.problems.map(async formattedProblem => {
+  async createTask(formattedTask: any) {
+    return await this.taskRepository.create(formattedTask).then(task => {
+      formattedTask.problems.map(async formattedProblem => {
         formattedProblem.taskId = task.id;
         const problem = await this.problemRepository.create(formattedProblem);
         if (formattedProblem.problemCategory) {
