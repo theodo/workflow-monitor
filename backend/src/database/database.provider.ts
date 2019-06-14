@@ -9,7 +9,8 @@ import { Problem } from '../problem/problem.entity';
 import { DefaultTasksList } from '../defaultTasksList/defaultTasksList.entity';
 import configObject from '../../config/config.json';
 
-const env = process.env.NODE_ENV || 'production';
+const env = process.env.NODE_ENV === 'test' ? 'development' : process.env.NODE_ENV || 'production';
+
 const config = configObject[env];
 
 export const databaseProviders = [

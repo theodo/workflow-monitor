@@ -1,5 +1,5 @@
 import { mockServer, makeExecutableSchema } from 'graphql-tools';
-import { importSchema } from 'graphql-import';
+// import { importSchema } from 'graphql-import';
 import { TicketService } from './ticket.service';
 import { TestingModule, Test } from '@nestjs/testing';
 import { TicketResolvers } from './ticket.resolver';
@@ -8,24 +8,25 @@ import { taskProvider } from '../task/task.provider';
 import { problemsProvider } from '../problem/problem.provider';
 import { TaskService } from '../task/task.service';
 import { User } from '../user/user.entity';
-// import { graphql, GraphQLSchema } from 'graphql';
+import { graphql, GraphQLSchema } from 'graphql';
+import { GraphQlClient } from '../../test/graphql.client';
 
 // const schema = importSchema('src/ticket/ticket.graphql');
-//  const myMockServer = mockServer(schema, {}, true);
+// const myMockServer = mockServer(schema, {}, true);
 
-const userMock = new User({
-  id: 1,
-  fullName: 'John Doe',
-  trelloId: 'TRELLO_ID',
-  currentProject: {
-    id: 1,
-  },
-});
+// const userMock = new User({
+//   // id: 1,
+//   fullName: 'John Doe',
+//   trelloId: 'TRELLO_ID',
+//   currentProject: {
+//     id: 1,
+//   },
+// });
 
 describe('API Tickets Tests', () => {
   let app: TestingModule;
-  let ticketResolver: TicketResolvers;
   let ticketService: TicketService;
+  let graphQLClient: GraphQlClient;
 
   beforeAll(async () => {
     app = await Test.createTestingModule({
@@ -39,7 +40,9 @@ describe('API Tickets Tests', () => {
       ],
     }).compile();
     ticketService = app.get<TicketService>(TicketService);
-    ticketResolver = app.get<TicketResolvers>(TicketResolvers);
+    graphQLClient = new GraphQlClient();
+
+    await graphQLClient.init();
   });
 
   describe('Queries', () => {
@@ -67,28 +70,30 @@ describe('API Tickets Tests', () => {
       //   { startDate: '2019-04-29', endDate: '2019-07-05' },
       // );
 
-      // const query = `query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
-      //   dailyPerformanceHistory(startDate: $startDate, endDate: $endDate) {
-      //     creationDay
-      //     celerityFailedTicketsCount
-      //     casprFailedTicketsCount
-      //   }
-      // }`;
+      const user = { fullName: 'Debora' };
 
-      // const rootValue = {};
-      // const context = ({ req }) => ({
-      //   req,
-      // });
-      // const schemaGraphQL = makeExecutableSchema({ typeDefs: schema });
-      // const result = await graphql(schemaGraphQL, query, rootValue, context, {
-      //   startDate: '2019-04-29',
-      //   endDate: '2019-06-05',
-      // });
-      // console.log(result.data);
+      const query = `query GetDailyPerformanceHistory($startDate: String!, $endDate: String!) {
+        dailyPerformanceHistory(startDate: $startDate, endDate: $endDate) {
+          creationDay
+          celerityFailedTicketsCount
+          casprFailedTicketsCount
+        }
+      }`;
 
-      expect(
-        await ticketResolver.dailyPerformanceHistory(userMock, '2019-04-29', '2019-07-05'),
-      ).toEqual(dailyPerformanceHistory);
+      const response = await graphQLClient.query(
+        query,
+        {
+          startDate: '2019-04-29',
+          endDate: '2019-06-05',
+        },
+        {
+          currentProject: {
+            id: 3,
+          },
+        },
+      );
+
+      expect(response.body.data.dailyPerformanceHistory).toEqual(dailyPerformanceHistory);
     });
   });
 });
