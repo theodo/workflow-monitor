@@ -1,7 +1,6 @@
 // tslint:disable: no-var-requires
 const path = require('path');
-//require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 import fs from 'fs';
 import { NestFactory } from '@nestjs/core';

@@ -36,7 +36,7 @@ steps:
   - name: test-backend
     image: node
     environment:
-      NODE_ENV: development
+      NODE_ENV: test
     commands:
       - cd backend
       - npm run test

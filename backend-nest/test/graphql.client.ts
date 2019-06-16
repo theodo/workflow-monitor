@@ -7,8 +7,6 @@ import { Observable } from 'rxjs';
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { TicketService } from '../src/ticket/ticket.service';
-import { JwtStrategy } from '../src/auth/jwt.strategy';
 
 let loggedInUser: any;
 /* tslint:disable */
@@ -25,21 +23,8 @@ class GqlAuthGuardMock extends AuthGuard('jwt') {
   }
 }
 
-class JwtStrategyMock extends JwtStrategy {
-  async validate(payload: any): Promise<any> {
-    console.log('yesss');
-
-    return {
-      currentProject: {
-        id: 1,
-      },
-    };
-  }
-}
-
 export class GraphQlClient {
   private app: INestApplication;
-  private ticketService: TicketService;
 
   public async init() {
     const module = await Test.createTestingModule({
@@ -47,28 +32,16 @@ export class GraphQlClient {
     })
       .overrideGuard(GraphqlAuthGuard)
       .useClass(GqlAuthGuardMock)
-      .overrideProvider(JwtStrategy)
-      .useClass(JwtStrategyMock)
       .compile();
 
     this.app = await module.createNestApplication();
 
     await this.app.init();
-    this.ticketService = this.app.get<TicketService>(TicketService);
+    return this.app;
   }
 
   public query(query: any, variables: any, currentUser?: any): Promise<any> {
     loggedInUser = currentUser;
-    const dailyPerformanceHistory = [
-      {
-        creationDay: '2019-05-08',
-        celerityFailedTicketsCount: 0,
-        casprFailedTicketsCount: 0,
-      },
-    ];
-    jest
-      .spyOn(this.ticketService, 'getDailyPerformanceHistory')
-      .mockImplementation(async () => dailyPerformanceHistory);
 
     return new Promise((resolve, reject) => {
       request(this.app.getHttpServer())

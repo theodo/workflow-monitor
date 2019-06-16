@@ -20,7 +20,7 @@
     "prestart:prod": "rimraf dist && npm run build",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest --setupFiles dotenv/config",
+    "test": "jest --setupFiles ../test/setup-test.ts",
     "test:watch": "jest --watch",
     "test:coverage": "ts-node -r dotenv-safe/config node_modules/.bin/jest * --coverage dotenv_config_path=.env.test --maxWorkers=4",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest",
@@ -89,6 +89,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "collectCoverage": true,
-    "verbose": true
+    "verbose": false
   }
 }
