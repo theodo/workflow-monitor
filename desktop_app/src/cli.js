@@ -20,11 +20,14 @@ const casprCli = window => {
               state
             }
           }
-        `
+        `,
       })
       .then(({ data: { currentUser: { state } } }) => {
         if (state) {
-          store = MonitorReducers(store, { type: 'UPDATE', state: JSON.parse(state) });
+          store = MonitorReducers(store, {
+            type: 'UPDATE',
+            state: JSON.parse(state),
+          });
           window.webContents.send('new-state', store);
         }
       })
@@ -33,11 +36,14 @@ const casprCli = window => {
     stateSubscription.subscribe(
       {
         next(data) {
-          store = MonitorReducers(store, { type: 'UPDATE', state: JSON.parse(data.data.state) });
+          store = MonitorReducers(store, {
+            type: 'UPDATE',
+            state: JSON.parse(data.data.state),
+          });
           window.webContents.send('new-state', store);
-        }
+        },
       },
-      () => console.log('error')
+      () => console.log('error'),
     );
   }
 
