@@ -145,6 +145,7 @@ class Monitor extends Component {
             props.update(JSON.parse(data.state));
           },
         },
+        // eslint-disable-next-line no-console
         () => console.log('error'),
       );
   }
@@ -195,7 +196,9 @@ class Monitor extends Component {
   }
   handleClickNextButton() {
     if (this.isNextButtonDisabled()) return;
-
+    if (this.props.dateLastPause !== undefined) {
+      this.props.playOrPauseSession();
+    }
     switch (this.props.step) {
       case MONITOR_STEPS.WELCOME:
         this.initSession();
@@ -215,6 +218,9 @@ class Monitor extends Component {
   }
   handleClickPreviousButton() {
     if (this.isPreviousButtonDisabled()) return;
+    if (this.props.dateLastPause !== undefined) {
+      this.props.playOrPauseSession();
+    }
     if (this.props.currentTaskIndex === 1) {
       if (
         window.confirm(
@@ -265,18 +271,14 @@ class Monitor extends Component {
   isNextButtonDisabled() {
     switch (this.props.step) {
       case MONITOR_STEPS.PLANNING:
-        return (
-          !this.areTasksValid(this.state.planningPanelChanges.tasks) ||
-          this.props.dateLastPause !== undefined
-        );
+        return !this.areTasksValid(this.state.planningPanelChanges.tasks);
       case MONITOR_STEPS.WORKFLOW: {
         const { currentTask } = this.props;
 
         return (
-          this.props.dateLastPause !== undefined ||
-          (currentTask.check &&
-            currentTask.check.length > 0 &&
-            !this.state.taskPanelChanges.currentTaskCheckOK)
+          currentTask.check &&
+          currentTask.check.length > 0 &&
+          !this.state.taskPanelChanges.currentTaskCheckOK
         );
       }
       default:
@@ -285,7 +287,7 @@ class Monitor extends Component {
   }
   isPreviousButtonDisabled() {
     if (this.props.step === MONITOR_STEPS.RESULTS) return false;
-    return this.props.step !== MONITOR_STEPS.WORKFLOW || this.props.dateLastPause !== undefined;
+    return this.props.step !== MONITOR_STEPS.WORKFLOW;
   }
   renderPanel() {
     switch (this.props.step) {
