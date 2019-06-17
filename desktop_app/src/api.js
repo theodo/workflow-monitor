@@ -1,4 +1,4 @@
-const { env, DEV } = require( './main.js');
+const { env, DEV } = require('./main.js');
 
 const { ApolloClient } = require('apollo-client');
 const ws = require('ws');
@@ -10,9 +10,14 @@ const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
 const { getToken } = require('./auth.js');
 
-
-const HTTP_API_URL = env === DEV ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
-const WS_API_URL = env === DEV ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
+const HTTP_API_URL =
+  env === DEV
+    ? 'http://localhost:4000/graphql'
+    : 'https://caspr.theo.do/api/graphql';
+const WS_API_URL =
+  env === DEV
+    ? 'ws://localhost:4000/graphql'
+    : 'wss://caspr.theo.do/api/graphql';
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -21,8 +26,8 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      Authentication: token ? `Bearer ${token}` : ''
-    }
+      Authorization: token ? `Bearer ${token}` : '',
+    },
   };
 });
 
@@ -31,25 +36,25 @@ const wsLink = new WebSocketLink({
   options: {
     reconnect: true,
     connectionParams: {
-      authToken: getToken()
-    }
+      authToken: getToken(),
+    },
   },
-  webSocketImpl: ws
+  webSocketImpl: ws,
 });
 
 const httpLink = createHttpLink({
   uri: HTTP_API_URL,
-  fetch
+  fetch,
 });
 
 const gqlClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 const subscriptionClient = new ApolloClient({
   link: authLink.concat(wsLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 const stateSubscription = subscriptionClient.subscribe(
@@ -59,9 +64,9 @@ const stateSubscription = subscriptionClient.subscribe(
         state
       }
     `,
-    variables: {}
+    variables: {},
   },
-  () => console.log('error')
+  () => console.log('error'),
 );
 
 module.exports = { stateSubscription, gqlClient };
