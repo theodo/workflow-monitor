@@ -7,11 +7,15 @@ const { WebSocketLink } = require('apollo-link-ws');
 const gql = require('graphql-tag');
 const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
-const { getToken } = require('./auth')
+const { getToken } = require('./auth');
 
 const dev = false;
-const HTTP_API_URL = dev ? 'http://localhost:4000/' : 'https://caspr.theo.do/api/';
-const WS_API_URL = dev ? 'ws://localhost:4000/' : 'wss://caspr.theo.do/api/';
+const HTTP_API_URL = dev
+  ? 'http://localhost:4000/graphql'
+  : 'https://caspr.theo.do/api/graphql';
+const WS_API_URL = dev
+  ? 'ws://localhost:4000/graphql'
+  : 'wss://caspr.theo.do/api/graphql';
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -20,8 +24,8 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      Authentication: token ? `Bearer ${token}` : '',
-    }
+      Authorization: token ? `Bearer ${token}` : '',
+    },
   };
 });
 
@@ -43,7 +47,7 @@ const httpLink = createHttpLink({
 
 const gqlClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 const subscriptionClient = new ApolloClient({
@@ -51,12 +55,16 @@ const subscriptionClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const stateSubscription = subscriptionClient.subscribe({
-  query: gql`
-  subscription {
-    state
-  }`,
-  variables: {}
-},() => console.log('error'));
+const stateSubscription = subscriptionClient.subscribe(
+  {
+    query: gql`
+      subscription {
+        state
+      }
+    `,
+    variables: {},
+  },
+  () => console.log('error'),
+);
 
-module.exports = { stateSubscription, gqlClient }
+module.exports = { stateSubscription, gqlClient };
