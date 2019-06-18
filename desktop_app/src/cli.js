@@ -79,17 +79,14 @@ const casprCli = window => {
 
 const previousTaskTrigger = window => {
   store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
-  window.webContents.send('new-state', store);
 };
 
 const nextTaskTrigger = window => {
   store = MonitorReducers(store, { type: 'NEXT_TASK' });
-  window.webContents.send('new-state', store);
 };
 
 const playPauseTrigger = window => {
   store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION' });
-  window.webContents.send('new-state', store);
 };
 
 module.exports = casprCli;
