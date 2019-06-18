@@ -57,6 +57,10 @@ const initialMonitorState = {
     elapsedTime: 0,
   },
   currentTrelloCard: undefined,
+  error: {
+    id: undefined,
+    message: undefined,
+  },
 };
 
 const oldState = JSON.parse(localStorage.getItem('monitorState'));
@@ -100,6 +104,10 @@ const MonitorReducers = (state = currentInitialState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        error: {
+          id: undefined,
+          message: undefined,
+        },
       };
       break;
     case START_SESSION:
@@ -118,6 +126,10 @@ const MonitorReducers = (state = currentInitialState, action) => {
         taskChrono: {
           dateLastStart: now,
           elapsedTime: 0,
+        },
+        error: {
+          id: undefined,
+          message: undefined,
         },
       };
       break;
