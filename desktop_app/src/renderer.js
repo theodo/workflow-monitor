@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron');
 const { formatMilliSecondToTime } = require('./Utils/TimeUtils');
 const { getTimer } = require('./Utils/Chrono');
+const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 
 const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
@@ -8,6 +9,8 @@ const MONITOR_STEPS = {
   WORKFLOW: 'WORKFLOW',
   RESULTS: 'RESULTS',
 };
+
+
 let state = {};
 
 ipcRenderer.on('new-state', (event, newState) => {
@@ -28,13 +31,24 @@ ipcRenderer.on('new-state', (event, newState) => {
         getTimer(state.taskChrono, state.dateLastPause),
       );
       const estimatedTime = formatMilliSecondToTime(currentTask.estimatedTime);
-      new Notification(
-        `Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`,
-        {
-          body: state.tasks[state.currentTaskIndex].description,
-          silent: true,
-        },
-      );
+      if (state.error.id && state.error.id.includes(ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK)) {
+        new Notification(
+          `Cannot go backwards`,
+          {
+            body: ERROR_MESSAGES.PREVIOUS_WHEN_FIRST_TASK,
+            silent: true,
+          },
+        );
+      }
+      else {
+        new Notification(
+          `Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`,
+          {
+            body: state.tasks[state.currentTaskIndex].description,
+            silent: true,
+          },
+        );
+      }
       break;
     case MONITOR_STEPS.RESULTS:
       document.getElementById('current-ticket').innerHTML =

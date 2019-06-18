@@ -11,6 +11,7 @@ const {
 const axios = require('axios');
 const { gqlClient } = require('./api');
 const gql = require('graphql-tag');
+const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 
 const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
@@ -18,6 +19,8 @@ const MONITOR_STEPS = {
   WORKFLOW: 'WORKFLOW',
   RESULTS: 'RESULTS',
 };
+
+
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
   return chrono.elapsedTime + (dateLastPause - chrono.dateLastStart);
@@ -42,6 +45,10 @@ const initialMonitorState = {
     elapsedTime: 0,
   },
   currentTrelloCard: undefined,
+  error: {
+    id: undefined,
+    message: undefined,
+  },
 };
 
 const MonitorReducers = (state = initialMonitorState, action) => {
@@ -64,6 +71,10 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        error: {
+          id: undefined,
+          message: undefined,
+        },
       };
       break;
     case START_SESSION:
@@ -83,12 +94,15 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        error: {
+          id: undefined,
+          message: undefined,
+        }
       };
       break;
     case NEXT_TASK: {
       const result = {
         ...state.tasks[state.currentTaskIndex],
-        problems: action.taskProblems,
         realTime: calculateCurrentTaskTime(state.taskChrono, now),
       };
 
@@ -103,6 +117,10 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        error: {
+          id: undefined,
+          message: undefined,
+        }
       };
 
       if (action.newTasks && action.newTasks.length > 0) {
@@ -127,14 +145,30 @@ const MonitorReducers = (state = initialMonitorState, action) => {
       break;
     }
     case PREVIOUS_TASK: {
-      let newStateForPreviousTask = {
-        ...state,
-        currentTaskIndex: state.currentTaskIndex - 1,
-        taskChrono: {
-          dateLastStart: now,
-          elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
-        },
-      };
+      let newStateForPreviousTask;
+      if (state.currentTaskIndex === 1) {
+        newStateForPreviousTask = {
+          ...state,
+          error: {
+            id: ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK,
+            message: ERROR_MESSAGES.PREVIOUS_WHEN_FIRST_TASK,
+          }
+        };
+      }
+      else {
+        newStateForPreviousTask = {
+          ...state,
+          currentTaskIndex: state.currentTaskIndex - 1,
+          taskChrono: {
+            dateLastStart: now,
+            elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
+          },
+          error: {
+            id: undefined,
+            message: undefined,
+          }
+        };
+      }
 
       if (state.currentStep === MONITOR_STEPS.WORKFLOW) {
         const result = {
@@ -228,12 +262,12 @@ const MonitorReducers = (state = initialMonitorState, action) => {
         mutation: gql`
           mutation {
             updateCurrentState(state:${JSON.stringify(
-              JSON.stringify(newState),
-            )})
+          JSON.stringify(newState),
+        )})
           }
         `,
       })
-      .then(() => {});
+      .then(() => { });
   }
   return newState;
 };
