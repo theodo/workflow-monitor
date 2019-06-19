@@ -9,7 +9,7 @@ const {
   UPDATE,
 } = require('./MonitorActions');
 const axios = require('axios');
-const { gqlClient } = require('./api');
+const { getGqlClient } = require('./api');
 const gql = require('graphql-tag');
 const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 
@@ -232,6 +232,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
       newState = state;
   }
   if (action.type !== UPDATE) {
+    const gqlClient = getGqlClient();
     gqlClient
       .mutate({
         mutation: gql`
