@@ -79,7 +79,17 @@ const casprCli = window => {
 };
 
 const previousTaskTrigger = window => {
-  store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
+  if (store.currentTaskIndex === 1) {
+    window.webContents.send('new-state', {
+      ...store,
+      error: {
+        id: ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK,
+        message: ERROR_MESSAGES.PREVIOUS_WHEN_FIRST_TASK,
+      }
+    });
+  } else {
+    store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
+  }
 };
 
 const nextTaskTrigger = window => {
