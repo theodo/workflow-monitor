@@ -19,12 +19,13 @@ function startSession(tasks) {
   };
 }
 
-function nextTask(newTasks, taskProblems, projectId) {
+function nextTask(newTasks, taskProblems, projectId, checked = false) {
   return {
     type: NEXT_TASK,
     newTasks,
     taskProblems,
     projectId,
+    checked,
   };
 }
 
