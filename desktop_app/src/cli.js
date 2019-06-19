@@ -3,6 +3,7 @@ const { stateSubscription, gqlClient } = require('./api');
 const gql = require('graphql-tag');
 const MonitorReducers = require('./MonitorReducers');
 const { getToken, writeToken } = require('./auth.js');
+const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
@@ -82,7 +83,17 @@ const previousTaskTrigger = window => {
 };
 
 const nextTaskTrigger = window => {
-  store = MonitorReducers(store, { type: 'NEXT_TASK' });
+  if (store.currentStep !== 'RESULTS') {
+    store = MonitorReducers(store, { type: 'NEXT_TASK' });
+  }
+  else {
+    window.webContents.send('new-state', {
+      ...store, error: {
+        id: ERROR_IDS.NEXT_WHEN_RESULTS,
+        message: ERROR_MESSAGES.NEXT_WHEN_RESULTS,
+      }
+    });
+  }
 };
 
 const playPauseTrigger = window => {
