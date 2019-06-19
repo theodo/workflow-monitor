@@ -64,8 +64,8 @@ const casprCli = window => {
     previousTaskTrigger(window);
   });
 
-  ipcMain.on('next-task', () => {
-    nextTaskTrigger(window);
+  ipcMain.on('next-task', (event, checked) => {
+    nextTaskTrigger(window, checked);
   });
 
   ipcMain.on('play-pause', () => {
@@ -77,7 +77,7 @@ const casprCli = window => {
   });
 
   globalShortcut.register('Alt+Shift+N', () => {
-    nextTaskTrigger(window);
+    nextTaskTrigger(window, false);
   });
 
   globalShortcut.register('Alt+Shift+Space', () => {
@@ -99,17 +99,25 @@ const previousTaskTrigger = window => {
   }
 };
 
-const nextTaskTrigger = window => {
-  if (store.currentStep !== 'RESULTS') {
-    store = MonitorReducers(store, { type: 'NEXT_TASK' });
-  }
-  else {
+const nextTaskTrigger = (window, checked) => {
+  if (store.currentStep === 'RESULTS') {
     window.webContents.send('new-state', {
       ...store, error: {
         id: ERROR_IDS.NEXT_WHEN_RESULTS,
         message: ERROR_MESSAGES.NEXT_WHEN_RESULTS,
       }
     });
+  }
+  else if (!checked && store.tasks[store.currentTaskIndex].check) {
+    window.webContents.send('new-state', {
+      ...store, error: {
+        id: ERROR_IDS.UNCHECKED_TASK,
+        message: ERROR_MESSAGES.UNCHECKED_TASK,
+      }
+    });
+  }
+  else {
+    store = MonitorReducers(store, { type: 'NEXT_TASK' });
   }
 };
 

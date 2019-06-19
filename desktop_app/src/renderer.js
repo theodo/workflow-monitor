@@ -11,10 +11,13 @@ const MONITOR_STEPS = {
 };
 
 
-let state = {};
 
-ipcRenderer.on('new-state', (event, newState) => {
+let state = {};
+let checked = false;
+
+ipcRenderer.on('new-state', async (event, newState) => {
   state = newState;
+  navigator.serviceWorker.register('./service-worker.js');
 
   console.log(state);
   switch (state.currentStep) {
@@ -49,6 +52,30 @@ ipcRenderer.on('new-state', (event, newState) => {
             silent: true,
           },
         );
+      }
+      else if (state.error.id && state.error.id === ERROR_IDS.UNCHECKED_TASK) {
+
+        navigator.serviceWorker.ready.then(a => {
+          console.log('1');
+          // a.showNotification('title', {
+          //   body: ERROR_MESSAGES.UNCHECKED_TASK,
+          //   silent: true,
+          //   requireInteraction: true,
+          //   actions: [{ action: 'checkDone', title: "Yes" }, { action: 'checkNotDone', title: "No" }]
+          // });
+          a.showNotification('title', {
+            body: 'aaaaaaa'
+          })
+        })
+
+        // a.addEventListener('notificationclick', function (event) {
+        //   event.notification.close();
+        //   if (event.action === 'checkDone') {
+        //     ipcRenderer.send('next-task', true);
+        //     silentlyArchiveEmail();
+        //   }
+        // }, false);
+
       }
       else {
         new Notification(
@@ -100,7 +127,7 @@ document.getElementById('previous-task').addEventListener('click', () => {
 });
 
 document.getElementById('next-task').addEventListener('click', () => {
-  ipcRenderer.send('next-task');
+  ipcRenderer.send('next-task', false);
 });
 
 document.getElementById('play-pause').addEventListener('click', () => {
