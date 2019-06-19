@@ -145,30 +145,20 @@ const MonitorReducers = (state = initialMonitorState, action) => {
       break;
     }
     case PREVIOUS_TASK: {
-      let newStateForPreviousTask;
-      if (state.currentTaskIndex === 1) {
-        newStateForPreviousTask = {
-          ...state,
-          error: {
-            id: ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK,
-            message: ERROR_MESSAGES.PREVIOUS_WHEN_FIRST_TASK,
-          }
-        };
-      }
-      else {
-        newStateForPreviousTask = {
-          ...state,
-          currentTaskIndex: state.currentTaskIndex - 1,
-          taskChrono: {
-            dateLastStart: now,
-            elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
-          },
-          error: {
-            id: undefined,
-            message: undefined,
-          }
-        };
-      }
+
+      let newStateForPreviousTask = {
+        ...state,
+        currentTaskIndex: state.currentTaskIndex - 1,
+        taskChrono: {
+          dateLastStart: now,
+          elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
+        },
+        error: {
+          id: undefined,
+          message: undefined,
+        }
+      };
+
 
       if (state.currentStep === MONITOR_STEPS.WORKFLOW) {
         const result = {
