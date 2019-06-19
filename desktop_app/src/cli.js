@@ -1,5 +1,5 @@
 const { app, ipcMain, globalShortcut } = require('electron');
-const { stateSubscription, gqlClient } = require('./api');
+const { getStateSubscription, getGqlClient } = require('./api');
 const gql = require('graphql-tag');
 const MonitorReducers = require('./MonitorReducers');
 const { getToken, writeToken } = require('./auth.js');
@@ -9,8 +9,9 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 let store = MonitorReducers();
 
-const casprCli = window => {
+const initCli = window => {
   const token = getToken();
+  const gqlClient = getGqlClient();
 
   if (token && token.length > 10) {
     gqlClient
@@ -22,8 +23,7 @@ const casprCli = window => {
             }
           }
         `,
-      })
-      .then(({ data: { currentUser: { state } } }) => {
+      }).then(({ data: { currentUser: { state } } }) => {
         if (state) {
           store = MonitorReducers(store, {
             type: 'UPDATE',
@@ -34,6 +34,7 @@ const casprCli = window => {
       })
       .catch(error => console.log(error));
 
+    stateSubscription = getStateSubscription();
     stateSubscription.subscribe(
       {
         next(data) {
@@ -47,10 +48,16 @@ const casprCli = window => {
       () => console.log('error'),
     );
   }
+}
+
+const casprCli = window => {
+  initCli(window);
 
   ipcMain.on('jwt-token-update', (event, token) => {
-    writeToken(token);
-    app.quit();
+    if (token && token !== getToken()) {
+      writeToken(token);
+      initCli(window);
+    }
   });
 
   ipcMain.on('previous-task', () => {

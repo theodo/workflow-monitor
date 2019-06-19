@@ -19,54 +19,66 @@ const WS_API_URL =
     ? 'ws://localhost:4000/graphql'
     : 'wss://caspr.theo.do/api/graphql';
 
-const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = getToken();
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}` : '',
+
+
+const getAuthLink = () => {
+  return setContext((_, { headers }) => {
+    // get the authentication token from local storage if it exists
+    const token = getToken();
+    // return the headers to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    };
+  });
+}
+
+const getStateSubscription = () => {
+  const authLink = getAuthLink();
+
+  const wsLink = new WebSocketLink({
+    uri: WS_API_URL,
+    options: {
+      reconnect: true,
+      connectionParams: {
+        authToken: getToken(),
+      },
     },
-  };
-});
+    webSocketImpl: ws,
+  });
 
-const wsLink = new WebSocketLink({
-  uri: WS_API_URL,
-  options: {
-    reconnect: true,
-    connectionParams: {
-      authToken: getToken(),
+  const subscriptionClient = new ApolloClient({
+    link: authLink.concat(wsLink),
+    cache: new InMemoryCache(),
+  });
+
+  return subscriptionClient.subscribe(
+    {
+      query: gql`
+        subscription {
+          state
+        }
+      `,
+      variables: {},
     },
-  },
-  webSocketImpl: ws,
-});
+    () => console.log('error'),
+  );
+}
 
-const httpLink = createHttpLink({
-  uri: HTTP_API_URL,
-  fetch,
-});
+const getGqlClient = () => {
+  const authLink = getAuthLink();
 
-const gqlClient = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
+  const httpLink = createHttpLink({
+    uri: HTTP_API_URL,
+    fetch,
+  });
 
-const subscriptionClient = new ApolloClient({
-  link: authLink.concat(wsLink),
-  cache: new InMemoryCache(),
-});
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
+}
 
-const stateSubscription = subscriptionClient.subscribe(
-  {
-    query: gql`
-      subscription {
-        state
-      }
-    `,
-    variables: {},
-  },
-  () => console.log('error'),
-);
-
-module.exports = { stateSubscription, gqlClient };
+module.exports = { getStateSubscription, getGqlClient };
