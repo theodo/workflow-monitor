@@ -45,10 +45,6 @@ const initialMonitorState = {
     elapsedTime: 0,
   },
   currentTrelloCard: undefined,
-  error: {
-    id: undefined,
-    message: undefined,
-  },
 };
 
 const MonitorReducers = (state = initialMonitorState, action) => {
@@ -71,10 +67,6 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
-        error: {
-          id: undefined,
-          message: undefined,
-        },
       };
       break;
     case START_SESSION:
@@ -94,10 +86,6 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
-        error: {
-          id: undefined,
-          message: undefined,
-        }
       };
       break;
     case NEXT_TASK: {
@@ -117,10 +105,6 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
-        error: {
-          id: undefined,
-          message: undefined,
-        }
       };
 
       if (action.newTasks && action.newTasks.length > 0) {
@@ -153,10 +137,6 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
         },
-        error: {
-          id: undefined,
-          message: undefined,
-        }
       };
 
 
