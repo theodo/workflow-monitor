@@ -197,9 +197,6 @@ class Monitor extends Component {
   }
   handleClickNextButton() {
     if (this.isNextButtonDisabled()) return;
-    if (this.props.dateLastPause !== undefined) {
-      this.props.playOrPauseSession();
-    }
     switch (this.props.step) {
       case MONITOR_STEPS.WELCOME:
         this.initSession();
@@ -219,9 +216,6 @@ class Monitor extends Component {
   }
   handleClickPreviousButton() {
     if (this.isPreviousButtonDisabled()) return;
-    if (this.props.dateLastPause !== undefined) {
-      this.props.playOrPauseSession();
-    }
     if (this.props.currentTaskIndex === 1) {
       if (
         window.confirm(
