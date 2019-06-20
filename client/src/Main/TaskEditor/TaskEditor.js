@@ -130,6 +130,15 @@ class TaskField extends Component {
     );
   }
 
+  shouldUpdateTask = (taskId, fieldName, value) => {
+    this.setState({ [fieldName]: value }, () => {
+      if (this.state.description && this.state.estimatedTimeText) {
+        return this.props.updateTask(taskId, this.state.description, this.state.estimatedTimeText);
+      }
+      return;
+    });
+  };
+
   render() {
     const {
       task,
@@ -168,7 +177,7 @@ class TaskField extends Component {
                 value={description}
                 placeholder="Description"
                 onChange={event => this.setState({ description: event.target.value })}
-                onBlur={event => updateTask(task.id, 'description', event.target.value)}
+                onBlur={event => this.shouldUpdateTask(task.id, 'description', event.target.value)}
                 onClick={event => event.stopPropagation()}
                 onMouseDown={event => event.stopPropagation()}
                 onTouchStart={event => event.stopPropagation()}
@@ -181,7 +190,9 @@ class TaskField extends Component {
                 value={estimatedTimeText}
                 placeholder="Estimated time"
                 onChange={event => this.setState({ estimatedTimeText: event.target.value })}
-                onBlur={event => updateTask(task.id, 'estimatedTimeText', event.target.value)}
+                onBlur={event =>
+                  this.shouldUpdateTask(task.id, 'estimatedTimeText', event.target.value)
+                }
                 onKeyPress={event => this.handleInputKeyPress(event, true)}
               />
               <div className="TaskField_buttonsBloc">
@@ -274,10 +285,7 @@ class TaskEditor extends Component {
 
   addTask = skipUpdate => {
     this.updateTasks(
-      [
-        ...this.state.tasks,
-        { id: uuid(), description: '', problems: '', estimatedTimeText: '', checks: ['mon check'] },
-      ],
+      [...this.state.tasks, { id: uuid(), description: '', problems: '', estimatedTimeText: '' }],
       skipUpdate,
     );
   };
@@ -286,13 +294,18 @@ class TaskEditor extends Component {
     this.updateTasks([...this.state.tasks.filter(task => taskId !== task.id)]);
   };
 
-  updateTask = (taskId, fieldName, value) => {
-    if (this.state.tasks.find(task => task.id === taskId)[fieldName] === value) {
+  updateTask = (taskId, descriptionValue, estimatedTimeValue) => {
+    if (
+      this.state.tasks.find(task => task.id === taskId)['description'] === descriptionValue &&
+      this.state.tasks.find(task => task.id === taskId)['estimatedTimeText'] === estimatedTimeValue
+    ) {
       return;
     }
-    const fieldsToAdd = { [fieldName]: value };
-    if (fieldName === 'estimatedTimeText')
-      fieldsToAdd.estimatedTime = value && value.length > 0 ? value * 60 * 1000 : undefined;
+    const fieldsToAdd = { description: descriptionValue, estimatedTimeText: estimatedTimeValue };
+    fieldsToAdd.estimatedTime =
+      estimatedTimeValue && estimatedTimeValue.length > 0
+        ? estimatedTimeValue * 60 * 1000
+        : undefined;
 
     this.updateTasks([
       ...this.state.tasks.map(task => {

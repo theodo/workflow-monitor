@@ -9,6 +9,7 @@ export const BACK_TO_PLANNING = 'BACK_TO_PLANNING';
 export const SET_CURRENT_TASK_FIELDS = 'SET_CURRENT_TASK_FIELDS';
 export const UPDATE = 'UPDATE';
 export const SET_TICKET_ID = 'SET_TICKET_ID';
+export const UPDATE_MONITOR_STATE = 'UPDATE_MONITOR_STATE';
 
 export function initSession() {
   return {
@@ -67,6 +68,13 @@ export function backToPlanning() {
 export function setCurrentTaskFields(fields) {
   return {
     type: SET_CURRENT_TASK_FIELDS,
+    fields,
+  };
+}
+
+export function updateMonitorState(fields) {
+  return {
+    type: UPDATE_MONITOR_STATE,
     fields,
   };
 }
