@@ -16,6 +16,7 @@ import {
   SET_CURRENT_TASK_FIELDS,
   SET_TICKET_ID,
   UPDATE_TASK_TIMER,
+  UPDATE_MONITOR_STATE,
 } from './MonitorActions';
 import { MONITOR_STEPS } from './Monitor';
 
@@ -146,6 +147,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        taskPanelChanges: {},
       };
 
       if (action.newTasks && action.newTasks.length > 0) {
@@ -177,6 +179,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
           dateLastStart: now,
           elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
         },
+        taskPanelChanges: {},
       };
 
       if (state.currentStep === MONITOR_STEPS.WORKFLOW) {
@@ -275,6 +278,10 @@ const MonitorReducers = (state = currentInitialState, action) => {
     case SET_CURRENT_TASK_FIELDS:
       newState = updateTask(state, state.currentTaskIndex, action.fields);
       break;
+    case UPDATE_MONITOR_STATE: {
+      newState = { ...state, taskPanelChanges: action.fields.taskPanelChanges };
+      break;
+    }
     default:
       newState = state;
   }

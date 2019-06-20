@@ -23,6 +23,7 @@ import {
   backToPlanning,
   setCurrentTaskFields,
   setTicketId,
+  updateMonitorState,
 } from './MonitorActions';
 import { currentTaskSelector } from './MonitorSelectors';
 import Chrono from './Chrono/Chrono';
@@ -263,10 +264,11 @@ class Monitor extends Component {
   goToHome() {
     this.props.goToHome();
   }
-  updateMonitorState(fieldsToUpdate) {
+  updateMonitorLocalState(fieldsToUpdate) {
     this.setState({
       ...fieldsToUpdate,
     });
+    this.props.updateMonitorState(fieldsToUpdate);
   }
   isNextButtonDisabled() {
     switch (this.props.step) {
@@ -299,7 +301,9 @@ class Monitor extends Component {
             dateLastPause={this.props.dateLastPause}
             taskChrono={this.props.taskChrono}
             currentTrelloCard={this.props.currentTrelloCard}
-            handlePlanningPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
+            handlePlanningPanelChange={fieldsToUpdate =>
+              this.updateMonitorLocalState(fieldsToUpdate)
+            }
           />
         );
       case MONITOR_STEPS.WORKFLOW:
@@ -311,7 +315,9 @@ class Monitor extends Component {
                 taskChrono={this.props.taskChrono}
                 currentTask={this.props.currentTask}
                 handleCurrentTaskChange={this.props.handleCurrentTaskChange}
-                handleTaskPanelChange={fieldsToUpdate => this.updateMonitorState(fieldsToUpdate)}
+                handleTaskPanelChange={fieldsToUpdate =>
+                  this.updateMonitorLocalState(fieldsToUpdate)
+                }
               />
             </Grid>
             <Grid item xs={4} lg={3} className="Monitor-FullHeightPanel Monitor-padding-left">
@@ -420,6 +426,9 @@ const mapDispatchToProps = dispatch => {
     },
     handleCurrentTaskChange: fields => {
       dispatch(setCurrentTaskFields(fields));
+    },
+    updateMonitorState: fields => {
+      dispatch(updateMonitorState(fields));
     },
     goToHome: () => {
       window.location.hash = '#/';
