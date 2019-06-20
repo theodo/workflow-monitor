@@ -31,7 +31,7 @@ ipcRenderer.on('new-state', (event, newState) => {
         getTimer(state.taskChrono, state.dateLastPause),
       );
       const estimatedTime = formatMilliSecondToTime(currentTask.estimatedTime);
-      if (state.error.id && state.error.id === ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK) {
+      if (state.error && state.error.id === ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK) {
         new Notification(
           `Cannot go backwards`,
           {
@@ -54,7 +54,7 @@ ipcRenderer.on('new-state', (event, newState) => {
       document.getElementById('current-ticket').innerHTML =
         state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = 'Done';
-      if (state.error.id && state.error.id === ERROR_IDS.NEXT_WHEN_RESULTS) {
+      if (state.error && state.error.id === ERROR_IDS.NEXT_WHEN_RESULTS) {
         new Notification(
           `Cannot go forward`,
           {
