@@ -106,16 +106,17 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           elapsedTime: 0,
         },
       };
-
-      if (action.newTasks && action.newTasks.length > 0) {
+      const newTasks = state.taskPanelChanges ? state.taskPanelChanges.newTasks : null;
+      if (newTasks && newTasks.length > 0) {
         newStateForNextTask.tasks = [
           ...state.tasks.slice(0, state.currentTaskIndex + 1),
-          ...action.newTasks,
+          ...newTasks,
           ...state.tasks.slice(state.currentTaskIndex + 1),
         ];
+        newStateForNextTask.taskPanelChanges = {};
       }
       if (
-        (!action.newTasks || action.newTasks.length === 0) &&
+        (!newTasks || newTasks.length === 0) &&
         state.currentTaskIndex >= state.tasks.length - 1
       ) {
         newStateForNextTask.currentStep = MONITOR_STEPS.RESULTS;
@@ -154,12 +155,14 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           tasks,
         };
 
-        if (action.newTasks && action.newTasks.length > 0) {
+        const newTasks = state.taskPanelChanges ? state.taskPanelChanges.newTasks : null;
+        if (newTasks && newTasks.length > 0) {
           newStateForPreviousTask.tasks = [
             ...state.tasks.slice(0, state.currentTaskIndex + 1),
-            ...action.newTasks,
+            ...newTasks,
             ...state.tasks.slice(state.currentTaskIndex + 1),
           ];
+          newStateForPreviousTask.taskPanelChanges = {};
         }
       }
       if (state.currentStep === MONITOR_STEPS.RESULTS) {
