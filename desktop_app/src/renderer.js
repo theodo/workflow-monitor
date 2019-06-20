@@ -40,6 +40,16 @@ ipcRenderer.on('new-state', (event, newState) => {
           },
         );
       }
+      else if (state.taskPanelChanges && state.taskPanelChanges.newTasks) {
+        const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
+        new Notification(
+          `New task added`,
+          {
+            body: state.taskPanelChanges.newTasks[lengthNewTasksArray - 1].description,
+            silent: true,
+          },
+        );
+      }
       else {
         new Notification(
           `Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`,
