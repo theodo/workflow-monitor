@@ -83,6 +83,7 @@ const updateTask = (state, taskIndex, newFields) => {
 
 const MonitorReducers = (state = currentInitialState, action) => {
   let newState = {};
+  let shouldUpdateCurrentState = true;
   const now = new Date().getTime();
   switch (action.type) {
     case INIT_SESSION:
@@ -225,32 +226,37 @@ const MonitorReducers = (state = currentInitialState, action) => {
       };
       break;
     case PLAY_OR_PAUSE_SESSION:
-      if (state.dateLastPause) {
-        newState = {
-          ...state,
-          dateLastPause: undefined,
-          taskChrono: {
-            dateLastStart: now,
-            elapsedTime: calculateElapsedTime(state.taskChrono, state.dateLastPause),
-          },
-          globalChrono: {
-            dateLastStart: now,
-            elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
-          },
-        };
+      if (state.currentStep !== 'RESULTS') {
+        if (state.dateLastPause) {
+          newState = {
+            ...state,
+            dateLastPause: undefined,
+            taskChrono: {
+              dateLastStart: now,
+              elapsedTime: calculateElapsedTime(state.taskChrono, state.dateLastPause),
+            },
+            globalChrono: {
+              dateLastStart: now,
+              elapsedTime: calculateElapsedTime(state.globalChrono, state.dateLastPause),
+            },
+          };
+        } else {
+          newState = {
+            ...state,
+            dateLastPause: now,
+            taskChrono: {
+              dateLastStart: state.taskChrono.dateLastStart,
+              elapsedTime: state.taskChrono.elapsedTime,
+            },
+            globalChrono: {
+              dateLastStart: state.globalChrono.dateLastStart,
+              elapsedTime: state.globalChrono.elapsedTime,
+            },
+          };
+        }
       } else {
-        newState = {
-          ...state,
-          dateLastPause: now,
-          taskChrono: {
-            dateLastStart: state.taskChrono.dateLastStart,
-            elapsedTime: state.taskChrono.elapsedTime,
-          },
-          globalChrono: {
-            dateLastStart: state.globalChrono.dateLastStart,
-            elapsedTime: state.globalChrono.elapsedTime,
-          },
-        };
+        newState = state;
+        shouldUpdateCurrentState = false;
       }
       break;
     case UPDATE_TASK_TIMER:
@@ -268,15 +274,18 @@ const MonitorReducers = (state = currentInitialState, action) => {
       break;
     case UPDATE:
       newState = action.state;
+      shouldUpdateCurrentState = false;
       break;
     case SET_TICKET_ID:
       newState = {
         ...state,
         ticketId: action.ticketId,
       };
+      shouldUpdateCurrentState = false;
       break;
     case SET_CURRENT_TASK_FIELDS:
       newState = updateTask(state, state.currentTaskIndex, action.fields);
+      shouldUpdateCurrentState = false;
       break;
     case UPDATE_MONITOR_STATE: {
       newState = { ...state, taskPanelChanges: action.fields.taskPanelChanges };
@@ -286,7 +295,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
-  if (action.type !== UPDATE && action.type !== SET_CURRENT_TASK_FIELDS) {
+  if (shouldUpdateCurrentState) {
     gqlClient
       .mutate({
         mutation: UPDATE_CURRENT_STATE,
