@@ -143,6 +143,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       let newStateForNextTask = {
         ...state,
         tasks,
+        dateLastPause: undefined,
         currentTaskIndex: state.currentTaskIndex + 1,
         taskChrono: {
           dateLastStart: now,
@@ -176,6 +177,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       let newStateForPreviousTask = {
         ...state,
         currentTaskIndex: state.currentTaskIndex - 1,
+        dateLastPause: undefined,
         taskChrono: {
           dateLastStart: now,
           elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
