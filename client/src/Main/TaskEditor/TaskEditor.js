@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -94,7 +95,7 @@ class TaskField extends Component {
   toggleCheck = () => {
     const { task, updateTask } = this.props;
     if (this.state.check) {
-      updateTask(task.id, 'check', null);
+      updateTask(task.id, this.state.description, this.state.estimatedTimeText, null);
       this.setState({ check: false });
     } else {
       this.setState({ check: true });
@@ -133,7 +134,13 @@ class TaskField extends Component {
   shouldUpdateTask = (taskId, fieldName, value) => {
     this.setState({ [fieldName]: value }, () => {
       if (this.state.description && this.state.estimatedTimeText) {
-        return this.props.updateTask(taskId, this.state.description, this.state.estimatedTimeText);
+        return fieldName === 'check'
+          ? this.props.updateTask(taskId, this.state.description, this.state.estimatedTimeText, this.state.check)
+          : this.props.updateTask(
+            taskId,
+            this.state.description,
+            this.state.estimatedTimeText
+          );
       }
       return;
     });
@@ -147,7 +154,6 @@ class TaskField extends Component {
       connectDropTarget,
       connectDragPreview,
       removeTask,
-      updateTask,
       isDefaultTask,
     } = this.props;
     const { check, checkValue, estimatedTimeText, description } = this.state;
@@ -220,7 +226,7 @@ class TaskField extends Component {
                   type="text"
                   value={checkValue ? checkValue : ''}
                   onChange={event => this.setState({ checkValue: event.target.value })}
-                  onBlur={event => updateTask(task.id, 'check', event.target.value)}
+                  onBlur={event => this.shouldUpdateTask(task.id, 'check', event.target.value)}
                 />
                 <div>
                   <button onClick={() => this.toggleCheck()} tabIndex="-1">
@@ -294,38 +300,45 @@ class TaskEditor extends Component {
     this.updateTasks([...this.state.tasks.filter(task => taskId !== task.id)]);
   };
 
-  updateTask = (taskId, descriptionValue, estimatedTimeValue) => {
+  updateTask = (taskId, descriptionValue, estimatedTimeValue, checkValue?) => {
+    if (checkValue === undefined) checkValue = null;
     if (
       this.state.tasks.find(task => task.id === taskId)['description'] === descriptionValue &&
-      this.state.tasks.find(task => task.id === taskId)['estimatedTimeText'] === estimatedTimeValue
+      this.state.tasks.find(task => task.id === taskId)['estimatedTimeText'] ===
+      estimatedTimeValue &&
+      this.state.tasks.find(task => task.id === taskId)['check'] === checkValue
     ) {
       return;
     }
-    const fieldsToAdd = { description: descriptionValue, estimatedTimeText: estimatedTimeValue };
+    const fieldsToAdd = {
+      description: descriptionValue,
+      estimatedTimeText: estimatedTimeValue,
+      check: checkValue,
+    };
     fieldsToAdd.estimatedTime =
       estimatedTimeValue && estimatedTimeValue.length > 0
         ? estimatedTimeValue * 60 * 1000
         : undefined;
-
+    
     this.updateTasks([
-      ...this.state.tasks.map(task => {
-        if (task.id === taskId) return { ...task, ...fieldsToAdd };
+        ...this.state.tasks.map(task => {
+          if (task.id === taskId) return { ...task, ...fieldsToAdd };
         return task;
       }),
-    ]);
+    ]);   
   };
-  render() {
-    const { tasks } = this.state;
-    const { isDefaultTask } = this.props;
-    const taskFieldProps = {
-      moveCard: this.moveCard,
-      removeTask: this.removeTask,
-      updateTask: this.updateTask,
-      addTask: this.addTask,
-      isDefaultTask,
-    };
+render() {
+  const { tasks } = this.state;
+  const { isDefaultTask } = this.props;
+  const taskFieldProps = {
+    moveCard: this.moveCard,
+    removeTask: this.removeTask,
+    updateTask: this.updateTask,
+    addTask: this.addTask,
+    isDefaultTask,
+  };          
     return (
-      <div className="TaskEditor">
+    <div className="TaskEditor">
         <div className="DropZone">
           {tasks.map((task, i) => (
             <TaskFieldWrapper key={task.id} index={i} task={task} {...taskFieldProps} />
