@@ -40,7 +40,7 @@ ipcRenderer.on('new-state', (event, newState) => {
           },
         );
       }
-      else if (state.taskPanelChanges && state.taskPanelChanges.newTasks) {
+      else if (state.taskPanelChanges && state.taskPanelChanges.newTasks && state.taskPanelChanges.newTasks.length > 0) {
         const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
         new Notification(
           `New task added`,
