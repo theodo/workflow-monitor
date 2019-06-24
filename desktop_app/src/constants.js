@@ -7,7 +7,7 @@ const ERROR_IDS = {
 const ERROR_MESSAGES = {
   PREVIOUS_WHEN_FIRST_TASK: 'To access your planning, please go to Caspr website',
   NEXT_WHEN_RESULTS: 'You already finished your ticket',
-  UNCHECKED_TASK: 'Have you completed the following check?'
+  UNCHECKED_TASK: 'If yes, please go to Caspr website to confirm. Click this card to be redirected'
 }
 
 module.exports = { ERROR_IDS, ERROR_MESSAGES }

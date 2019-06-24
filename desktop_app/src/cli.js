@@ -64,8 +64,8 @@ const casprCli = window => {
     previousTaskTrigger(window);
   });
 
-  ipcMain.on('next-task', (event, checked) => {
-    nextTaskTrigger(window, checked);
+  ipcMain.on('next-task', (event) => {
+    nextTaskTrigger(window);
   });
 
   ipcMain.on('play-pause', () => {
@@ -77,7 +77,7 @@ const casprCli = window => {
   });
 
   globalShortcut.register('Alt+Shift+N', () => {
-    nextTaskTrigger(window, false);
+    nextTaskTrigger(window);
   });
 
   globalShortcut.register('Alt+Shift+Space', () => {
@@ -99,7 +99,7 @@ const previousTaskTrigger = window => {
   }
 };
 
-const nextTaskTrigger = (window, checked) => {
+const nextTaskTrigger = (window) => {
   if (store.currentStep === 'RESULTS') {
     window.webContents.send('new-state', {
       ...store, error: {
@@ -108,13 +108,16 @@ const nextTaskTrigger = (window, checked) => {
       }
     });
   }
-  else if (!checked && store.tasks[store.currentTaskIndex].check) {
-    window.webContents.send('new-state', {
-      ...store, error: {
-        id: ERROR_IDS.UNCHECKED_TASK,
-        message: ERROR_MESSAGES.UNCHECKED_TASK,
-      }
-    });
+  else if (store.tasks[store.currentTaskIndex].check) {
+    if (store.taskPanelChanges && !store.taskPanelChanges.currentTaskCheckOK) {
+      window.webContents.send('new-state', {
+        ...store, error: {
+          id: ERROR_IDS.UNCHECKED_TASK,
+          message: ERROR_MESSAGES.UNCHECKED_TASK,
+        }
+      });
+    }
+    else { store = MonitorReducers(store, { type: 'NEXT_TASK' }); }
   }
   else {
     store = MonitorReducers(store, { type: 'NEXT_TASK' });

@@ -8,7 +8,7 @@ const env = DEV;
 if (env === DEV) {
   const electron = require('electron');
 
-// Enable live reload for Electron too
+  // Enable live reload for Electron too
   require('electron-reload')(__dirname, {
     // Note that the path to electron may vary according to the main file
     electron: require(`${__dirname}/../node_modules/electron`)
@@ -31,8 +31,6 @@ const main = () => {
 
   window.loadFile('src/index.html');
 
-  // window.webContents.openDevTools();
-
   window.on('closed', () => {
     window = null;
   });
@@ -45,6 +43,11 @@ const main = () => {
   if (env === DEV) {
     window.webContents.openDevTools();
   }
+
+  window.webContents.on('new-window', function (e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
 };
 
 app.on('ready', main);
@@ -60,3 +63,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+module.exports = { env, DEV }
