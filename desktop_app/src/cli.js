@@ -60,6 +60,10 @@ const casprCli = window => {
     }
   });
 
+  setInterval(() => {
+    window.webContents.send('new-state', { ...store, doNotShowNotification: true });
+  }, 1000);
+
   ipcMain.on('previous-task', () => {
     previousTaskTrigger(window);
   });
