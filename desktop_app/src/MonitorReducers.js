@@ -106,6 +106,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: 0,
         },
+        taskPanelChanges: {},
       };
       const newTasks = state.taskPanelChanges ? state.taskPanelChanges.newTasks : null;
       if (newTasks && newTasks.length > 0) {
@@ -140,6 +141,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           dateLastStart: now,
           elapsedTime: state.tasks[state.currentTaskIndex - 1].realTime,
         },
+        taskPanelChanges: {},
       };
 
 
