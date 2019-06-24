@@ -1,3 +1,4 @@
+
 const { ipcRenderer } = require('electron');
 const { formatMilliSecondToTime } = require('./Utils/TimeUtils');
 const { getTimer } = require('./Utils/Chrono');
@@ -17,7 +18,6 @@ let checked = false;
 
 ipcRenderer.on('new-state', async (event, newState) => {
   state = newState;
-  navigator.serviceWorker.register('./service-worker.js');
 
   console.log(state);
   switch (state.currentStep) {
@@ -43,39 +43,42 @@ ipcRenderer.on('new-state', async (event, newState) => {
           },
         );
       }
-      else if (state.taskPanelChanges && state.taskPanelChanges.newTasks && state.taskPanelChanges.newTasks.length > 0) {
-        const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
-        new Notification(
-          `New task added`,
+
+      else if (state.error && state.error.id === ERROR_IDS.UNCHECKED_TASK) {
+
+        const notification = new Notification(
+          `Have you completed the checks for this task?`,
           {
-            body: state.taskPanelChanges.newTasks[lengthNewTasksArray - 1].description,
+            body: ERROR_MESSAGES.UNCHECKED_TASK,
             silent: true,
+            data: 'https://caspr.theo.do/#/monitor'
           },
         );
+
+        notification.onclick = function (e) {
+          window.open(e.target.data, '_blank');
+        }
       }
-      else if (state.error.id && state.error.id === ERROR_IDS.UNCHECKED_TASK) {
-
-        navigator.serviceWorker.ready.then(a => {
-          console.log('1');
-          // a.showNotification('title', {
-          //   body: ERROR_MESSAGES.UNCHECKED_TASK,
-          //   silent: true,
-          //   requireInteraction: true,
-          //   actions: [{ action: 'checkDone', title: "Yes" }, { action: 'checkNotDone', title: "No" }]
-          // });
-          a.showNotification('title', {
-            body: 'aaaaaaa'
-          })
-        })
-
-        // a.addEventListener('notificationclick', function (event) {
-        //   event.notification.close();
-        //   if (event.action === 'checkDone') {
-        //     ipcRenderer.send('next-task', true);
-        //     silentlyArchiveEmail();
-        //   }
-        // }, false);
-
+      else if (state.taskPanelChanges) {
+        if (state.taskPanelChanges.newTasks && state.taskPanelChanges.newTasks.length > 0) {
+          const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
+          new Notification(
+            `New task added`,
+            {
+              body: state.taskPanelChanges.newTasks[lengthNewTasksArray - 1].description,
+              silent: true,
+            },
+          );
+        }
+        if (state.tasks[state.currentTaskIndex].check && state.taskPanelChanges.currentTaskCheckOK) {
+          new Notification(
+            `Check completed`,
+            {
+              body: state.tasks[state.currentTaskIndex].check,
+              silent: true,
+            },
+          );
+        }
       }
       else {
         new Notification(
@@ -127,7 +130,7 @@ document.getElementById('previous-task').addEventListener('click', () => {
 });
 
 document.getElementById('next-task').addEventListener('click', () => {
-  ipcRenderer.send('next-task', false);
+  ipcRenderer.send('next-task');
 });
 
 document.getElementById('play-pause').addEventListener('click', () => {
