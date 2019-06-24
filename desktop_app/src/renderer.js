@@ -32,7 +32,7 @@ ipcRenderer.on('new-state', (event, newState) => {
         elapsedTime
 
       const estimatedTime = formatMilliSecondToTime(currentTask.estimatedTime);
-      const render = false;
+
       if (!state.doNotShowNotification) {
         if (state.error && state.error.id === ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK) {
           new Notification(
@@ -50,7 +50,7 @@ ipcRenderer.on('new-state', (event, newState) => {
             {
               body: ERROR_MESSAGES.UNCHECKED_TASK,
               silent: true,
-              data: 'https://caspr.theo.do/#/monitor'
+              data: 'https://caspr.theo.do/#/monitor',
             },
           );
 
@@ -58,28 +58,40 @@ ipcRenderer.on('new-state', (event, newState) => {
             window.open(e.target.data, '_blank');
           }
         }
-        else if (state.taskPanelChanges) {
-          if (state.taskPanelChanges.newTasks && state.taskPanelChanges.newTasks.length > 0) {
-            const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
-            new Notification(
-              `New task added`,
-              {
-                body: state.taskPanelChanges.newTasks[lengthNewTasksArray - 1].description,
-                silent: true,
-              },
-            );
-          }
-          if (state.tasks[state.currentTaskIndex].check && state.taskPanelChanges.currentTaskCheckOK) {
-            new Notification(
-              `Check completed`,
-              {
-                body: state.tasks[state.currentTaskIndex].check,
-                silent: true,
-              },
-            );
-          }
+        else if (state.taskPanelChanges.newTasks && state.taskPanelChanges.newTasks.length > 0) {
+          const lengthNewTasksArray = state.taskPanelChanges.newTasks.length;
+          new Notification(
+            `New task added`,
+            {
+              body: state.taskPanelChanges.newTasks[lengthNewTasksArray - 1].description,
+              silent: true,
+            },
+          );
+        }
+        else if (state.tasks[state.currentTaskIndex].check && state.taskPanelChanges.currentTaskCheckOK) {
+          new Notification(
+            `Check completed`,
+            {
+              body: state.tasks[state.currentTaskIndex].check,
+              silent: true,
+            },
+          );
         }
         else {
+          if (elapsedTime > estimatedTime) {
+            const notification = new Notification(
+              `Time over for this task`,
+              {
+                body: `Click this notification to report your problems`,
+                requireInteraction: true,
+                silent: false,
+                data: 'https://caspr.theo.do/#/monitor'
+              },
+            );
+            notification.onclick = function (e) {
+              window.open(e.target.data, '_blank');
+            }
+          }
           new Notification(
             `Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`,
             {
@@ -90,12 +102,12 @@ ipcRenderer.on('new-state', (event, newState) => {
         }
       }
       else {
-        shouldShowTimerNotification = false;
-        if (elapsedTime > estimatedTime && shouldShowTimerNotification) {
+        if (elapsedTime === estimatedTime) {
           const notification = new Notification(
             `Time over for this task`,
             {
               body: `Click this notification to report your problems`,
+              requireInteraction: true,
               silent: false,
               data: 'https://caspr.theo.do/#/monitor'
             },
@@ -129,6 +141,10 @@ ipcRenderer.on('new-state', (event, newState) => {
     default:
       document.getElementById('current-ticket').innerHTML =
         'Waiting for ticket start';
+      document.getElementById('current-task').innerHTML =
+        'Waiting for ticket start';
+      document.getElementById('current-time').innerHTML =
+        'Waiting for ticket start'
       break;
   }
 });
