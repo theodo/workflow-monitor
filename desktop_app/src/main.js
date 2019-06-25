@@ -1,10 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const casprCli = require('./cli');
-const DEV = 'DEV';
-const PROD = 'PROD';
-
-const env = DEV;
-
+const { env, DEV, PROD } = require('./api');
 if (env === DEV) {
   const electron = require('electron');
 
@@ -36,32 +32,31 @@ const main = () => {
   });
 
   window.webContents.on('did-finish-load', () => {
-    window.webContents.send('current-task-update', 'hello');
-    casprCli(window);
-  });
-
-  if (env === DEV) {
+      casprCli(window);
+    });
+    
+    if (env === DEV) {
     window.webContents.openDevTools();
   }
-
-  window.webContents.on('new-window', function (e, url) {
+      
+window.webContents.on('new-window', function (e, url) {
     e.preventDefault();
-    require('electron').shell.openExternal(url);
+          require('electron').shell.openExternal(url);
   });
-};
-
-app.on('ready', main);
-
+      };
+        
+          app.on('ready', main);
+          
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
+            if (process.platform !== 'darwin') {
+             app.quit();
+              }
+            });
+              
 app.on('activate', () => {
   if (window === null) {
     createWindow();
   }
 });
 
-module.exports = { env, DEV }
+module.exports = {env}
