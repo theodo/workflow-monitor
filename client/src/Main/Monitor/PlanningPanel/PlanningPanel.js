@@ -7,8 +7,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core';
-import { debounce } from 'throttle-debounce';
-
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { initAlarm, cancelAlarm } from 'Utils/AlarmUtils';
 import { getTotalTime } from 'Utils/TaskUtils';
 import { filterEmptyTasks, formatStringToTasks } from 'Utils/TaskUtils';
@@ -29,10 +29,9 @@ const styles = () => ({
 class PlanningPanel extends Component {
   constructor(props) {
     super(props);
-    this.savePlanningTask = debounce(1000, this.savePlanningTask);
-    const ticketTasks = localStorage.getItem('planningTasks')
-      ? JSON.parse(localStorage.getItem('planningTasks'))
-      : [];
+    const ticketTasks = this.props.monitorState.tasks.filter(
+      task => task.description !== 'Planning' && task.__typename !== 'DefaultTask',
+    );
     this.state = {
       ticketTasks,
       beginningTasks: filterEmptyTasks(props.beginningTasksList.tasks),
@@ -44,6 +43,11 @@ class PlanningPanel extends Component {
       initAlarm(planningMaxTime - this.props.taskChrono.elapsedTime, false);
     window.Trello.get(`/cards/${this.props.currentTrelloCard.id}/checklists`).then(checklists => {
       this.setState({ checklists });
+    });
+    this.props.handlePlanningPanelChange({
+      planningPanelTasks: {
+        tasks: this.buildAllTasks(),
+      },
     });
   }
 
@@ -61,11 +65,8 @@ class PlanningPanel extends Component {
 
   handleTasksChange = async (taskType, tasks) => {
     await this.setState({ [taskType]: tasks });
-    if (taskType === 'ticketTasks') {
-      this.savePlanningTask();
-    }
     this.props.handlePlanningPanelChange({
-      planningPanelChanges: {
+      planningPanelTasks: {
         tasks: this.buildAllTasks(),
       },
     });
@@ -91,9 +92,6 @@ class PlanningPanel extends Component {
     ];
   };
 
-  savePlanningTask = () => {
-    localStorage.setItem('planningTasks', JSON.stringify(this.state.ticketTasks));
-  };
   render() {
     const { beginningTasks, ticketTasks, endTasks, selectedChecklist, checklists } = this.state;
     const { classes } = this.props;
@@ -174,4 +172,14 @@ class PlanningPanel extends Component {
   }
 }
 
-export default withStyles(styles)(withDefaultTasks(PlanningPanel));
+const mapStateToProps = state => {
+  return {
+    monitorState: state.MonitorReducers,
+  };
+};
+
+export default compose(
+  withStyles(styles),
+  withDefaultTasks,
+  connect(mapStateToProps),
+)(PlanningPanel);
