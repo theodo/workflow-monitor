@@ -125,7 +125,6 @@ class Monitor extends Component {
     super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.getProgressPercentage = this.getProgressPercentage.bind(this);
-    document.onkeypress = this.handleKeyPress;
     this.state = {
       planningPanelChanges: {
         tasks: [],
@@ -149,6 +148,12 @@ class Monitor extends Component {
         // eslint-disable-next-line no-console
         () => console.log('error'),
       );
+  }
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress, false);
   }
 
   componentDidUpdate(prevProps) {
@@ -185,11 +190,15 @@ class Monitor extends Component {
   }
   handleKeyPress(event) {
     const targetTagName = event.target.tagName;
-    if (targetTagName === 'TEXTAREA' || targetTagName === 'INPUT' || targetTagName === 'TD') return;
-
-    if (event.which === 110) {
+    if (targetTagName === 'TEXTAREA' || targetTagName === 'INPUT' || targetTagName === 'TD') {
+      if (event.which === 27) {
+        event.target.blur();
+      }
+      return;
+    }
+    if (event.which === 78) {
       this.handleClickNextButton();
-    } else if (event.which === 112) {
+    } else if (event.which === 80) {
       this.handleClickPreviousButton();
     } else if (event.which === 32) {
       this.props.playOrPauseSession();
