@@ -127,8 +127,8 @@ class Monitor extends Component {
     this.getProgressPercentage = this.getProgressPercentage.bind(this);
     document.onkeypress = this.handleKeyPress;
     this.state = {
-      planningPanelChanges: {
-        tasks: [],
+      planningPanelTasks: {
+        tasks: this.props.monitorState.tasks.filter(task => task.description !== 'Planning'),
       },
       taskPanelChanges: {
         newTasks: [],
@@ -205,7 +205,7 @@ class Monitor extends Component {
         this.initSession();
         break;
       case MONITOR_STEPS.PLANNING:
-        if (this.areTasksValid(this.state.planningPanelChanges.tasks)) this.startSession();
+        if (this.areTasksValid(this.state.planningPanelTasks.tasks)) this.startSession();
         break;
       case MONITOR_STEPS.WORKFLOW:
         this.goToNextTask();
@@ -243,7 +243,7 @@ class Monitor extends Component {
     });
   }
   startSession() {
-    this.props.startSession(this.state.planningPanelChanges.tasks);
+    this.props.startSession(this.state.planningPanelTasks.tasks);
     this.startTask();
   }
   goToNextTask() {
@@ -272,8 +272,9 @@ class Monitor extends Component {
   }
   isNextButtonDisabled() {
     switch (this.props.step) {
-      case MONITOR_STEPS.PLANNING:
-        return !this.areTasksValid(this.state.planningPanelChanges.tasks);
+      case MONITOR_STEPS.PLANNING: {
+        return !this.areTasksValid(this.state.planningPanelTasks.tasks);
+      }
       case MONITOR_STEPS.WORKFLOW: {
         const { currentTask } = this.props;
 
