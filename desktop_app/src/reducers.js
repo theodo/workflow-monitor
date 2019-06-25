@@ -1,17 +1,14 @@
 const uuid = require('uuid');
-const {
-  INIT_SESSION,
-  NEXT_TASK,
-  PREVIOUS_TASK,
-  START_SESSION,
-  PLAY_OR_PAUSE_SESSION,
-  RESET_MONITOR,
-  UPDATE,
-} = require('./MonitorActions');
 const axios = require('axios');
 const { getGqlClient } = require('./api');
 const gql = require('graphql-tag');
 const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
+
+const NEXT_TASK = 'NEXT_TASK';
+const PREVIOUS_TASK = 'PREVIOUS_TASK';
+const RESET_MONITOR = 'RESET_MONITOR';
+const PLAY_OR_PAUSE_SESSION = 'PLAY_OR_PAUSE_SESSION';
+const UPDATE = 'UPDATE';
 
 const MONITOR_STEPS = {
   WELCOME: 'WELCOME',
@@ -19,7 +16,6 @@ const MONITOR_STEPS = {
   WORKFLOW: 'WORKFLOW',
   RESULTS: 'RESULTS',
 };
-
 
 
 const calculateElapsedTime = (chrono, dateLastPause) => {
@@ -52,42 +48,6 @@ const MonitorReducers = (state = initialMonitorState, action) => {
   let newState = {};
   const now = new Date().getTime();
   switch (action.type) {
-    case INIT_SESSION:
-      newState = {
-        ...state,
-        currentStep: MONITOR_STEPS.PLANNING,
-        tasks: [],
-        currentTaskIndex: 0,
-        dateLastPause: undefined,
-        taskChrono: {
-          dateLastStart: now,
-          elapsedTime: 0,
-        },
-        globalChrono: {
-          dateLastStart: now,
-          elapsedTime: 0,
-        },
-      };
-      break;
-    case START_SESSION:
-      newState = {
-        ...state,
-        currentStep: MONITOR_STEPS.WORKFLOW,
-        tasks: [
-          {
-            id: uuid(),
-            label: 'Planning',
-            realTime: calculateCurrentTaskTime(state.taskChrono, now),
-          },
-          ...action.tasks,
-        ],
-        currentTaskIndex: 1,
-        taskChrono: {
-          dateLastStart: now,
-          elapsedTime: 0,
-        },
-      };
-      break;
     case NEXT_TASK: {
       const result = {
         ...state.tasks[state.currentTaskIndex],
