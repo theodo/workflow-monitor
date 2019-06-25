@@ -1,5 +1,3 @@
-const { env, DEV } = require('./main.js');
-
 const { ApolloClient } = require('apollo-client');
 const ws = require('ws');
 const { createHttpLink } = require('apollo-link-http');
@@ -8,7 +6,13 @@ const { WebSocketLink } = require('apollo-link-ws');
 const gql = require('graphql-tag');
 const { setContext } = require('apollo-link-context');
 const fetch = require('node-fetch');
-const { getToken } = require('./auth.js');
+const { getToken } = require('./auth');
+
+const DEV = 'DEV';
+const PROD = 'PROD';
+
+env = PROD;
+
 
 const HTTP_API_URL =
   env === DEV
@@ -81,4 +85,4 @@ const getGqlClient = () => {
   });
 }
 
-module.exports = { getStateSubscription, getGqlClient };
+module.exports = { getStateSubscription, getGqlClient, env, DEV, PROD };
