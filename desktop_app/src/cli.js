@@ -1,7 +1,7 @@
 const { app, ipcMain, globalShortcut } = require('electron');
 const { getStateSubscription, getGqlClient } = require('./api');
 const gql = require('graphql-tag');
-const MonitorReducers = require('./MonitorReducers');
+const MonitorReducers = require('./reducers');
 const { getToken, writeToken } = require('./auth.js');
 const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 
@@ -91,45 +91,53 @@ const casprCli = window => {
 
 const previousTaskTrigger = window => {
   if (store.currentTaskIndex === 1) {
-    window.webContents.send('new-state', {
+    return window.webContents.send('new-state', {
       ...store,
       error: {
         id: ERROR_IDS.PREVIOUS_WHEN_FIRST_TASK,
         message: ERROR_MESSAGES.PREVIOUS_WHEN_FIRST_TASK,
       }
     });
-  } else {
-    store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
   }
+
+  if (store.dateLastPause) {
+    store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION', shouldUpdateState: false });
+    store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
+    return;
+  }
+
+  store = MonitorReducers(store, { type: 'PREVIOUS_TASK' });
 };
 
 const nextTaskTrigger = (window) => {
   if (store.currentStep === 'RESULTS') {
-    window.webContents.send('new-state', {
+    return window.webContents.send('new-state', {
       ...store, error: {
         id: ERROR_IDS.NEXT_WHEN_RESULTS,
         message: ERROR_MESSAGES.NEXT_WHEN_RESULTS,
       }
     });
   }
-  else if (store.tasks[store.currentTaskIndex].check) {
-    if (store.taskPanelChanges && !store.taskPanelChanges.currentTaskCheckOK) {
-      window.webContents.send('new-state', {
-        ...store, error: {
-          id: ERROR_IDS.UNCHECKED_TASK,
-          message: ERROR_MESSAGES.UNCHECKED_TASK,
-        }
-      });
-    }
-    else { store = MonitorReducers(store, { type: 'NEXT_TASK' }); }
-  }
-  else {
+  if (store.dateLastPause) {
+    store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION', shouldUpdateState: false });
     store = MonitorReducers(store, { type: 'NEXT_TASK' });
+    return;
   }
+
+  if (store.tasks[store.currentTaskIndex].check && !store.taskPanelChanges.currentTaskCheckOK) {
+    return window.webContents.send('new-state', {
+      ...store, error: {
+        id: ERROR_IDS.UNCHECKED_TASK,
+        message: ERROR_MESSAGES.UNCHECKED_TASK,
+      }
+    });
+  }
+
+  store = MonitorReducers(store, { type: 'NEXT_TASK' });
 };
 
 const playPauseTrigger = window => {
-  store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION' });
+  store = MonitorReducers(store, { type: 'PLAY_OR_PAUSE_SESSION', shouldUpdateState: true });
 };
 
 module.exports = casprCli;

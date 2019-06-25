@@ -93,9 +93,9 @@ ipcRenderer.on('new-state', (event, newState) => {
             }
           }
           new Notification(
-            `Caspr ${sessionStatus} - ${elapsedTime} / ${estimatedTime}`,
+            `Caspr ${sessionStatus} - ${state.tasks[state.currentTaskIndex].description}`,
             {
-              body: state.tasks[state.currentTaskIndex].description,
+              body: `${elapsedTime} / ${estimatedTime}`,
               silent: true,
             },
           );
@@ -122,6 +122,8 @@ ipcRenderer.on('new-state', (event, newState) => {
       document.getElementById('current-ticket').innerHTML =
         state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = 'Done';
+      document.getElementById('current-time').innerHTML =
+        ' '
       if (state.error && state.error.id === ERROR_IDS.NEXT_WHEN_RESULTS) {
         new Notification(
           `Cannot go forward`,
