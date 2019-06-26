@@ -293,6 +293,7 @@ const MonitorReducers = (state = currentInitialState, action) => {
       break;
     }
     default:
+      shouldUpdateCurrentState = false;
       newState = state;
   }
   localStorage.setItem('monitorState', JSON.stringify(newState));
