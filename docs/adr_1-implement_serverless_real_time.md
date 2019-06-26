@@ -13,8 +13,6 @@ The website implements a realtime feature to keep all the instances of frontends
 
 The current stack is :
 * Frontend : React with Apollo Client
-* Backend : NestJs with its GraphQl module which use Apollo Server. The ORM is Sequelize
-* Frontend : React with Apollo Client
 * Backend : NestJs with Apollo Server as GraphQL module, Sequelize as ORM
 * DataBase : PostgreSQL
 Every layers are deployed on the same virtual machine on an openstack instance for now.
@@ -25,65 +23,66 @@ Every layers are deployed on the same virtual machine on an openstack instance f
 * JWT Token based authentication, issued by the backend
 * The frontend should receive real time updates only for the connected user's data.
 * An user A MUST NOT access an user B data
-* The backend MUST send real time updates to the connected client immediatly
-* The message should be received by the subscribers just after the migration request is made without perceptible latency.
+* The backend MUST send real time updates to the connected client immediately
 
 ## Considered Options
 
 ### 1. MQTT Broker (AWS IoT)
-* Pro : 
-
-Functional broker out the box which could communicate with web client.
 
 **Pro:**
 
 * Functional broker out of the box able to communicate with a web client.
 * Simple to understand.
 
-* Cons : 
+**Cons:**
 
-The authentication is optimized for Cognito and [custom authorizer does not work with web client](https://github.com/aws/aws-iot-device-sdk-js/issues/169).
+* The frontend authentication is only optimized for Cognito and
+ [custom authorizer does not work with web client](https://github.com/aws/aws-iot-device-sdk-js/issues/169).
+The work around consist in requesting temporary credentials with custom policy to STS through the backend every hour 
+&rarr; The simplicity of use is KO.   
+* It is a an IoT protocol, it seams not made for this kind of problem.
 
-&rarr; Hard to implement our authentication
-
-* Schema :
+**Schema:**
 
 ![MQTT schema](Schema_serverless_pubsub_mqtt.png)
 
 ### 2. AWS AppSync
 
-* Pro : 
+**Pro:**
 
-Serverless solution designed to build real time web app with GraphQl.
+* Serverless solution designed to build real time web app with GraphQl.
+* Simple to use : only need to provide GraphQl schema and resolver templates to generate an available graphql endpoint 
+which support GraphQl subscription.
+* Complex use case could be dealt with custom lambda resolvers.
 
-Simple to use.
+**Cons:** 
 
-* Cons : 
+* The authorization types handle by AppSync are : API_KEY, AWS_IAM, OPENID_CONNECT and AMAZON_COGNITO_USER_POOLS.
+ [There is no proper way to implement custom authorizers](https://github.com/aws/aws-appsync-community/issues/2). 
+ The work around is to create a pipeline of resolvers where the first resolvers is a lambda which check the authentication 
+&rarr; Hard to implement our authentication.
+* Too much refactor : using AppSync require to build an other backend from scratch. There are few pieces of code which could be kept.
 
-Should (must) be used with Cognito. [Very hard to implement custom authorizers](https://github.com/aws/aws-appsync-community/issues/2).
-
-&rarr; Very hard to implement our authentication
-
-* Schema :
+**Schema:**
 
 ![AppSync schema](appsync_schema.png)
 
 ### 3. Custom broker of Michalkvasnicak
 
 Use the package [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql)
-* Pro : 
+**Pro:** 
 
-Solution designed to use GraphQl PubSub in serverless.
+* Solution designed to migrate our stack to AWS serverless :
+ The package is developed to setup a PubSub solution for subscriptions in GraphQL.
+* Seems to be the serverless way to implement real time, the solution is only made of serverless basic components : 
+Api GateWay, lambdas and dynamoDb
 
-Seems to be the serverless way to implement real time.
+**Cons:** 
 
-* Cons : 
+* Performances : latency between the mutation request and the reception of the subscribed message
+* Complex architecture &rarr; hard to understand, debug and maintain
 
-Performances : latency between the mutation request and the reception of the subscribed message
-
-Complex architecture &rarr; hard to understand, debug and maintain
-
-* Schemas :
+**Schemas:**
 
 ![my schema of Michalkvasnicak solution](my_schema_of_Michalkvasnicak_solution.jpg)
 
@@ -93,21 +92,19 @@ Complex architecture &rarr; hard to understand, debug and maintain
 
 Start from the [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql), remove unnecessary things and try to improve the performances. 
 
-* Pro : 
+**Pro:** 
 
-It allows us to tailor-make a solution matching all the decision drivers.
+* It allows us to tailor-make a solution matching all the decision drivers.
+* Seems to be the serverless way to implement real time, the solution is only made of serverless basic components : 
+Api GateWay, lambdas and dynamoDb
 
-Seems to be the serverless way to implement real time.
+**Cons:** 
 
-* Cons : 
-
-Long to develop
-
-No certainty about the results
-
-Complex architecture &rarr; hard to understand, debug and maintain
+* Long to develop
+* No certainty about the results
+* Complex architecture &rarr; hard to understand, debug and maintain
  
- Schema : 
+**Schema:** 
  
  current schema
  ![custom brocker schema](DynamoDb_pubsub_serverless.png)
