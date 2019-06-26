@@ -54,11 +54,13 @@ export class TicketService {
       userId,
       projectId,
       points,
+      complexity: points,
       celerity: project.celerity,
       dailyDevelopmentTime: project.dailyDevelopmentTime,
       allocatedTime,
       estimatedTime,
       realTime,
+      trelloId: state.currentTrelloCard.id,
     };
   };
 

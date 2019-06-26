@@ -28,8 +28,8 @@ export class TicketResolvers {
 
   @Query()
   @UseGuards(GraphqlAuthGuard)
-  ticket(@Args('ticketId') ticketId) {
-    return this.ticketService.getTicket(ticketId);
+  async ticket(@Args('ticketId') ticketId) {
+    return await this.ticketService.getTicket(ticketId);
   }
 
   @Mutation()

@@ -49,6 +49,11 @@ export class Ticket extends Model<Ticket> {
   celerity: number;
 
   @Column({
+    type: DataType.STRING,
+  })
+  trelloId: string;
+
+  @Column({
     type: DataType.INTEGER,
   })
   dailyDevelopmentTime: number;
