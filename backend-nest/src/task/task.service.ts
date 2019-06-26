@@ -45,11 +45,11 @@ export class TaskService {
 
   async refreshWithTasks(ticketId: number, formattedTasks: any[]) {
     await this.taskRepository.destroy({ where: { ticketId } });
-    formattedTasks.reduce(async (previousPromise, formattedTask) => {
+    await formattedTasks.reduce(async (previousPromise, formattedTask) => {
       if (previousPromise) {
         await previousPromise;
       }
-      return this.createTask(formattedTask);
+      return await this.createTask(formattedTask);
     }, Promise.resolve());
   }
 
