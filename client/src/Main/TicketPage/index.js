@@ -5,10 +5,9 @@ import TicketPage from './view';
 class TicketPageContainer extends React.Component {
   render() {
     const id = this.props.match.params.ticketId;
-    const TicketPageWithTicketDataData = WithTicketData(TicketPage, id);
+    const TicketPageWithTicketData = WithTicketData(TicketPage, id);
 
-    return <TicketPageWithTicketDataData />;
+    return <TicketPageWithTicketData />;
   }
 }
-
 export default TicketPageContainer;

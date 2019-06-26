@@ -20,6 +20,13 @@
   margin-right: 50px;
 }
 
+.exportButton {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 50px;
+  margin-top: 10px;
+}
+
 .displayOnlyOnPrint {
   display: none;
 }

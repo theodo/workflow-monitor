@@ -1,6 +1,6 @@
 import { formatMilliSecondToTime } from './TimeUtils';
 
-const RESULTS_CHECKLIST_LABEL = 'Workflow-monitor results';
+const RESULTS_CHECKLIST_LABEL = 'Caspr results';
 
 export const getOrCreateResultsChecklist = cardId => {
   return new Promise(function(resolve) {
@@ -21,7 +21,7 @@ export const getOrCreateResultsChecklist = cardId => {
   });
 };
 
-export const saveResultsInTrello = (cardId, results) => {
+export const saveResultsInTrello = async (cardId, results) => {
   getOrCreateResultsChecklist(cardId).then(function(checklist) {
     const myPromise = (checklistId, checkItem) =>
       window.Trello.post('/checklists/' + checklist.id + '/checkItems', checkItem);
