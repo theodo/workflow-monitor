@@ -13,6 +13,8 @@ import Cell from './Cell';
 import EditCell from './EditCell';
 import { Command } from './Command';
 import { formatMilliSecondToTime } from 'Utils/TimeUtils';
+import { saveResultsInTrello } from 'Utils/TrelloApiUtils';
+import { withSnackbar } from 'notistack/build';
 
 import './style.css';
 
@@ -81,6 +83,14 @@ class TicketResultsTable extends React.Component {
     window.print();
   }
 
+  handleTrelloExport = async () => {
+    await saveResultsInTrello(this.props.ticketData.trelloId, this.props.ticketData.tasks).then(
+      this.props.enqueueSnackbar('Save successful!', {
+        variant: 'success',
+      }),
+    );
+  };
+
   render() {
     return (
       <div className="resultsPage">
@@ -100,13 +110,20 @@ class TicketResultsTable extends React.Component {
           <TotalTimeResult tasks={this.props.ticketData.tasks} />
         </div>
         <div className="printButton">
-          <Button variant="contained" color="primary" onClick={() => this.printResults()}>
+          <Button variant="contained" color="primary" onClick={this.printResults}>
             Print results
           </Button>
         </div>
+        {this.props.ticketData.trelloId && (
+          <div className="exportButton">
+            <Button variant="contained" onClick={this.handleTrelloExport}>
+              Save results in Trello
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
 }
 
-export default TicketResultsTable;
+export default withSnackbar(TicketResultsTable);

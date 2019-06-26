@@ -25,6 +25,7 @@ export const GET_TICKET = gql`
       id
       description
       thirdPartyId
+      trelloId
       complexity
       status
       tasks {
