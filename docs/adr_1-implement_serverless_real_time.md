@@ -7,22 +7,25 @@
 
 ## Context and Problem Statement
 
-We want to migrate the backend of a website to AWS serverless. We want use serverless to be more familiar with this technology.
+We want to migrate the backend of a website to a serverless architecture with AWS Lambdas. Even if it looks more complex than using a container with the node/graphQL server for example, we chose to use serverless to be more familiar with this technology.
 
 The website implements a realtime feature to keep all the instances of frontends of a user synchronized.
 
 The current stack is :
 * Frontend : React with Apollo Client
 * Backend : NestJs with its GraphQl module which use Apollo Server. The ORM is Sequelize
-* DataBase : Postgres
+* Frontend : React with Apollo Client
+* Backend : NestJs with Apollo Server as GraphQL module, Sequelize as ORM
+* DataBase : PostgreSQL
+Every layers are deployed on the same virtual machine on an openstack instance for now.
 
 ## Decision Drivers
 
-* The frontend should send GraphQl requests to get or mutate entities from the DB.
-* The authentication route is custom and use a JWT to check the identity after.
-* The frontend should be able to subscribe to the topics of its user.
-* The frontend should not be able to subscribe to the topics of other users.
-* The publications in topics are made by the backend after some migrations.
+* The frontend should send GraphQL queries and mutations to the backend
+* JWT Token based authentication, issued by the backend
+* The frontend should receive real time updates only for the connected user's data.
+* An user A MUST NOT access an user B data
+* The backend MUST send real time updates to the connected client immediatly
 * The message should be received by the subscribers just after the migration request is made without perceptible latency.
 
 ## Considered Options
@@ -32,7 +35,10 @@ The current stack is :
 
 Functional broker out the box which could communicate with web client.
 
-Simple to understand.
+**Pro:**
+
+* Functional broker out of the box able to communicate with a web client.
+* Simple to understand.
 
 * Cons : 
 
@@ -75,7 +81,7 @@ Seems to be the serverless way to implement real time.
 
 Performances : latency between the mutation request and the reception of the subscribed message
 
-Complicate schema &rarr; hard to understand.
+Complex architecture &rarr; hard to understand, debug and maintain
 
 * Schemas :
 
@@ -89,7 +95,7 @@ Start from the [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambd
 
 * Pro : 
 
-Able us to completely custom the solution to match all the decisions drivers.
+It allows us to tailor-make a solution matching all the decision drivers.
 
 Seems to be the serverless way to implement real time.
 
@@ -99,7 +105,7 @@ Long to develop
 
 No certainty about the results
 
-Complicate schema &rarr; hard to understand.
+Complex architecture &rarr; hard to understand, debug and maintain
  
  Schema : 
  
