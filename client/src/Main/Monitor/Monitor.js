@@ -273,11 +273,13 @@ class Monitor extends Component {
   goToHome() {
     this.props.goToHome();
   }
-  updateMonitorLocalState(fieldsToUpdate) {
+  updateMonitorLocalState(fieldsToUpdate, shouldPersist) {
     this.setState({
       ...fieldsToUpdate,
     });
-    this.props.updateMonitorState(fieldsToUpdate);
+    if (shouldPersist) {
+      this.props.updateMonitorState(fieldsToUpdate);
+    }
   }
   isNextButtonDisabled() {
     switch (this.props.step) {
@@ -312,7 +314,7 @@ class Monitor extends Component {
             taskChrono={this.props.taskChrono}
             currentTrelloCard={this.props.currentTrelloCard}
             handlePlanningPanelChange={fieldsToUpdate =>
-              this.updateMonitorLocalState(fieldsToUpdate)
+              this.updateMonitorLocalState(fieldsToUpdate, false)
             }
           />
         );
@@ -326,7 +328,7 @@ class Monitor extends Component {
                 currentTask={this.props.currentTask}
                 handleCurrentTaskChange={this.props.handleCurrentTaskChange}
                 handleTaskPanelChange={fieldsToUpdate =>
-                  this.updateMonitorLocalState(fieldsToUpdate)
+                  this.updateMonitorLocalState(fieldsToUpdate, true)
                 }
               />
             </Grid>
