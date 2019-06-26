@@ -32,31 +32,29 @@ const main = () => {
   });
 
   window.webContents.on('did-finish-load', () => {
-      casprCli(window);
-    });
-    
-    if (env === DEV) {
+    casprCli(window);
+  });
+
+  if (env === DEV) {
     window.webContents.openDevTools();
   }
-      
-window.webContents.on('new-window', function (e, url) {
+
+  window.webContents.on('new-window', function (e, url) {
     e.preventDefault();
-          require('electron').shell.openExternal(url);
+    require('electron').shell.openExternal(url);
   });
-      };
-        
-          app.on('ready', main);
-          
+};
+
+app.on('ready', main);
+
 app.on('window-all-closed', () => {
-            if (process.platform !== 'darwin') {
-             app.quit();
-              }
-            });
-              
+  app.quit();
+});
+
 app.on('activate', () => {
   if (window === null) {
     createWindow();
   }
 });
 
-module.exports = {env}
+module.exports = { env }
