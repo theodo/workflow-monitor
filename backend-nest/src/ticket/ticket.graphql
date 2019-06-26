@@ -18,12 +18,14 @@ type Ticket {
   createdAt: String
   description: String
   thirdPartyId: String
+  points: Int
   complexity: Int
   status: String
   tasks: [Task]
   allocatedTime: Int
   estimatedTime: Int
   realTime: Int
+  trelloId: String
 }
  input PaginationInput {
     limit: Int = 0
