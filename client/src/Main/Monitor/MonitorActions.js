@@ -39,9 +39,10 @@ export function previousTask(newTasks) {
   };
 }
 
-export function playOrPauseSession() {
+export function playOrPauseSession(shouldUpdateCurrentState) {
   return {
     type: PLAY_OR_PAUSE_SESSION,
+    shouldUpdateCurrentState,
   };
 }
 

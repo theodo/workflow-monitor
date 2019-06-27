@@ -257,8 +257,8 @@ const MonitorReducers = (state = currentInitialState, action) => {
         }
       } else {
         newState = state;
-        shouldUpdateCurrentState = false;
       }
+      shouldUpdateCurrentState = action.shouldUpdateCurrentState;
       break;
     case UPDATE_TASK_TIMER:
       newState = {
