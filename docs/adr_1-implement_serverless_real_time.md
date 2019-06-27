@@ -107,21 +107,33 @@ Api GateWay, lambdas and dynamoDb
 **Schema:** 
  
  current schema
- ![custom brocker schema](DynamoDb_pubsub_serverless.png)
+ ![custom broker schema](DynamoDb_pubsub_serverless.png)
  
  ### 5. Serverless components : realtime-app
  
- Use the package [serverless-components/realtime-app/](https://github.com/serverless-components/realtime-app/)
+ Use the package [serverless-components/realtime-app/](https://github.com/serverless-components/realtime-app/).
+ It's a Component of [Serverless Components](https://github.com/serverless/components).
+ 
+ The pitch of Serverless Components :
+ "It's a framework for provisioning and composing cloud services into higher-level abstractions, like features and applications. It depends on external Components, which are javascript libraries that can provision something, like infrastructure or a whole software feature built on multiple pieces of infrastructure." 
+ 
+ It's an overlay of the framework [Serverless](https://serverless.com/) 
  
  **Pro:** 
  
- * Potentially a good solution to explore
  * Solution designed to implement real time in serverless
+ * It implements [Serverless components](https://github.com/serverless/components) which make the solution easy to deploy :
+ a une command to create the AWS infrastructure (if it does not exist) and deploy new code on it.
  
  **Cons:** 
+ * No mention of offline development
+ * All the code which deal with realtime data must be on an unique lambda &rarr; for us that means to deploy all our backend in one lambda
+ * New package without proper documentations
  
- * No certainty about the results
-
+**Schema:** 
+ 
+![one lambda schema](Serverless_Pubsub_One_Lambda.png)
 ## Decision Outcome
 
-Chosen option: explore "5. Serverless components : realtime-app", because its the best cost / expected results ratio.
+Chosen option: "4. Develop our own custom broker from the solution 3", because the three first options lead us to dead ends 
+and the infrastructure of the last one create an unique huge lambda which is KO.
