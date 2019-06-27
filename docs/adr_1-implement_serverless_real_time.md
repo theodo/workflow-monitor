@@ -1,8 +1,8 @@
 # Implement serverless real time
 
 * Status: proposed
-* Deciders: MaximeT, NicolasB, LoicC, AxelB, CorentinD
-* Date: 26-06-2019
+* Deciders: MaximeT, BenjaminG, NicolasB, LoicC, AxelB, CorentinD
+* Date: 27-06-2019
 
 
 ## Context and Problem Statement
@@ -108,7 +108,20 @@ Api GateWay, lambdas and dynamoDb
  
  current schema
  ![custom brocker schema](DynamoDb_pubsub_serverless.png)
+ 
+ ### 5. Serverless components : realtime-app
+ 
+ Use the package [serverless-components/realtime-app/](https://github.com/serverless-components/realtime-app/)
+ 
+ **Pro:** 
+ 
+ * Potentially a good solution to explore
+ * Solution designed to implement real time in serverless
+ 
+ **Cons:** 
+ 
+ * No certainty about the results
 
 ## Decision Outcome
 
-Chosen option: "4. Develop our own custom broker from the solution 3", because the three first options lead us to dead ends.
+Chosen option: explore "5. Serverless components : realtime-app", because its the best cost / expected results ratio.
