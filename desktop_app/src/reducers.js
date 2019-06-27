@@ -44,6 +44,7 @@ const initialMonitorState = {
 };
 
 const MonitorReducers = (state = initialMonitorState, action) => {
+  let shouldUpdateState = true;
   if (!action) return state;
   let newState = {};
   const now = new Date().getTime();
@@ -186,14 +187,16 @@ const MonitorReducers = (state = initialMonitorState, action) => {
           },
         };
       }
+      shouldUpdateState = action.shouldUpdateState;
       break;
     case UPDATE:
       newState = action.state;
+      shouldUpdateState = false;
       break;
     default:
       newState = state;
   }
-  if (action.type !== UPDATE) {
+  if (shouldUpdateState) {
     const gqlClient = getGqlClient();
     gqlClient
       .mutate({
