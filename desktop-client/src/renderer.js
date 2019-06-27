@@ -85,9 +85,9 @@ ipcRenderer.on('new-state', (event, newState) => {
         else {
           if (elapsedTime > estimatedTime) {
             const notification = new Notification(
-              `Time over for this task`,
+              `Caspr ${sessionStatus} - ${state.tasks[state.currentTaskIndex].description}`,
               {
-                body: `Click this notification to report your problems`,
+                body: `${elapsedTime} / ${estimatedTime}. Time is over for this task : click this notification to report your problems`,
                 requireInteraction: true,
                 silent: false,
                 data: 'https://caspr.theo.do/#/monitor'
@@ -97,13 +97,15 @@ ipcRenderer.on('new-state', (event, newState) => {
               window.open(e.target.data, '_blank');
             }
           }
-          new Notification(
-            `Caspr ${sessionStatus} - ${state.tasks[state.currentTaskIndex].description}`,
-            {
-              body: `${elapsedTime} / ${estimatedTime}`,
-              silent: true,
-            },
-          );
+          else {
+            new Notification(
+              `Caspr ${sessionStatus} - ${state.tasks[state.currentTaskIndex].description}`,
+              {
+                body: `${elapsedTime} / ${estimatedTime}`,
+                silent: true,
+              },
+            );
+          }
         }
       }
       else {
