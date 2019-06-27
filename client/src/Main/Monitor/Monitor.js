@@ -201,13 +201,13 @@ class Monitor extends Component {
     } else if (event.which === 80) {
       this.handleClickPreviousButton();
     } else if (event.which === 32) {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(true);
     }
   }
   handleClickNextButton() {
     if (this.isNextButtonDisabled()) return;
     if (this.props.dateLastPause !== undefined) {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(false);
     }
     switch (this.props.step) {
       case MONITOR_STEPS.WELCOME:
@@ -229,7 +229,7 @@ class Monitor extends Component {
   handleClickPreviousButton() {
     if (this.isPreviousButtonDisabled()) return;
     if (this.props.dateLastPause !== undefined) {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(false);
     }
     if (this.props.currentTaskIndex === 1) {
       if (
@@ -415,8 +415,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    playOrPauseSession: () => {
-      dispatch(playOrPauseSession());
+    playOrPauseSession: shouldUpdateCurrentState => {
+      dispatch(playOrPauseSession(shouldUpdateCurrentState));
     },
     initSession: () => {
       dispatch(initSession());

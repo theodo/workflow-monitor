@@ -40,7 +40,7 @@ class TaskRow extends PureComponent {
         ),
       });
     } else {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(true);
       this.setState({
         wasPausedBeforeEdit: false,
         editTimeMode: true,
@@ -59,7 +59,7 @@ class TaskRow extends PureComponent {
       new Date(this.state.editedTime);
     this.props.updateTaskTimer(delta);
     if (!this.state.wasPausedBeforeEdit) {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(true);
     }
   };
 
@@ -75,7 +75,7 @@ class TaskRow extends PureComponent {
   cancelEditedTime = () => {
     this.setState({ ...this.state, editTimeMode: false });
     if (!this.state.wasPausedBeforeEdit) {
-      this.props.playOrPauseSession();
+      this.props.playOrPauseSession(true);
     }
   };
   getRowClass() {
@@ -161,8 +161,8 @@ class TaskRow extends PureComponent {
 
 const mapDispatchToProps = dispatch => {
   return {
-    playOrPauseSession: () => {
-      dispatch(playOrPauseSession());
+    playOrPauseSession: shouldUpdateCurrentState => {
+      dispatch(playOrPauseSession(shouldUpdateCurrentState));
     },
     updateTaskTimer: delta => {
       dispatch(updateTaskTimer(delta));
