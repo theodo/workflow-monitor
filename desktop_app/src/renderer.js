@@ -14,6 +14,8 @@ let state = {};
 
 ipcRenderer.on('new-state', (event, newState) => {
   state = newState;
+  const playPauseElement = document.getElementById('play-pause');
+  const currentTimeElement = document.getElementById('current-time-block');
 
   console.log(state);
   switch (state.currentStep) {
@@ -23,6 +25,9 @@ ipcRenderer.on('new-state', (event, newState) => {
       const elapsedTime = formatMilliSecondToTime(
         getTimer(state.taskChrono, state.dateLastPause),
       );
+
+      currentTimeElement.style.display = "block";
+      playPauseElement.style.display = "block";
 
       document.getElementById('current-ticket').innerHTML =
         state.currentTrelloCard.name;
@@ -122,8 +127,9 @@ ipcRenderer.on('new-state', (event, newState) => {
       document.getElementById('current-ticket').innerHTML =
         state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML = 'Done';
-      document.getElementById('current-time').innerHTML =
-        ' '
+      currentTimeElement.style.display = "none";
+      playPauseElement.style.display = "none";
+
       if (state.error && state.error.id === ERROR_IDS.NEXT_WHEN_RESULTS) {
         new Notification(
           `Cannot go forward`,
