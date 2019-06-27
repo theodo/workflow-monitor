@@ -11,24 +11,30 @@ const MONITOR_STEPS = {
   RESULTS: 'RESULTS',
 };
 let state = {};
+const playPauseElement = document.getElementById('play-pause');
+const currentTimeElement = document.getElementById('current-time-block');
+const jwtTokenBlock = document.getElementById("jwt-token-block");
+const updateTokenButton = document.getElementById("update-token-button");
+const mainBlock = document.getElementById("main-block");
 
 ipcRenderer.on('new-state', (event, newState) => {
   state = newState;
-  const playPauseElement = document.getElementById('play-pause');
-  const currentTimeElement = document.getElementById('current-time-block');
 
   console.log(state);
+
+  currentTimeElement.style.display = "block";
+  playPauseElement.style.display = "block";
+  updateTokenButton.style.display = "block";
+  mainBlock.style.display = "block";
+
   switch (state.currentStep) {
     case MONITOR_STEPS.WORKFLOW:
+
       const currentTask = state.tasks[state.currentTaskIndex];
       const sessionStatus = state.dateLastPause ? 'paused' : 'running';
       const elapsedTime = formatMilliSecondToTime(
         getTimer(state.taskChrono, state.dateLastPause),
       );
-
-      currentTimeElement.style.display = "block";
-      playPauseElement.style.display = "block";
-
       document.getElementById('current-ticket').innerHTML =
         state.currentTrelloCard.name;
       document.getElementById('current-task').innerHTML =
@@ -157,12 +163,22 @@ ipcRenderer.on('new-state', (event, newState) => {
   }
 });
 
+
+ipcRenderer.on('no-token', (event, newState) => {
+  jwtTokenBlock.style.display = "block";
+  updateTokenButton.style.display = "none";
+  mainBlock.style.display = "none";
+});
+
 document.getElementById('jwt-token-submit').addEventListener('click', () => {
   console.log(document.getElementById('jwt-token-input').value);
-  ipcRenderer.send(
-    'jwt-token-update',
-    document.getElementById('jwt-token-input').value,
-  );
+  if (document.getElementById('jwt-token-input').value) {
+    ipcRenderer.send(
+      'jwt-token-update',
+      document.getElementById('jwt-token-input').value,
+    );
+    jwtTokenBlock.style.display = "none";
+  }
 });
 
 document.getElementById('previous-task').addEventListener('click', () => {
@@ -175,4 +191,8 @@ document.getElementById('next-task').addEventListener('click', () => {
 
 document.getElementById('play-pause').addEventListener('click', () => {
   ipcRenderer.send('play-pause');
+});
+
+document.getElementById('update-token-button').addEventListener('click', () => {
+  jwtTokenBlock.style.display = "block";
 });

@@ -8,28 +8,31 @@
 
 <body>
   <h1>Ghost Monitor</h1>
-  <div>
-    <label for="example">Enter JWT token</label>
+  <div id="main-block">
+    <div>
+      <p style="font-weight: bold">Ticket</p>
+      <p id="current-ticket"></p>
+    </div>
+    <div>
+      <p style="font-weight: bold">Task</p>
+      <p id="current-task"></p>
+    </div>
+    <div id="current-time-block">
+      <p style="font-weight: bold">Time</p>
+      <p id="current-time"></p>
+    </div>
+    <button id="previous-task">Previous (Alt+Shift+P)</button>
+    <button id="next-task">Next (Alt+Shift+N)</button>
+    <button id="play-pause">Play / Pause (Alt+Shift+Space)</button>
+    <div><button id="update-token-button">Update JWT Token</button></div>
+  </div>
+  <div id="jwt-token-block">
+    <p style="font-weight: bold">Please copy your Caspr JWT token in the Settings page (<a>https://caspr.theo.do/#/settings</a>) and paste it in the box below:</p>
     <input id="jwt-token-input" type="text" name="text" />
+    <div>
+      <button id="jwt-token-submit">Save and refresh</button>
+    </div>
   </div>
-  <div>
-    <button id="jwt-token-submit">Save and refresh</button>
-  </div>
-  <div>
-    <p style="font-weight: bold">Ticket</p>
-    <p id="current-ticket"></p>
-  </div>
-  <div>
-    <p style="font-weight: bold">Task</p>
-    <p id="current-task"></p>
-  </div>
-  <div id="current-time-block">
-    <p style="font-weight: bold">Time</p>
-    <p id="current-time"></p>
-  </div>
-  <button id="previous-task">Previous (Alt+Shift+P)</button>
-  <button id="next-task">Next (Alt+Shift+N)</button>
-  <button id="play-pause">Play / Pause (Alt+Shift+Space)</button>
   <script>
     require('./renderer.js');
   </script>
