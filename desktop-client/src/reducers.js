@@ -195,6 +195,7 @@ const MonitorReducers = (state = initialMonitorState, action) => {
       break;
     default:
       newState = state;
+      shouldUpdateState = false;
   }
   if (shouldUpdateState) {
     const gqlClient = getGqlClient();
