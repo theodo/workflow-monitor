@@ -42,7 +42,7 @@ class Settings extends Component {
               updateTasks={tasks => handleTasksChange(endTasksList.defaultTasksList, 'END', tasks)}
             />
             <Divider variant="middle" className={classes.mv25} />
-            <h2>Copy CLI token :</h2>
+            <h2>Copy JWT token for Caspr App:</h2>
             <Button variant="contained" onClick={copyToken}>
               Copy
             </Button>
