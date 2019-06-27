@@ -13,7 +13,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: process.env.REACT_APP_IS_NEST_BACKEND === 'true' ? '/api/graphql' : '/api/',
+  uri: '/api/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -37,12 +37,8 @@ export const gqlClient = new ApolloClient({
 
 const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 const WS_API_URL = dev
-  ? process.env.REACT_APP_IS_NEST_BACKEND
-    ? 'ws://localhost:4000/graphql'
-    : 'ws://localhost:4000/'
-  : process.env.REACT_APP_IS_NEST_BACKEND
-  ? `wss://${window.location.hostname}/api/graphql`
-  : `wss://${window.location.hostname}/api/`;
+  ? 'ws://localhost:4000/graphql'
+  : `wss://${window.location.hostname}/api/graphql`;
 
 const wsLink = new WebSocketLink({
   uri: WS_API_URL,
