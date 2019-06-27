@@ -16,10 +16,10 @@
       raw: "cd workflow-monitor && git fetch && git reset --hard origin/master"
 
     - name: Restart backend
-      raw: "cd workflow-monitor/backend-nest && npm i && NODE_ENV=production node_modules/.bin/sequelize db:migrate && pm2 stop index && pm2 restart main --update-env"
+      raw: "cd workflow-monitor/backend && npm i && NODE_ENV=production node_modules/.bin/sequelize db:migrate && pm2 stop index && pm2 restart main --update-env"
 
     - name: Build frontend
-      raw: "cd workflow-monitor/client && npm i && npm run build"
+      raw: "cd workflow-monitor/web-client && npm i && npm run build"
 
     - name: Copy final build in the served folder
-      raw: "cp -r workflow-monitor/client/build/. workflow-monitor/client/build-prod"
+      raw: "cp -r workflow-monitor/web-client/build/. workflow-monitor/web-client/build-prod"

@@ -4,7 +4,7 @@ The ultimate lean digital tool to develop faster and better.
 
 # How to develop
 
-Run `npm install` in client and backend folders.
+Run `npm install` in web-client and backend folders.
 
 Run `docker-compose up` or `npm start` in the root folder.
 

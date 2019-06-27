@@ -9,35 +9,24 @@ services:
       - POSTGRES_DB=caspr
     ports:
       - "5432:5432"
-  # backend:
-  #   build: ./backend
-  #   command: yarn start
-  #   environment:
-  #     - NODE_ENV=development
-  #   volumes:
-  #     - ./backend:/app
-  #   ports:
-  #     - "4000:4000"
-  #   depends_on:
-  #     - postgresql
   backend:
-    build: ./backend-nest
+    build: ./backend
     command: npm run start:dev
     environment:
       - NODE_ENV=development
     volumes:
-      - ./backend-nest:/app
+      - ./backend:/app
     ports:
       - "4000:4000"
     depends_on:
       - postgresql
   react:
-    build: ./client
+    build: ./web-client
     command: yarn start
     environment:
       - NODE_ENV=development
     volumes:
-      - ./client:/app
+      - ./web-client:/app
     ports:
       - "3000:3000"
       - "35729:35729"
