@@ -10,15 +10,15 @@ steps:
     settings:
       restore: true
       mount:
-        - ./backend-nest/node_modules
-        - ./client/node_modules
+        - ./backend/node_modules
+        - ./web-client/node_modules
 
   - name: install-backend
     image: node
     environment:
       NODE_ENV: development
     commands:
-      - cd backend-nest
+      - cd backend
       - npm install
     depends_on:
       - restore-cache
@@ -28,7 +28,7 @@ steps:
     environment:
       NODE_ENV: development
     commands:
-      - cd backend-nest
+      - cd backend
       - npm run lint
     depends_on:
       - install-backend
@@ -38,39 +38,39 @@ steps:
     environment:
       NODE_ENV: development
     commands:
-      - cd backend-nest
+      - cd backend
       - npm run test
     depends_on:
       - install-backend
 
-  - name: install-client
+  - name: install-web-client
     image: node
     commands:
-      - cd client
+      - cd web-client
       - npm install
     depends_on:
       - restore-cache
 
-  - name: lint-client
+  - name: lint-web-client
     image: node
     environment:
       NODE_ENV: development
     commands:
-      - cd client
+      - cd web-client
       - npm run lint
     depends_on:
-      - install-client
+      - install-web-client
 
-  - name: build-client
+  - name: build-web-client
     image: node
     environment:
       NODE_PATH: src/
       NODE_ENV: production
     commands:
-      - cd client
+      - cd web-client
       - npm run build
     depends_on:
-      - install-client
+      - install-web-client
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -80,11 +80,11 @@ steps:
     settings:
       rebuild: true
       mount:
-        - ./backend-nest/node_modules
-        - ./client/node_modules
+        - ./backend/node_modules
+        - ./web-client/node_modules
     depends_on:
       - install-backend
-      - install-client
+      - install-web-client
 
 volumes:
   - name: cache
