@@ -133,6 +133,7 @@ class Monitor extends Component {
         newTasks: [],
         currentTaskCheckOK: false,
       },
+      shouldRenderPanel: true,
     };
     subscriptionClient
       .subscribe({
@@ -158,6 +159,7 @@ class Monitor extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.step === MONITOR_STEPS.WORKFLOW && this.props.step === MONITOR_STEPS.RESULTS) {
+      this.setState({ shouldRenderPanel: false });
       gqlClient
         .mutate({
           mutation: SAVE_TICKET,
@@ -166,6 +168,7 @@ class Monitor extends Component {
           },
         })
         .then(result => {
+          this.setState({ shouldRenderPanel: true });
           this.props.setTicketId(result.data.saveTicket);
         });
     }
@@ -377,7 +380,7 @@ class Monitor extends Component {
             </Grid>
           </Grid>
         </header>
-        <div className="Monitor-content">{this.renderPanel()}</div>
+        <div className="Monitor-content">{this.state.shouldRenderPanel && this.renderPanel()}</div>
         <div className="no-print">
           <Footer
             step={this.props.step}
