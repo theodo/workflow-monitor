@@ -24,6 +24,8 @@ export const SELECT_PROJECT = gql`
       id
       name
       thirdPartyId
+      celerity
+      dailyDevelopmentTime
     }
   }
 `;

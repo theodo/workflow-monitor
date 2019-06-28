@@ -29,6 +29,17 @@ class ProjectSpeed extends Component {
     dailyDevelopmentTime: this.props.project ? this.props.project.dailyDevelopmentTime : null,
   };
 
+  componentDidUpdate = prevProps => {
+    if (prevProps.project !== this.props.project) {
+      if (this.props.project.celerity) {
+        this.setState({ celerity: this.props.project.celerity });
+      }
+      if (this.props.project.dailyDevelopmentTime) {
+        this.setState({ dailyDevelopmentTime: this.props.project.dailyDevelopmentTime });
+      }
+    }
+  };
+
   updateProjectSpeed = () => {
     const projectSpeed = {
       celerity: parseFloat(this.state.celerity),

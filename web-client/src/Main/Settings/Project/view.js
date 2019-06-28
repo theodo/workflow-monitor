@@ -1,4 +1,5 @@
 import { SELECT_PROJECT } from 'Queries/Projects';
+import { GET_DEFAULT_TASKS_LISTS } from 'Queries/DefaultTasksLists';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import ProjectSpeed from './ProjectSpeed';
@@ -29,7 +30,10 @@ class Projects extends Component {
     this.state = {
       boards: {},
       selectedProject: this.props.project
-        ? { value: this.props.project.thirdPartyId, label: this.props.project.name }
+        ? {
+            value: this.props.project.thirdPartyId,
+            label: this.props.project.name,
+          }
         : null,
     };
 
@@ -61,6 +65,7 @@ class Projects extends Component {
         variables: {
           project: graphqlProject,
         },
+        refetchQueries: [{ query: GET_DEFAULT_TASKS_LISTS }],
       })
       .then(result => {
         this.props.selectProject(result.data.selectProject);
