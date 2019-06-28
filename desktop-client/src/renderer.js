@@ -26,6 +26,9 @@ ipcRenderer.on('new-state', (event, newState) => {
   playPauseElement.style.display = "block";
   updateTokenButton.style.display = "block";
   mainBlock.style.display = "block";
+  if (state.hideTokenBlock) {
+    jwtTokenBlock.style.display = "none";
+  }
 
   switch (state.currentStep) {
     case MONITOR_STEPS.WORKFLOW:
@@ -181,6 +184,10 @@ document.getElementById('jwt-token-submit').addEventListener('click', () => {
     );
     jwtTokenBlock.style.display = "none";
   }
+});
+
+document.getElementById('jwt-token-cancel-submit').addEventListener('click', () => {
+  jwtTokenBlock.style.display = "none";
 });
 
 document.getElementById('previous-task').addEventListener('click', () => {
