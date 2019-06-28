@@ -274,7 +274,11 @@ const MonitorReducers = (state = currentInitialState, action) => {
       };
       break;
     case UPDATE:
-      newState = action.state;
+      if (JSON.stringify(state).valueOf() === JSON.stringify(action.state).valueOf()) {
+        newState = state;
+      } else {
+        newState = action.state;
+      }
       shouldUpdateCurrentState = false;
       break;
     case SET_TICKET_ID:
