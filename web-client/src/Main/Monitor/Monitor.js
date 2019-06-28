@@ -383,7 +383,7 @@ class Monitor extends Component {
             step={this.props.step}
             isNextDisabled={this.isNextButtonDisabled()}
             isPreviousDisabled={this.isPreviousButtonDisabled()}
-            onPauseClick={() => this.props.playOrPauseSession()}
+            onPauseClick={() => this.props.playOrPauseSession(true)}
             onNextClick={() => this.handleClickNextButton()}
             onPreviousClick={() => this.handleClickPreviousButton()}
             progressPercentage={this.getProgressPercentage()}
