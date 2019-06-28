@@ -8,6 +8,7 @@ const { ERROR_IDS, ERROR_MESSAGES } = require('./constants');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
 let store = MonitorReducers();
+let loginSuccessful = false;
 
 const initCli = window => {
   const token = getToken();
@@ -25,11 +26,12 @@ const initCli = window => {
         `,
       }).then(({ data: { currentUser: { state } } }) => {
         if (state) {
+          loginSuccessful = true;
           store = MonitorReducers(store, {
             type: 'UPDATE',
             state: JSON.parse(state),
           });
-          window.webContents.send('new-state', store);
+          window.webContents.send('new-state', { ...store, hideTokenBlock: true });
         }
       })
       .catch(error => console.log(error));
@@ -64,7 +66,9 @@ const casprCli = window => {
   });
 
   setInterval(() => {
-    if (getToken()) { window.webContents.send('new-state', { ...store, doNotShowNotification: true }); }
+    if (loginSuccessful) {
+      window.webContents.send('new-state', { ...store, doNotShowNotification: true });
+    }
   }, 1000);
 
   ipcMain.on('previous-task', () => {
