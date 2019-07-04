@@ -143,7 +143,7 @@ class Monitor extends Component {
       .subscribe(
         {
           next(data) {
-            props.update(JSON.parse(data.state));
+            props.update(JSON.parse(data.data.state));
           },
         },
         // eslint-disable-next-line no-console

@@ -1,0 +1,171 @@
+service:
+  name: ${env:SERVICE_NAME}
+
+plugins:
+  - '@hewmen/serverless-plugin-typescript'
+  - serverless-plugin-optimize
+  - serverless-dynamodb-local
+  - serverless-offline-sns
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    host: 0.0.0.0
+    port: 4000
+    websocketPort: 4001
+
+  dynamodb:
+    stages:
+      - development
+    start:
+      host: dynamodb # or the name of your Dynamo docker container
+      port: "8000" # the port of our Dynamo docker container
+      noStart: true
+      migrate: true
+
+  serverless-offline-sns:
+    port: 4002
+#    debug: true
+
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: ${env:REGION}
+  stage: ${env:NODE_ENV}
+#  vpc:
+#    securityGroupIds:
+#      - ${env:SECURITY_GROUP}
+#    subnetIds:
+#      - ${env:SUBNET_1}
+#      - ${env:SUBNET_2}
+#      - ${env:SUBNET_3}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - execute-api:ManageConnections
+      Resource: 'arn:aws:execute-api:*:*:*/development/POST/@connections/*'
+    - Effect: Allow
+      Action:
+        - dynamodb:DeleteItem
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: !GetAtt ConnectionsDynamoDBTable.Arn
+    - Effect: Allow
+      Action:
+        - dynamodb:BatchWriteItem
+        - dynamodb:DeleteItem
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource: !GetAtt SubscriptionsDynamoDBTable.Arn
+#    - Effect: Allow
+#      Action:
+#        - SNS:GetTopicAttributes
+#        - SNS:SetTopicAttributes
+#        - SNS:AddPermission
+#        - SNS:RemovePermission
+#        - SNS:DeleteTopic
+#        - SNS:Subscribe
+#        - SNS:ListSubscriptionsByTopic
+#        - SNS:Publish
+#      Resource: arn:aws:sns:eu-west-3:834341346275:NEW_STATE
+#    - Effect: Allow
+#      Action:
+#       - SNS:GetTopicAttributes
+#       - SNS:SetTopicAttributes
+#       - SNS:AddPermission
+#       - SNS:RemovePermission
+#       - SNS:DeleteTopic
+#       - SNS:Subscribe
+#       - SNS:ListSubscriptionsByTopic
+#       - SNS:Publish
+#      Resource: arn:aws:sns:eu-west-3:834341346275:DELETED_STATE
+
+package:
+  include:
+    - src/**/*.graphql
+
+functions:
+  api:
+    handler: src/nestjs/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+
+  pubsub:
+    handler: src/pubsub/lambda.handler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: $default
+      - sns:
+          topicName: ${env:SERVICE_PREFIX}States
+          displayName: Caspr update state
+
+resources:
+  Resources:
+    ConnectionsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        # see DynamoDBConnectionManager
+        TableName: ${env:SERVICE_PREFIX}Connections
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          # connection id
+          - AttributeName: id
+            KeyType: HASH
+
+    SubscriptionsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        # see DynamoDBSubscriptionManager
+        TableName: ${env:SERVICE_PREFIX}Subscriptions
+        AttributeDefinitions:
+          - AttributeName: event
+            AttributeType: S
+          - AttributeName: subscriptionId
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: event
+            KeyType: HASH
+          - AttributeName: subscriptionId
+            KeyType: RANGE
+
+    RDS:
+      Type: 'AWS::RDS::DBInstance'
+      Properties:
+        DBName: ${env:SERVICE_PREFIX}DataBase
+        AllocatedStorage: '20'
+        DBInstanceClass: db.t3.micro
+        Engine: PostgreSQL
+        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:DB_PASSWORD}
+
+  Outputs:
+    JDBCConnectionString:
+      Description: JDBC connection string for the database
+      Value: !Join
+        - ''
+        - - 'jdbc:mysql://'
+          - !GetAtt
+            - RDS
+            - Endpoint.Address
+          - ':'
+          - !GetAtt
+            - RDS
+            - Endpoint.Port
+          - /
+          - ${env:SERVICE_PREFIX}DataBase
+

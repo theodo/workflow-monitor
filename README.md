@@ -4,11 +4,20 @@ The ultimate lean digital tool to develop faster and better.
 
 # How to develop
 
-Run `npm install` in web-client and backend folders.
+1. Run `npm install` in web-client and backend folders.
 
-Run `docker-compose up` or `npm start` in the root folder.
+2. In `./backend` copy `.env-exemple` in `.env` and add your configuration.
 
-Run migrations in the backend folder: `node_modules/.bin/sequelize db:migrate --env=local`.
+    **Alternatively**, ask for the `.env` already well completed by a theoder. 
+
+3. Run `docker-compose up` or `npm start` in the root folder.
+
+4. In an other terminal, run migrations in the backend folder: `node_modules/.bin/sequelize db:migrate --env=local`.
+
+    **Alternatively**, ask for a dump of the database and apply it :
+    
+    `psql --host=localhost --port=5432 --username=caspr --password --dbname=caspr < dump_name.sql
+` 
 
 You're all set! Go to [http://localhost](http://localhost) to access to Caspr.
 

@@ -2,8 +2,8 @@ import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { WebSocketLink } from 'apollo-link-ws';
 import { onError } from 'apollo-link-error';
+import { Client, WebSocketLink } from 'aws-lambda-ws-link';
 
 const errorLink = onError(({ networkError }) => {
   if (networkError && networkError.statusCode === 403) {
@@ -13,7 +13,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: '/api/graphql',
+  uri: 'api/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -36,19 +36,16 @@ export const gqlClient = new ApolloClient({
 });
 
 const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
-const WS_API_URL = dev
-  ? 'ws://localhost:4000/graphql'
-  : `wss://${window.location.hostname}/api/graphql`;
+const WS_API_URL = dev ? 'ws://localhost:4001' : `wss://${window.location.hostname}/api/graphql`;
 
-const wsLink = new WebSocketLink({
+const wsClient = new Client({
   uri: WS_API_URL,
   options: {
     reconnect: true,
-    connectionParams: {
-      authToken: localStorage.getItem('jwt_token'),
-    },
   },
 });
+
+const wsLink = new WebSocketLink(wsClient);
 
 export const subscriptionClient = new ApolloClient({
   link: authLink.concat(wsLink),

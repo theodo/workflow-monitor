@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "main": "./src/main.js",
   "homepage": "https://caspr.theo.do",
-  "author": {"name": "Caspr Theodo","email": "deborabo@theodo.fr"},
+  "author": {
+    "name": "Caspr Theodo",
+    "email": "deborabo@theodo.fr"
+  },
   "scripts": {
     "start": "electron .",
     "pack": "build --dir",

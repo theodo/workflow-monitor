@@ -11,7 +11,11 @@
     "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./src",
+    "lib": ["es2018", "esnext.asynciterable"],
+    "noImplicitAny": false,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules"]
 }

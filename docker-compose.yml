@@ -9,6 +9,13 @@ services:
       - POSTGRES_DB=caspr
     ports:
       - "5432:5432"
+  dynamodb:
+    image: "amazon/dynamodb-local"
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
+    volumes:
+      - ./backend/dynamodblocal:/home/dynamodblocal/data
+    ports:
+      - "8000:8000"
   backend:
     build: ./backend
     command: npm run start:dev
@@ -18,8 +25,10 @@ services:
       - ./backend:/app
     ports:
       - "4000:4000"
+      - "4001:4001"
     depends_on:
       - postgresql
+      - dynamodb
   react:
     build: ./web-client
     command: yarn start
