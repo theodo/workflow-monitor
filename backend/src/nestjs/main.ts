@@ -10,7 +10,7 @@ import { EntityNotFoundFilter } from './exception/entity-not-found.filter';
 import { QueryFailedFilter } from './exception/query-failed.filter';
 
 async function bootstrap() {
-  const isDev = process.env.NODE_ENV && process.env.NODE_ENV !== 'production';
+  const isDev = process.env.NODE_ENV && process.env.NODE_ENV !== 'prod';
 
   const app = isDev
     ? await NestFactory.create(AppModule)

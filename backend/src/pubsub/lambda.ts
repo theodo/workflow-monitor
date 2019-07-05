@@ -40,11 +40,11 @@ const schema = makeExecutableSchema({
 });
 
 const subscriptionManager = new DynamoDBSubscriptionManager({
-  subscriptionsTableName: `${process.env.SERVICE_PREFIX}Subscriptions`,
+  subscriptionsTableName: `${process.env.NODE_ENV}${process.env.SERVICE_PREFIX}Subscriptions`,
 });
 const connectionManager = new DynamoDBConnectionManager({
   subscriptions: subscriptionManager,
-  connectionsTable: `${process.env.SERVICE_PREFIX}Connections`,
+  connectionsTable: `${process.env.NODE_ENV}${process.env.SERVICE_PREFIX}Connections`,
 });
 
 const eventProcessor = createSNSProcessor({

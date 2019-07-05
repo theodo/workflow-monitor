@@ -17,8 +17,9 @@ services:
     ports:
       - "8000:8000"
   backend:
+    user: "${UID}:${GID}"
     build: ./backend
-    command: npm run start:dev
+    command: npm run start
     environment:
       - NODE_ENV=development
     volumes:

@@ -4,8 +4,12 @@
 
 .dynamodb/
 
+config/config.json
+
 node_modules/
 
 .build/
 
 .env
+.env.staging
+.env.prod

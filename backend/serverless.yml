@@ -62,28 +62,10 @@ provider:
         - dynamodb:Query
         - dynamodb:Scan
       Resource: !GetAtt SubscriptionsDynamoDBTable.Arn
-#    - Effect: Allow
-#      Action:
-#        - SNS:GetTopicAttributes
-#        - SNS:SetTopicAttributes
-#        - SNS:AddPermission
-#        - SNS:RemovePermission
-#        - SNS:DeleteTopic
-#        - SNS:Subscribe
-#        - SNS:ListSubscriptionsByTopic
-#        - SNS:Publish
-#      Resource: arn:aws:sns:eu-west-3:834341346275:NEW_STATE
-#    - Effect: Allow
-#      Action:
-#       - SNS:GetTopicAttributes
-#       - SNS:SetTopicAttributes
-#       - SNS:AddPermission
-#       - SNS:RemovePermission
-#       - SNS:DeleteTopic
-#       - SNS:Subscribe
-#       - SNS:ListSubscriptionsByTopic
-#       - SNS:Publish
-#      Resource: arn:aws:sns:eu-west-3:834341346275:DELETED_STATE
+    - Effect: Allow
+      Action:
+        - SNS:Publish
+      Resource: arn:aws:sns:eu-west-3:834341346275:${env:NODE_ENV}${env:SERVICE_PREFIX}States
 
 package:
   include:
@@ -107,7 +89,7 @@ functions:
       - websocket:
           route: $default
       - sns:
-          topicName: ${env:SERVICE_PREFIX}States
+          topicName: ${env:NODE_ENV}${env:SERVICE_PREFIX}States
           displayName: Caspr update state
 
 resources:
@@ -116,7 +98,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         # see DynamoDBConnectionManager
-        TableName: ${env:SERVICE_PREFIX}Connections
+        TableName: ${env:NODE_ENV}${env:SERVICE_PREFIX}Connections
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -130,7 +112,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         # see DynamoDBSubscriptionManager
-        TableName: ${env:SERVICE_PREFIX}Subscriptions
+        TableName: ${env:NODE_ENV}${env:SERVICE_PREFIX}Subscriptions
         AttributeDefinitions:
           - AttributeName: event
             AttributeType: S
@@ -146,10 +128,11 @@ resources:
     RDS:
       Type: 'AWS::RDS::DBInstance'
       Properties:
+        DBInstanceIdentifier: ${env:SERVICE_NAME}-database
         DBName: ${env:SERVICE_PREFIX}DataBase
         AllocatedStorage: '20'
         DBInstanceClass: db.t3.micro
-        Engine: PostgreSQL
+        Engine: postgres
         MasterUsername: ${env:DB_USER}
         MasterUserPassword: ${env:DB_PASSWORD}
 
@@ -167,5 +150,7 @@ resources:
             - RDS
             - Endpoint.Port
           - /
-          - ${env:SERVICE_PREFIX}DataBase
+          - ${env:SERVICE_NAME}-database
+      Export:
+        Name: JDBCConnectionString
 

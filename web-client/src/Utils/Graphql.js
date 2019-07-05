@@ -4,6 +4,7 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
 import { Client, WebSocketLink } from 'aws-lambda-ws-link';
+const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 
 const errorLink = onError(({ networkError }) => {
   if (networkError && networkError.statusCode === 403) {
@@ -13,7 +14,9 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: 'api/graphql',
+  uri: dev
+    ? 'api/graphql'
+    : 'https://0bp8r0lec6.execute-api.eu-west-3.amazonaws.com/staging/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -35,8 +38,9 @@ export const gqlClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
-const WS_API_URL = dev ? 'ws://localhost:4001' : `wss://${window.location.hostname}/api/graphql`;
+const WS_API_URL = dev
+  ? 'ws://localhost:4001'
+  : `wss://a9dpl3sbeb.execute-api.eu-west-3.amazonaws.com/staging`;
 
 const wsClient = new Client({
   uri: WS_API_URL,

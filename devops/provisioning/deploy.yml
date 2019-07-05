@@ -16,7 +16,7 @@
       raw: "cd workflow-monitor && git fetch && git reset --hard origin/master"
 
     - name: Restart backend
-      raw: "cd workflow-monitor/backend && npm i && NODE_ENV=production node_modules/.bin/sequelize db:migrate && pm2 restart main --update-env"
+      raw: "cd workflow-monitor/backend && npm i && NODE_ENV=prod node_modules/.bin/sequelize db:migrate && pm2 restart main --update-env"
 
     - name: Build frontend
       raw: "cd workflow-monitor/web-client && npm i && npm run build"

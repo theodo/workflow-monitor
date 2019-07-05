@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "caspr",
+    "password": "caspr",
+    "database": "caspr",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "staging": {
+    "username": "caspr",
+    "password": "DB_PASSWORD",
+    "database": "CasprServerlessDataBase",
+    "host": "caspr-serverless-database.xxxxxxxx.eu-west-3.rds.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "prod": {
+    "username": "caspr",
+    "password": "DB_PASSWORD",
+    "database": "CasprServerlessDataBase",
+    "host": "caspr-serverless-database.xxxxxxxxx.eu-west-3.rds.amazonaws.com",
+    "dialect": "postgres"
+  }
+}

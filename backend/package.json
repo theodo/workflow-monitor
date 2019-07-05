@@ -6,10 +6,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "sls offline start --useWebsocket",
-    "start:dev": "sls offline start --useWebsocket",
-    "deploy": "sls deploy --aws-profile MeTheodo",
+    "deploy:staging": "./deploy.sh staging",
+    "deploy:prod": "./deploy.sh prod",
     "format": "prettier --write \"src/**/*.ts\"",
-    "migrate": "node_modules/.bin/sequelize db:migrate --env=local"
+    "migrate": "node_modules/.bin/sequelize db:migrate --env=development",
+    "migrate:staging": "node_modules/.bin/sequelize db:migrate --env=staging"
   },
   "dependencies": {
     "@nestjs/common": "6.2.4",

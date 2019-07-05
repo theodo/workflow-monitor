@@ -22,7 +22,7 @@ export class PubsubService {
           Message: JSON.stringify({ topic, payload }),
           TopicArn: `arn:aws:sns:${process.env.REGION}:${
             process.env.IS_OFFLINE ? 123456789012 : process.env.ACCOUNT_ID
-          }:${process.env.SERVICE_PREFIX}States`,
+          }:${process.env.NODE_ENV}${process.env.SERVICE_PREFIX}States`,
         })
         .promise();
     } catch (e) {

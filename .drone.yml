@@ -65,7 +65,7 @@ steps:
     image: node
     environment:
       NODE_PATH: src/
-      NODE_ENV: production
+      NODE_ENV: prod
     commands:
       - cd web-client
       - npm run build
