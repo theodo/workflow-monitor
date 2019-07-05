@@ -2,7 +2,7 @@
 
 * Status: proposed
 * Deciders: MaximeT, BenjaminG, NicolasB, LoicC, AxelB, CorentinD
-* Date: 27-06-2019
+* Date: 05-07-2019
 
 
 ## Context and Problem Statement
@@ -94,29 +94,28 @@ Use the package [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lamb
 
 ![Michalkvasnicak schema](michalkvasnicak_schema.svg)
 
-### 4. Develop our own custom broker from the solution 3
+### 4. Develop our own custom broker from the solution 3 with SNS
 
 Start from the [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql), 
-remove unnecessary things and try to improve the performances. 
+use SNS enable inter-lambda communication instead of DynamoDB stream
 
 **Pro:** 
 
 * It allows us to tailor-make a solution matching all the decision drivers.
 * Seems to be the serverless way to implement real time, the solution is only made of serverless basic
- components : Api GateWay, lambdas and dynamoDb.
+ components : Api GateWay, lambdas, dynamoDb and SNS.
 
 **Cons:** 
 
-* Long to develop.
-* No certainty about the results.
+* Impossible to secure : RDS cannot be outside of a VPC, SNS and DynamoDb cannot be in a VPC, lambda could be either in VPC or not.
+    * If the lambdas are outside a VPC, the RDS should be public &rarr; KO security
+    * If the lambdas are inside a VPC, they could not subscribe to SNS &rarr; KO architecture
 * Complex architecture &rarr; hard to understand, debug and maintain.
  
 **Schema:** 
  
-Not yet sure of the schema, between 
- ![custom broker schema](DynamoDb_pubsub_serverless.png)
- and 
- ![one lambda schema](Serverless_Pubsub_One_Lambda.png)
+ ![SNS_pubsub_serverless_schema](SNS_pubsub_serverless.png)
+
  ### 5. Serverless components : realtime-app
  
  Use the package [serverless-components/realtime-app/](https://github.com/serverless-components/realtime-app/).
@@ -143,10 +142,33 @@ Not yet sure of the schema, between
  our current backend which use http to deal with queries and mutations.
  * There is no docs and probably some bugs : when I tested the package, there is a functionality
   I didn't manage to use, I don't know if I badly used the package or if it's a bug.
+  
+  ### 6. Publish to Subscribers in the GraphQL resolver
+  
+  It is not possible to use SNS and painful to use DynamoDB (need to add a specific endpoint) with VPC. 
+  But a VCP is mandatory with a RDS, so this solution store the subscriptions in the RDS 
+  (instead of a DynamoDB comparing to solutions 3. and 4.) and send back the messages to the subscribers in 
+  the same lambda as the mutations are processed.   
+  
+  **Pro:** 
+  
+  * It allows us to tailor-make a solution matching all the decision drivers.
+  * Perf will be better than with solution 4. because there are no more communication between two lambdas 
+  before send back the messages to the API
+  
+  **Cons:** 
+  
+  * The GraphQl lambda has several purpose which is not recommended ([cf Paul Johnson best practise](https://medium.com/@PaulDJohnston/serverless-best-practices-b3c97d551535))
+  * Complex architecture &rarr; hard to understand, debug and maintain.
+   
+  **Schema:** 
+   
+   ![GraphQl_real_time_serverless_schema](GraphQl_real_time_serverless.png)
 
 ## Decision Outcome
 
-Chosen option: "4. Develop our own custom broker from the solution 3", because:
+Chosen option: "6. Publish to Subscribers in the GraphQL resolver", because:
 * With the solution 1 and 2, we can't easily implement the Trello based authentication.
 * Solution 3 have performances issues.
+* Solution 4 have security issues.
 * Solution 5 is incompatible with our current Backend. 
