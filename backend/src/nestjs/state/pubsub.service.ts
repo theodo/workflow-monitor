@@ -1,34 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { SNS } from 'aws-sdk';
+import { PubSub } from '../../shared/pubsub/pubsub';
+import { publisher } from './publisher';
+import { PubSubEngine } from '../../shared/pubsub/pubsub-engine';
 
 @Injectable()
 export class PubsubService {
   // tslint:disable-next-line:variable-name
-  private _pubSub;
+  private _pubSub: PubSubEngine;
 
   constructor() {
-    this._pubSub = process.env.IS_OFFLINE
-      ? new SNS({
-          endpoint: 'http://127.0.0.1:4002',
-          region: process.env.REGION,
-        })
-      : new SNS();
+    this._pubSub = new PubSub({
+      publisher,
+    });
   }
 
-  async publish(topic: string, payload: any) {
-    try {
-      await this._pubSub
-        .publish({
-          Message: JSON.stringify({ topic, payload }),
-          TopicArn: `arn:aws:sns:${process.env.REGION}:${
-            process.env.IS_OFFLINE ? 123456789012 : process.env.ACCOUNT_ID
-          }:${process.env.NODE_ENV}${process.env.SERVICE_PREFIX}States`,
-        })
-        .promise();
-    } catch (e) {
-      // tslint:disable-next-line:no-console
-      console.log('ERROR', e);
-    }
-    return;
+  async publish(triggerName: string, payload: any) {
+    return await this._pubSub.publish(triggerName, payload);
   }
 }

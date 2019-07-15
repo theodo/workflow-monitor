@@ -11,7 +11,7 @@ export class StateResolver {
   @Mutation()
   @UseGuards(GraphqlAuthGuard)
   async updateCurrentState(@CurrentUser() user: User, @Args('state') state) {
-    const topic = 'states';
+    const topic = `states#${user.id}`;
     await this.pubsubService.publish(topic, state);
     await user.set('state', state);
     await user.save();

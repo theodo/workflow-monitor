@@ -2,7 +2,7 @@
 BUILD=.build
 
 if [[ -d "$BUILD" ]]; then
-  rm -r ${BUILD};
+  sudo rm -r ${BUILD};
 fi
 
 NODE_ENV=$1 sls deploy
