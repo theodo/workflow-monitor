@@ -2,6 +2,8 @@ service:
   name: ${env:SERVICE_NAME}
 
 plugins:
+  - serverless-plugin-warmup-ts-bridge
+  - serverless-plugin-warmup
   - serverless-plugin-typescript
   - serverless-plugin-optimize
   - serverless-dotenv-plugin
@@ -12,6 +14,11 @@ custom:
     host: 0.0.0.0
     port: 4000
     websocketPort: 4001
+  warmup:
+    enabled: true
+    events:
+      - schedule: 'cron(0/4 6-21 ? * MON-FRI *)' # Run WarmUp every 4 minutes Mon-Fri between 6:00am and 8:55pm (UTC)
+
 
 
 provider:
@@ -33,6 +40,11 @@ provider:
       Action:
         - execute-api:ManageConnections
       Resource: 'arn:aws:execute-api:*:*:*/${env:NODE_ENV}/POST/@connections/*'
+
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: arn:aws:lambda:eu-west-1:834341346275:function:*
 
 package:
   include:
@@ -57,6 +69,8 @@ functions:
     events:
       - websocket:
           route: $disconnect
+    warmup:
+      enabled: false
   migrations:
     handler: src/migrations/lambda.handler
     events:
@@ -64,6 +78,8 @@ functions:
           method: post
           path: /migrations
           authorizer: aws_iam
+    warmup:
+      enabled: false
 
 resources:
   Resources:

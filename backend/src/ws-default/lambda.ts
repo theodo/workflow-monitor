@@ -6,6 +6,11 @@ import { WebSocketMessageEvent } from '../shared/type';
 const wsHandler = new WsEventHandler(gqlSchema);
 
 export const handler: Handler = (event: WebSocketMessageEvent, context: AWSLambdaContext) => {
+  if (event.source === 'serverless-plugin-warmup') {
+    // tslint:disable-next-line:no-console
+    console.log('WarmUp - Lambda is warm!');
+    return Promise.resolve('Lambda is warm!');
+  }
   if (
     !event.requestContext ||
     !event.requestContext.routeKey ||

@@ -20,6 +20,7 @@ export interface WebSocketMessageEvent {
   body: string;
   requestContext: WebSocketRequestContext<'$default'>;
   apiGatewayUrl?: string;
+  [key: string]: any;
 }
 
 /**
