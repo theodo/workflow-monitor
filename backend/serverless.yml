@@ -19,19 +19,20 @@ provider:
   runtime: nodejs10.x
   region: ${env:REGION}
   stage: ${env:NODE_ENV}
-#  vpc:
-#    securityGroupIds:
-#      - ${env:SECURITY_GROUP}
-#    subnetIds:
-#      - ${env:SUBNET_1}
-#      - ${env:SUBNET_2}
-#      - ${env:SUBNET_3}
+
+  vpc:
+    securityGroupIds:
+      - !Ref LambdaSecurityGroup
+    subnetIds:
+      - !Ref SubnetA
+      - !Ref SubnetB
+      - !Ref SubnetC
 
   iamRoleStatements:
     - Effect: Allow
       Action:
         - execute-api:ManageConnections
-      Resource: 'arn:aws:execute-api:*:*:*/development/POST/@connections/*'
+      Resource: 'arn:aws:execute-api:*:*:*/${env:NODE_ENV}/POST/@connections/*'
 
 package:
   include:
@@ -66,29 +67,196 @@ functions:
 
 resources:
   Resources:
-    RDS:
-      Type: 'AWS::RDS::DBInstance'
+    Aurora:
+      Type: AWS::RDS::DBCluster
       Properties:
-        DBInstanceIdentifier: ${env:SERVICE_NAME}-database
-        DBName: ${env:SERVICE_PREFIX}DataBase
-        AllocatedStorage: '20'
-        DBInstanceClass: db.t3.micro
-        Engine: postgres
         MasterUsername: ${env:DB_USER}
         MasterUserPassword: ${env:DB_PASSWORD}
+        DatabaseName: ${env:SERVICE_PREFIX}DataBase
+        Engine: aurora-postgresql
+        EngineMode: serverless
+        DBSubnetGroupName:
+          Ref: AuroraSubnetGroup
+        VpcSecurityGroupIds:
+          - !Ref AuroraSecurityGroup
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-aurora
 
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: 10.192.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-vpc
+
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+
+    InternetGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId: !Ref VPC
+        InternetGatewayId: !Ref InternetGateway
+
+    PublicSubnetA:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        VpcId: !Ref VPC
+        CidrBlock: 10.192.10.0/24
+        MapPublicIpOnLaunch: true
+
+    SubnetA:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        VpcId: !Ref VPC
+        CidrBlock: 10.192.20.0/24
+        MapPublicIpOnLaunch: false
+
+    SubnetB:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: !Select [ 1, !GetAZs '' ]
+        VpcId: !Ref VPC
+        CidrBlock: 10.192.21.0/24
+        MapPublicIpOnLaunch: false
+
+    SubnetC:
+      Type: AWS::EC2::Subnet
+      Properties:
+        AvailabilityZone: !Select [ 2, !GetAZs '' ]
+        VpcId: !Ref VPC
+        CidrBlock: 10.192.22.0/24
+        MapPublicIpOnLaunch: false
+
+    EIP:
+      Type: AWS::EC2::EIP
+      DependsOn: InternetGatewayAttachment
+      Properties:
+        Domain: vpc
+
+    NatGateway:
+      Type: AWS::EC2::NatGateway
+      Properties:
+        AllocationId: !GetAtt EIP.AllocationId
+        SubnetId: !Ref PublicSubnetA
+
+    PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref VPC
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-public-route-table
+
+    DefaultPublicRoute:
+      Type: AWS::EC2::Route
+      DependsOn: InternetGatewayAttachment
+      Properties:
+        RouteTableId: !Ref PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref InternetGateway
+
+    PublicSubnetARouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref PublicRouteTable
+        SubnetId: !Ref PublicSubnetA
+
+    RouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: !Ref VPC
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-route-table
+
+    DefaultRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: !Ref RouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        NatGatewayId: !Ref NatGateway
+
+    SubnetARouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref RouteTable
+        SubnetId: !Ref SubnetA
+
+    SubnetBRouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref RouteTable
+        SubnetId: !Ref SubnetB
+
+    SubnetCRouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: !Ref RouteTable
+        SubnetId: !Ref SubnetC
+
+    AuroraSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupName: ${env:SERVICE_NAME}-aurora-subnet-group-${env:NODE_ENV}
+        DBSubnetGroupDescription: subnet groups for ${env:SERVICE_PREFIX}Aurora
+        SubnetIds:
+          - !Ref SubnetA
+          - !Ref SubnetB
+          - !Ref SubnetC
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-aurora-subnet-group-${env:NODE_ENV}
+
+    AuroraSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: ${env:SERVICE_NAME}-aurora-sg-${env:NODE_ENV}
+        GroupDescription: lambdas traffic in, all traffic out.
+        VpcId: !Ref VPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            SourceSecurityGroupId: !Ref LambdaSecurityGroup
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-rds-sg-${env:NODE_ENV}
+
+    LambdaSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: ${env:SERVICE_NAME}-lambda-sg-${env:NODE_ENV}
+        GroupDescription: no traffic in, all traffic out.
+        VpcId: !Ref VPC
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: ${env:SERVICE_NAME}-lambda-sg-${env:NODE_ENV}
+
+        
   Outputs:
     JDBCConnectionString:
       Description: JDBC connection string for the database
       Value: !Join
         - ''
-        - - 'jdbc:mysql://'
+        - - 'jdbc:psql://'
           - !GetAtt
-            - RDS
+            - Aurora
             - Endpoint.Address
           - ':'
           - !GetAtt
-            - RDS
+            - Aurora
             - Endpoint.Port
           - /
           - ${env:SERVICE_NAME}-database

@@ -1,15 +1,15 @@
 import { Client } from 'pg';
 import configObject from '../../config/config.json';
 import { WSSubscriptionContext } from '../shared/type';
+import { createAsyncIterator } from 'iterall';
 
 const env = process.env.NODE_ENV;
 const config = configObject[env];
 
 export const subscriber = async (
   triggerName: string,
-  onMessage: (...args: any[]) => void,
   options: WSSubscriptionContext,
-): Promise<number> => {
+): Promise<AsyncIterator<any>> => {
   const client = new Client({
     host: env === 'development' ? 'postgresql' : config.host,
     port: 5432,
@@ -39,5 +39,5 @@ export const subscriber = async (
     // tslint:disable-next-line:no-console
     console.log(err.stack);
   }
-  return 1;
+  return Promise.resolve(createAsyncIterator([]));
 };

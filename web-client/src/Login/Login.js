@@ -41,7 +41,7 @@ class Login extends Component {
   trelloAuthenticationSuccess() {
     axios
       .post(
-        dev ? 'api/login' : 'https://0bp8r0lec6.execute-api.eu-west-3.amazonaws.com/staging/login',
+        dev ? 'api/login' : 'https://8a7wzvn0n3.execute-api.eu-west-1.amazonaws.com/staging/login',
         {
           trelloToken: localStorage.getItem('trello_token'),
         },

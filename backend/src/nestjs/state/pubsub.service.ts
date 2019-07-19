@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PubSub } from '../../shared/pubsub/pubsub';
 import { publisher } from './publisher';
-import { PubSubEngine } from '../../shared/pubsub/pubsub-engine';
 
 @Injectable()
 export class PubsubService {
   // tslint:disable-next-line:variable-name
-  private _pubSub: PubSubEngine;
+  private _pubSub: PubSub;
 
   constructor() {
     this._pubSub = new PubSub({

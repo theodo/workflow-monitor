@@ -1,29 +1,23 @@
-import { EventEmitter } from 'events';
-import { PubSubEngine } from './pubsub-engine';
-import { ResolverFn } from './with-filter';
 import { createAsyncIterator } from 'iterall';
 
 export interface PubSubOptions {
   publisher?: (triggerName: string, payload: any) => Promise<void>;
   subscriber?: (
     triggerName: string,
-    onMessage: (...args: any[]) => void,
     options: { [key: string]: any },
-  ) => Promise<number>;
-  unsubscriber?: (subId: number) => any;
+  ) => Promise<AsyncIterator<any>>;
+  unsubscriber?: (connectionId: number) => Promise<void>;
 }
 
-export class PubSub extends PubSubEngine {
+export class PubSub {
   private customPublish: (triggerName: string, payload: any) => Promise<void>;
   private customSubscribe: (
     triggerName: string,
-    onMessage: (...args: any[]) => void,
     options: { [key: string]: any },
-  ) => Promise<number>;
-  private customUnsubscribe: (subId: number) => any;
+  ) => Promise<AsyncIterator<any>>;
+  private customUnsubscribe: (connectionId: number) => Promise<void>;
 
   constructor(options: PubSubOptions = {}) {
-    super();
     this.customPublish = options.publisher;
     this.customSubscribe = options.subscriber;
     this.customUnsubscribe = options.unsubscriber;
@@ -38,19 +32,20 @@ export class PubSub extends PubSubEngine {
 
   public subscribe(
     triggerName: string,
-    onMessage: (...args: any[]) => void,
     options: { [key: string]: any },
-  ): Promise<number> {
+  ): Promise<AsyncIterator<any>> {
     if (this.customSubscribe) {
-      return this.customSubscribe(triggerName, onMessage, options);
+      return this.customSubscribe(triggerName, options);
     }
 
-    return Promise.resolve(1);
+    return Promise.resolve(createAsyncIterator([]));
   }
 
-  public unsubscribe(subId: number) {
+  public unsubscribe(connectionId: number): Promise<void> {
     if (this.customUnsubscribe) {
-      this.customUnsubscribe(subId);
+      return this.customUnsubscribe(connectionId);
+    } else {
+      return;
     }
   }
 }

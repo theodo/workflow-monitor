@@ -8,6 +8,7 @@ import { APIGatewayProxyResult, Context as AWSLambdaContext } from 'aws-lambda';
 import { execute, ExecutionArgs, getOperationAST, GraphQLSchema, parse, subscribe } from 'graphql';
 import { extractEndpointFromEvent } from '../shared/utils/extract-endpoint-from-event';
 import { sendToConnection } from '../shared/utils/send-message-to-connection';
+import { isAsyncIterable } from 'iterall';
 
 export class WsEventHandler {
   private gqlSchema: GraphQLSchema;
@@ -62,9 +63,7 @@ export class WsEventHandler {
           result = await execute(executionArgs);
         }
 
-        if (result.next) {
-          result.next();
-        } else {
+        if (!isAsyncIterable(result)) {
           response = { type: 'data', id: operation.id, payload: result };
           await sendToConnection(connectionId, endpoint, JSON.stringify(response));
         }

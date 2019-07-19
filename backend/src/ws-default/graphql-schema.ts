@@ -29,7 +29,7 @@ export default makeExecutableSchema({
         },
         subscribe: (obj, args, context) => {
           const user = jwt.decode(context.JWT) as { id: string };
-          return pubsub.asyncIterator(`states#${user.id}`, context);
+          return pubsub.subscribe(`states#${user.id}`, context);
         },
       },
     },
