@@ -36,6 +36,7 @@ provider:
 package:
   include:
     - src/**/*.graphql
+    - migrations
 
 functions:
   api:
@@ -55,6 +56,13 @@ functions:
     events:
       - websocket:
           route: $disconnect
+  migrations:
+    handler: src/migrations/lambda.handler
+    events:
+      - http:
+          method: post
+          path: /migrations
+          authorizer: aws_iam
 
 resources:
   Resources:
