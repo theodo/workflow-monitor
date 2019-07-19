@@ -1,3 +1,5 @@
+# import Problem, ProblemInput from "../problem/problem.graphql"
+
 type Task {
     id: Int
     description: String

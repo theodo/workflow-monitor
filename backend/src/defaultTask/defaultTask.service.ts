@@ -40,7 +40,7 @@ export class DefaultTaskService {
   async refreshWithTasks(defaultTasksListId, defaultTasks) {
     await this.defaultTaskRepository.destroy({ where: { defaultTasksListId } });
     defaultTasks.map(async defaultTask => {
-      const newDBTask = await this.defaultTaskRepository.create(defaultTask);
+      await this.defaultTaskRepository.create(defaultTask);
     });
   }
 
