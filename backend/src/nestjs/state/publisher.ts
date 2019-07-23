@@ -33,7 +33,7 @@ export const publisher = async (triggerName: string, payload: any): Promise<void
     console.log(err.stack);
     throw Error('Fail to load subscriptions');
   }
-
+  await client.end();
   const promises = subscriptions.map(async subscription => {
     const operation = JSON.parse(subscription.operation);
 

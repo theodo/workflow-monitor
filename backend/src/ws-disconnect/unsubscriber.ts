@@ -25,5 +25,6 @@ export const unsubcribeByConnection = async (connectionId: string): Promise<void
     // tslint:disable-next-line:no-console
     console.log(err.stack);
   }
+  await client.end();
   return;
 };

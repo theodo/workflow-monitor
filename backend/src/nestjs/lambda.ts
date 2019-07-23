@@ -6,8 +6,8 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import serverlessExpress from 'aws-serverless-express';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import {EntityNotFoundFilter} from './exception/entity-not-found.filter';
-import {QueryFailedFilter} from './exception/query-failed.filter';
+import { EntityNotFoundFilter } from './exception/entity-not-found.filter';
+import { QueryFailedFilter } from './exception/query-failed.filter';
 
 let cachedServer: Server;
 
@@ -15,12 +15,12 @@ function bootstrapServer(): Promise<Server> {
   const expressApp = express();
   const adapter = new ExpressAdapter(expressApp);
   return NestFactory.create(AppModule, adapter)
-      .then(app => app.enableCors({ credentials: true, origin: process.env.FRONT_BASE_URL }))
-      .then(app => app.init())
-      .then(app => app.use(cookieParser()))
-      .then(app => app.useGlobalFilters(new EntityNotFoundFilter()))
-      .then(app => app.useGlobalFilters(new QueryFailedFilter()))
-      .then(() => serverlessExpress.createServer(expressApp));
+    .then(app => app.enableCors({ credentials: true, origin: process.env.FRONT_BASE_URL }))
+    .then(app => app.init())
+    .then(app => app.use(cookieParser()))
+    .then(app => app.useGlobalFilters(new EntityNotFoundFilter()))
+    .then(app => app.useGlobalFilters(new QueryFailedFilter()))
+    .then(() => serverlessExpress.createServer(expressApp));
 }
 
 export const handler: Handler = (event: any, context: Context) => {

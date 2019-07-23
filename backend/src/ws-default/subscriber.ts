@@ -39,5 +39,6 @@ export const subscriber = async (
     // tslint:disable-next-line:no-console
     console.log(err.stack);
   }
+  await client.end();
   return Promise.resolve(createAsyncIterator([]));
 };
