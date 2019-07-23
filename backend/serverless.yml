@@ -1,5 +1,5 @@
 service:
-  name: ${env:SERVICE_NAME}
+  name: caspr
 
 plugins:
   - serverless-plugin-warmup-ts-bridge
@@ -10,6 +10,7 @@ plugins:
   - serverless-offline
 
 custom:
+  accountId: !Ref AWS::AccountId
   serverless-offline:
     host: 0.0.0.0
     port: 4000
@@ -19,8 +20,6 @@ custom:
     events:
       - schedule: 'cron(0/4 6-21 ? * MON-FRI *)' # Run WarmUp every 4 minutes Mon-Fri between 6:00am and 8:55pm (UTC)
 
-
-
 provider:
   name: aws
   runtime: nodejs10.x
@@ -29,22 +28,36 @@ provider:
 
   vpc:
     securityGroupIds:
-      - !Ref LambdaSecurityGroup
+      - {"Fn::ImportValue": "CasprLambdaSecurityGroup"}
     subnetIds:
-      - !Ref SubnetA
-      - !Ref SubnetB
-      - !Ref SubnetC
+      - {"Fn::ImportValue": "CasprSubnetA"}
+      - {"Fn::ImportValue": "CasprSubnetB"}
+      - {"Fn::ImportValue": "CasprSubnetC"}
 
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - execute-api:ManageConnections
-      Resource: 'arn:aws:execute-api:*:*:*/${env:NODE_ENV}/POST/@connections/*'
+        - execute-api:ManageConnections # To allow lambdas to send messages back to websocket
+      Resource:
+        'Fn::Join':
+          - ""
+          - - "arn:aws:execute-api:"
+            - { "Ref": "AWS::Region" }
+            - ':'
+            - { Ref: "AWS::AccountId" }
+            - ":*/${env:NODE_ENV}/POST/@connections/*"
 
     - Effect: Allow
       Action:
-        - lambda:InvokeFunction
-      Resource: arn:aws:lambda:eu-west-1:834341346275:function:*
+        - lambda:InvokeFunction # To allow warm-up lambdas to trigger the other lambdas
+      Resource:
+        'Fn::Join':
+          - ""
+          - - "arn:aws:lambda:"
+            - { "Ref": "AWS::Region" }
+            - ':'
+            - { Ref: "AWS::AccountId" }
+            - ":function:*"
 
 package:
   include:
@@ -73,6 +86,7 @@ functions:
       enabled: false
   migrations:
     handler: src/migrations/lambda.handler
+    stage: prod
     events:
       - http:
           method: post
@@ -80,202 +94,4 @@ functions:
           authorizer: aws_iam
     warmup:
       enabled: false
-
-resources:
-  Resources:
-    Aurora:
-      Type: AWS::RDS::DBCluster
-      Properties:
-        MasterUsername: ${env:DB_USER}
-        MasterUserPassword: ${env:DB_PASSWORD}
-        DatabaseName: ${env:SERVICE_PREFIX}DataBase
-        Engine: aurora-postgresql
-        EngineMode: serverless
-        DBSubnetGroupName:
-          Ref: AuroraSubnetGroup
-        VpcSecurityGroupIds:
-          - !Ref AuroraSecurityGroup
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-aurora
-
-    VPC:
-      Type: AWS::EC2::VPC
-      Properties:
-        CidrBlock: 10.192.0.0/16
-        EnableDnsSupport: true
-        EnableDnsHostnames: true
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-vpc
-
-    InternetGateway:
-      Type: AWS::EC2::InternetGateway
-
-    InternetGatewayAttachment:
-      Type: AWS::EC2::VPCGatewayAttachment
-      Properties:
-        VpcId: !Ref VPC
-        InternetGatewayId: !Ref InternetGateway
-
-    PublicSubnetA:
-      Type: AWS::EC2::Subnet
-      Properties:
-        AvailabilityZone: !Select [ 0, !GetAZs '' ]
-        VpcId: !Ref VPC
-        CidrBlock: 10.192.10.0/24
-        MapPublicIpOnLaunch: true
-
-    SubnetA:
-      Type: AWS::EC2::Subnet
-      Properties:
-        AvailabilityZone: !Select [ 0, !GetAZs '' ]
-        VpcId: !Ref VPC
-        CidrBlock: 10.192.20.0/24
-        MapPublicIpOnLaunch: false
-
-    SubnetB:
-      Type: AWS::EC2::Subnet
-      Properties:
-        AvailabilityZone: !Select [ 1, !GetAZs '' ]
-        VpcId: !Ref VPC
-        CidrBlock: 10.192.21.0/24
-        MapPublicIpOnLaunch: false
-
-    SubnetC:
-      Type: AWS::EC2::Subnet
-      Properties:
-        AvailabilityZone: !Select [ 2, !GetAZs '' ]
-        VpcId: !Ref VPC
-        CidrBlock: 10.192.22.0/24
-        MapPublicIpOnLaunch: false
-
-    EIP:
-      Type: AWS::EC2::EIP
-      DependsOn: InternetGatewayAttachment
-      Properties:
-        Domain: vpc
-
-    NatGateway:
-      Type: AWS::EC2::NatGateway
-      Properties:
-        AllocationId: !GetAtt EIP.AllocationId
-        SubnetId: !Ref PublicSubnetA
-
-    PublicRouteTable:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-public-route-table
-
-    DefaultPublicRoute:
-      Type: AWS::EC2::Route
-      DependsOn: InternetGatewayAttachment
-      Properties:
-        RouteTableId: !Ref PublicRouteTable
-        DestinationCidrBlock: 0.0.0.0/0
-        GatewayId: !Ref InternetGateway
-
-    PublicSubnetARouteTableAssociation:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        RouteTableId: !Ref PublicRouteTable
-        SubnetId: !Ref PublicSubnetA
-
-    RouteTable:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref VPC
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-route-table
-
-    DefaultRoute:
-      Type: AWS::EC2::Route
-      Properties:
-        RouteTableId: !Ref RouteTable
-        DestinationCidrBlock: 0.0.0.0/0
-        NatGatewayId: !Ref NatGateway
-
-    SubnetARouteTableAssociation:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        RouteTableId: !Ref RouteTable
-        SubnetId: !Ref SubnetA
-
-    SubnetBRouteTableAssociation:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        RouteTableId: !Ref RouteTable
-        SubnetId: !Ref SubnetB
-
-    SubnetCRouteTableAssociation:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        RouteTableId: !Ref RouteTable
-        SubnetId: !Ref SubnetC
-
-    AuroraSubnetGroup:
-      Type: AWS::RDS::DBSubnetGroup
-      Properties:
-        DBSubnetGroupName: ${env:SERVICE_NAME}-aurora-subnet-group-${env:NODE_ENV}
-        DBSubnetGroupDescription: subnet groups for ${env:SERVICE_PREFIX}Aurora
-        SubnetIds:
-          - !Ref SubnetA
-          - !Ref SubnetB
-          - !Ref SubnetC
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-aurora-subnet-group-${env:NODE_ENV}
-
-    AuroraSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupName: ${env:SERVICE_NAME}-aurora-sg-${env:NODE_ENV}
-        GroupDescription: lambdas traffic in, all traffic out.
-        VpcId: !Ref VPC
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            SourceSecurityGroupId: !Ref LambdaSecurityGroup
-          - IpProtocol: -1
-            CidrIp: 0.0.0.0/0
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-rds-sg-${env:NODE_ENV}
-
-    LambdaSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupName: ${env:SERVICE_NAME}-lambda-sg-${env:NODE_ENV}
-        GroupDescription: no traffic in, all traffic out.
-        VpcId: !Ref VPC
-        SecurityGroupEgress:
-          - IpProtocol: -1
-            CidrIp: 0.0.0.0/0
-        Tags:
-          - Key: Name
-            Value: ${env:SERVICE_NAME}-lambda-sg-${env:NODE_ENV}
-
-        
-  Outputs:
-    JDBCConnectionString:
-      Description: JDBC connection string for the database
-      Value: !Join
-        - ''
-        - - 'jdbc:psql://'
-          - !GetAtt
-            - Aurora
-            - Endpoint.Address
-          - ':'
-          - !GetAtt
-            - Aurora
-            - Endpoint.Port
-          - /
-          - ${env:SERVICE_NAME}-database
-      Export:
-        Name: JDBCConnectionString
 

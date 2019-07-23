@@ -1,0 +1,210 @@
+# Caspr Stack
+# to generate the stack use with a rightful aws profile:
+# aws --region eu-west-1 cloudformation create-stack --stack-name caspr --template-body file://cloudformation.yml --parameters ParameterKey=DBName,ParameterValue=CasprDataBase ParameterKey=DBMasterUser,ParameterValue=caspr ParameterKey=DBMasterPassword,ParameterValue=XXX
+# then use serverless deploy to create the API GateWay and the lambdas
+
+Parameters:
+  DBName:
+    Description: The name of the database
+    Type: String
+  DBMasterUser:
+    Description: The name of the master user of the database
+    Type: String
+  DBMasterPassword:
+    Description: The password of the master user of the database
+    Type: String
+
+
+Resources:
+  RDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: caspr-database
+      DBName: !Ref DBName
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t3.small
+      Engine: postgres
+      MasterUsername: !Ref DBMasterUser
+      MasterUserPassword: !Ref DBMasterPassword
+      DBSubnetGroupName:
+        Ref: RDSSubnetGroup
+      VPCSecurityGroups:
+        - !Ref RDSSecurityGroup
+      Tags:
+        - Key: Name
+          Value: caspr-database
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.192.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: caspr-vpc
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      VpcId: !Ref VPC
+      CidrBlock: 10.192.10.0/24
+      MapPublicIpOnLaunch: true
+
+  SubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      VpcId: !Ref VPC
+      CidrBlock: 10.192.20.0/24
+      MapPublicIpOnLaunch: false
+
+  SubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      VpcId: !Ref VPC
+      CidrBlock: 10.192.21.0/24
+      MapPublicIpOnLaunch: false
+
+  SubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAZs '' ]
+      VpcId: !Ref VPC
+      CidrBlock: 10.192.22.0/24
+      MapPublicIpOnLaunch: false
+
+  EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref PublicSubnetA
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnetA
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  SubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref SubnetA
+
+  SubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref SubnetB
+
+  SubnetCRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref SubnetC
+
+  RDSSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: caspr-database-subnet-group
+      DBSubnetGroupDescription: subnet groups for the caspr database
+      SubnetIds:
+        - !Ref SubnetA
+        - !Ref SubnetB
+        - !Ref SubnetC
+      Tags:
+        - Key: Name
+          Value: caspr-database-subnet-group
+
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: caspr-database-sg
+      GroupDescription: lambdas traffic in, all traffic out.
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref LambdaSecurityGroup
+      Tags:
+        - Key: Name
+          Value: ${env:SERVICE_NAME}-rds-sg-${env:NODE_ENV}
+
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: caspr-lambda-sg
+      GroupDescription: no traffic in, all traffic out.
+      VpcId: !Ref VPC
+      SecurityGroupEgress:
+        - IpProtocol: '-1'
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: caspr-lambda-sg
+
+Outputs:
+  LambdaSecurityGroup:
+    Description: Security Group for lambdas which is imported in serverless.yml
+    Value: !Ref LambdaSecurityGroup
+    Export:
+      Name: CasprLambdaSecurityGroup
+  SubnetA:
+    Description: Subnet of AZ 1 which contains the DB and the Lambdas. It is imported in serverless.yml
+    Value: !Ref SubnetA
+    Export:
+      Name: CasprSubnetA
+  SubnetB:
+    Description: Subnet of AZ 2 which contains the DB and the Lambdas. It is imported in serverless.yml
+    Value: !Ref SubnetB
+    Export:
+      Name: CasprSubnetB
+  SubnetC:
+    Description: Subnet of AZ 3 which contains the DB and the Lambdas. It is imported in serverless.yml
+    Value: !Ref SubnetC
+    Export:
+      Name: CasprSubnetC

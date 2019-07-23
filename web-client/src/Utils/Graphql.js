@@ -15,9 +15,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: dev
-    ? 'api/graphql'
-    : 'https://8a7wzvn0n3.execute-api.eu-west-1.amazonaws.com/staging/graphql',
+  uri: dev ? 'api/graphql' : process.env.REACT_APP_API_URL + '/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -39,9 +37,7 @@ export const gqlClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const WS_API_URL = dev
-  ? 'ws://localhost:4001'
-  : `wss://ti2o66e5m6.execute-api.eu-west-1.amazonaws.com/staging`;
+const WS_API_URL = dev ? 'ws://localhost:4001' : process.env.REACT_APP_WS_URL;
 
 const wsClient = new SubscriptionClient(
   WS_API_URL,
