@@ -1,8 +1,8 @@
 import { Client } from 'pg';
 import configObject from '../../../config/config.json';
-import { GraphQlResponse, WSSubscriptionContext } from '../../shared/type';
-import { sendToConnection } from '../../shared/utils/send-message-to-connection';
-import { formatGraphQlSubscriptionPayload } from '../../shared/utils/format-graphql-subscription-payload';
+import { GraphQlResponse, WSSubscriptionContext } from '../type';
+import { sendToConnection } from '../utils/send-message-to-connection';
+import { formatGraphQlSubscriptionPayload } from '../utils/format-graphql-subscription-payload';
 
 const env = process.env.NODE_ENV;
 const config = configObject[env];

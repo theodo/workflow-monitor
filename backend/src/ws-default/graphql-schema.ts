@@ -1,11 +1,8 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import { subscriber } from './subscriber';
 import { PubSub } from '../shared/pubsub/pubsub';
 import * as jwt from 'jsonwebtoken';
 
-const pubsub = new PubSub({
-  subscriber,
-});
+const pubsub = new PubSub();
 
 export default makeExecutableSchema({
   typeDefs: /* GraphQL */ `
@@ -24,7 +21,7 @@ export default makeExecutableSchema({
     Subscription: {
       state: {
         resolve: (payload: string) => {
-          // resolve is call by the eventProcessor for each subscribers when a state is publish
+          // resolve is call by the publisher for each subscribers when a state is publish
           return payload;
         },
         subscribe: (obj, args, context) => {

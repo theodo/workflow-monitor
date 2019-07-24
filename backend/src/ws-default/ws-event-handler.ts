@@ -63,6 +63,8 @@ export class WsEventHandler {
           result = await execute(executionArgs);
         }
 
+        // subscribe(executionArgs) return an AsyncIterable if the subscription is successful
+        // It check if the subscription had an error or if it was an execution
         if (!isAsyncIterable(result)) {
           response = { type: 'data', id: operation.id, payload: result };
           await sendToConnection(connectionId, endpoint, JSON.stringify(response));

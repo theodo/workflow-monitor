@@ -1,21 +1,17 @@
-import { createAsyncIterator } from 'iterall';
+import { subscriber as defaultSubscriber } from './subscriber';
+import { publisher as defaultPublisher } from './publisher';
+import { unsubscriber as defaultUnsubscriber } from './unsubscriber';
 
 export interface PubSubOptions {
   publisher?: (triggerName: string, payload: any) => Promise<void>;
-  subscriber?: (
-    triggerName: string,
-    options: { [key: string]: any },
-  ) => Promise<AsyncIterator<any>>;
-  unsubscriber?: (connectionId: number) => Promise<void>;
+  subscriber?: (triggerName: string, options: any) => Promise<AsyncIterator<any>>;
+  unsubscriber?: (connectionId: string) => Promise<void>;
 }
 
 export class PubSub {
   private customPublish: (triggerName: string, payload: any) => Promise<void>;
-  private customSubscribe: (
-    triggerName: string,
-    options: { [key: string]: any },
-  ) => Promise<AsyncIterator<any>>;
-  private customUnsubscribe: (connectionId: number) => Promise<void>;
+  private customSubscribe: (triggerName: string, options: any) => Promise<AsyncIterator<any>>;
+  private customUnsubscribe: (connectionId: string) => Promise<void>;
 
   constructor(options: PubSubOptions = {}) {
     this.customPublish = options.publisher;
@@ -27,25 +23,22 @@ export class PubSub {
     if (this.customPublish) {
       return this.customPublish(triggerName, payload);
     }
-    return Promise.resolve();
+    return defaultPublisher(triggerName, payload);
   }
 
-  public subscribe(
-    triggerName: string,
-    options: { [key: string]: any },
-  ): Promise<AsyncIterator<any>> {
+  public subscribe(triggerName: string, options: any): Promise<AsyncIterator<any>> {
     if (this.customSubscribe) {
       return this.customSubscribe(triggerName, options);
     }
 
-    return Promise.resolve(createAsyncIterator([]));
+    return defaultSubscriber(triggerName, options);
   }
 
-  public unsubscribe(connectionId: number): Promise<void> {
+  public unsubscribe(connectionId: string): Promise<void> {
     if (this.customUnsubscribe) {
       return this.customUnsubscribe(connectionId);
     } else {
-      return;
+      return defaultUnsubscriber(connectionId);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Client } from 'pg';
-import configObject from '../../config/config.json';
-import { WSSubscriptionContext } from '../shared/type';
+import configObject from '../../../config/config.json';
+import { WSSubscriptionContext } from '../type';
 import { createAsyncIterator } from 'iterall';
 
 const env = process.env.NODE_ENV;

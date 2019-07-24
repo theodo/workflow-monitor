@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult, Context as AWSLambdaContext } from 'aws-lambda';
 import { WebSocketDisconnectEvent } from '../shared/type';
-import { unsubcribeByConnection } from './unsubscriber';
+import { PubSub } from '../shared/pubsub/pubsub';
 
 export class WsDiconnectHandler {
   async handle(
@@ -8,8 +8,8 @@ export class WsDiconnectHandler {
     context: AWSLambdaContext,
   ): Promise<APIGatewayProxyResult | void> {
     const connectionId = event.requestContext.connectionId;
-
-    await unsubcribeByConnection(connectionId);
+    const pubsub = new PubSub();
+    await pubsub.unsubscribe(connectionId);
     return;
   }
 }
