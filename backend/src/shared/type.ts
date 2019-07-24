@@ -30,6 +30,7 @@ export interface WebSocketDisconnectEvent {
   body: string;
   requestContext: WebSocketRequestContext<'$disconnect'>;
   apiGatewayUrl?: string;
+  [key: string]: any;
 }
 
 /**
@@ -39,6 +40,7 @@ export interface WebSocketConnectEvent {
   body: string;
   requestContext: WebSocketRequestContext<'$connect'>;
   apiGatewayUrl?: string;
+  [key: string]: any;
 }
 
 export interface GraphQlOperationPayload {
@@ -77,5 +79,5 @@ export interface WSSubscriptionContext {
   connectionEndpoint: string;
   operation: string;
   triggerName?: string;
-  JWT?: string;
+  userId?: number;
 }

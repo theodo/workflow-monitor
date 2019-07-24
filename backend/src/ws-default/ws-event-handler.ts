@@ -9,6 +9,7 @@ import { execute, ExecutionArgs, getOperationAST, GraphQLSchema, parse, subscrib
 import { extractEndpointFromEvent } from '../shared/utils/extract-endpoint-from-event';
 import { sendToConnection } from '../shared/utils/send-message-to-connection';
 import { isAsyncIterable } from 'iterall';
+import jwt from 'jsonwebtoken';
 
 export class WsEventHandler {
   private gqlSchema: GraphQLSchema;
@@ -39,7 +40,18 @@ export class WsEventHandler {
         break;
       case 'start':
         const document = parse(operation.payload.query);
-        const JWT = operation.payload.Authorization;
+        let decodedJWT;
+        try {
+          decodedJWT = jwt.verify(operation.payload.Authorization, process.env.JWT_SECRET) as {
+            id: number;
+          };
+        } catch (e) {
+          throw new Error('Invalid auth token!');
+        }
+        if (!decodedJWT.id) {
+          throw new Error('Invalid auth token!');
+        }
+        const userId = decodedJWT.id;
         delete operation.payload.Authorization;
         const subscriptionContext: WSSubscriptionContext = {
           id: `${connectionId}:${operation.id}`,
@@ -47,7 +59,7 @@ export class WsEventHandler {
           connectionId,
           connectionEndpoint: endpoint,
           operation: JSON.stringify(operation.payload),
-          JWT,
+          userId,
         };
         const executionArgs: ExecutionArgs = {
           schema: this.gqlSchema,

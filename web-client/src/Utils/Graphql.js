@@ -43,9 +43,6 @@ const wsClient = new SubscriptionClient(
   WS_API_URL,
   {
     reconnect: true,
-    connectionParams: {
-      Authorization: localStorage.getItem('jwt_token'),
-    },
   },
   null,
   [],
