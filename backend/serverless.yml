@@ -95,3 +95,19 @@ functions:
     warmup:
       enabled: false
 
+resources:
+  Resources:
+    Aurora:
+      Type: AWS::RDS::DBCluster
+      Properties:
+        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:DB_PASSWORD}
+        DatabaseName: ${env:DB_NAME}
+        Engine: aurora
+        EngineMode: serverless
+        DBSubnetGroupName: {"Fn::ImportValue": "CasprAuroraSubnetGroup"}
+        VpcSecurityGroupIds:
+          - {"Fn::ImportValue": "CasprAuroraSecurityGroup"}
+        Tags:
+          - Key: Name
+            Value: caspr-aurora-${env:NODE_ENV}

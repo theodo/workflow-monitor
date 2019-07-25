@@ -1,12 +1,7 @@
 'use strict';
 module.exports = {
   up: function (queryInterface, Sequelize) {
-
-    return Promise.all([
-      queryInterface.createSchema(
-        'subscription'
-      ),
-      queryInterface.createTable(
+    return queryInterface.createTable(
         'subscription',
         {
           id: {
@@ -34,23 +29,9 @@ module.exports = {
             allowNull: false,
             type: Sequelize.STRING,
           }
-        },
-        {
-          schema: 'subscription'
         }
-      )
-    ]);
+      );
   },down: function (queryInterface) {
-    return Promise.all([
-      queryInterface.dropTable(
-        'subscription',
-        {
-          schema: 'subscription'
-        }
-      ),
-      queryInterface.dropSchema(
-        'subscription'
-      )
-    ]);
+    return queryInterface.dropTable('subscription');
   }
 };

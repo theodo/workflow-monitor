@@ -4,18 +4,18 @@ import { ProblemCategory } from './problemCategory.entity';
 import { Sequelize } from 'sequelize-typescript';
 
 const SELECT_PROBLEM_CATEGORY_COUNT_AND_OVERTIME_QUERY = `
-  SELECT "categories".id, "categories"."description", COUNT("problemsWithOvertime"."problemCategoryId"),
-  SUM("problemsWithOvertime"."overtime") as "overtime"
-  FROM (SELECT * FROM "problemCategories" WHERE "problemCategories"."projectId" = :projectId) AS "categories"
+  SELECT \`categories\`.id, \`categories\`.\`description\`, COUNT(\`problemsWithOvertime\`.\`problemCategoryId\`),
+  SUM(\`problemsWithOvertime\`.\`overtime\`) as \`overtime\`
+  FROM (SELECT * FROM \`problemCategories\` WHERE \`problemCategories\`.\`projectId\` = :projectId) AS \`categories\`
   INNER JOIN (
-    SELECT "problems".id, "problems"."problemCategoryId", "tasks"."realTime" - "tasks"."estimatedTime" AS "overtime"
-    FROM "tasks", "problems"
-    WHERE "problems"."taskId" = "tasks".id AND "tasks"."estimatedTime" < "tasks"."realTime"
-    AND "tasks"."createdAt" > :startDate AND "tasks"."createdAt" < :endDate
-  ) as "problemsWithOvertime"
-  ON "categories".id = "problemsWithOvertime"."problemCategoryId"
-  GROUP BY "categories".id, "categories"."description"
-  ORDER BY "overtime" DESC
+    SELECT \`problems\`.id, \`problems\`.\`problemCategoryId\`, \`tasks\`.\`realTime\` - \`tasks\`.\`estimatedTime\` AS \`overtime\`
+    FROM \`tasks\`, \`problems\`
+    WHERE \`problems\`.\`taskId\` = \`tasks\`.id AND \`tasks\`.\`estimatedTime\` < \`tasks\`.\`realTime\`
+    AND \`tasks\`.\`createdAt\` > :startDate AND \`tasks\`.\`createdAt\` < :endDate
+  ) as \`problemsWithOvertime\`
+  ON \`categories\`.id = \`problemsWithOvertime\`.\`problemCategoryId\`
+  GROUP BY \`categories\`.id, \`categories\`.\`description\`
+  ORDER BY \`overtime\` DESC
 `;
 
 @Injectable()

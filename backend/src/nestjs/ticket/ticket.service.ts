@@ -9,16 +9,16 @@ import { User } from '../user/user.entity';
 import { Project } from '../project/project.entity';
 
 const SELECT_DAILY_PERFORMANCE_HISTORY_QUERY = `
-  SELECT date("createdAt") as "creationDay",
-  SUM(CASE WHEN "allocatedTime" < "realTime" THEN 1 ELSE 0 END) AS "celerityFailedTicketsCount",
-  SUM(CASE WHEN "estimatedTime" < "realTime" THEN 1 ELSE 0 END) AS "casprFailedTicketsCount",
-  SUM(CASE WHEN "estimatedTime" < "realTime" THEN "realTime" - "estimatedTime" ELSE 0 END) AS "overtime"
-  FROM "tickets"
+  SELECT date(\`createdAt\`) as \`creationDay\`,
+  SUM(CASE WHEN \`allocatedTime\` < \`realTime\` THEN 1 ELSE 0 END) AS \`celerityFailedTicketsCount\`,
+  SUM(CASE WHEN \`estimatedTime\` < \`realTime\` THEN 1 ELSE 0 END) AS \`casprFailedTicketsCount\`,
+  SUM(CASE WHEN \`estimatedTime\` < \`realTime\` THEN \`realTime\` - \`estimatedTime\` ELSE 0 END) AS \`overtime\`
+  FROM \`tickets\`
   WHERE
-    "projectId"=:projectId
-    AND "createdAt" BETWEEN :startDate AND :endDate
-  GROUP BY date("createdAt")
-  ORDER BY date("createdAt");
+    \`projectId\`=:projectId
+    AND \`createdAt\` BETWEEN :startDate AND :endDate
+  GROUP BY date(\`createdAt\`)
+  ORDER BY date(\`createdAt\`);
 `;
 
 @Injectable()

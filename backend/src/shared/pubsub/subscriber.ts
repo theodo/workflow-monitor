@@ -1,44 +1,39 @@
-import { Client } from 'pg';
-import configObject from '../../../config/config.json';
 import { WSSubscriptionContext } from '../type';
 import { createAsyncIterator } from 'iterall';
-
-const env = process.env.NODE_ENV;
-const config = configObject[env];
+import mysql from 'mysql2/promise';
 
 export const subscriber = async (
   triggerName: string,
   options: WSSubscriptionContext,
 ): Promise<AsyncIterator<any>> => {
-  const client = new Client({
-    host: env === 'development' ? 'postgresql' : config.host,
-    port: 5432,
-    user: config.username,
-    password: config.password,
-    database: config.database,
+  const connection = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
-  await client.connect();
 
-  const query = {
-    text:
-      'INSERT INTO subscription.subscription ("id", "operationId", "connectionId", "connectionEndpoint", "operation", "triggerName") ' +
-      'VALUES($1, $2, $3, $4, $5, $6)',
-    values: [
-      options.id,
-      options.operationId,
-      options.connectionId,
-      options.connectionEndpoint,
-      options.operation,
-      triggerName,
-    ],
-  };
+  const query = `
+    INSERT INTO \`${process.env.DB_NAME}\`.\`subscription\`
+    (\`id\`, \`operationId\`, \`connectionId\`, \`connectionEndpoint\`, \`operation\`, \`triggerName\`)
+    VALUES(?, ?, ?, ?, ?, ?)
+    `;
+  const values = [
+    options.id,
+    options.operationId,
+    options.connectionId,
+    options.connectionEndpoint,
+    options.operation,
+    triggerName,
+  ];
 
   try {
-    await client.query(query);
+    await connection.execute(query, values);
   } catch (err) {
     // tslint:disable-next-line:no-console
     console.log(err.stack);
   }
-  await client.end();
+  await connection.end();
   return Promise.resolve(createAsyncIterator([]));
 };

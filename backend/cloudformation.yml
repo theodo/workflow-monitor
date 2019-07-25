@@ -1,39 +1,9 @@
 # Caspr Stack
 # to generate the stack use with a rightful aws profile:
-# aws --region eu-west-1 cloudformation create-stack --stack-name caspr --template-body file://cloudformation.yml --parameters ParameterKey=DBName,ParameterValue=CasprDataBase ParameterKey=DBMasterUser,ParameterValue=caspr ParameterKey=DBMasterPassword,ParameterValue=XXX
+# aws --region eu-west-1 cloudformation create-stack --stack-name caspr --template-body file://cloudformation.yml
 # then use serverless deploy to create the API GateWay and the lambdas
 
-Parameters:
-  DBName:
-    Description: The name of the database
-    Type: String
-  DBMasterUser:
-    Description: The name of the master user of the database
-    Type: String
-  DBMasterPassword:
-    Description: The password of the master user of the database
-    Type: String
-
-
 Resources:
-  RDS:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      DBInstanceIdentifier: caspr-database
-      DBName: !Ref DBName
-      AllocatedStorage: '20'
-      DBInstanceClass: db.t3.small
-      Engine: postgres
-      MasterUsername: !Ref DBMasterUser
-      MasterUserPassword: !Ref DBMasterPassword
-      DBSubnetGroupName:
-        Ref: RDSSubnetGroup
-      VPCSecurityGroups:
-        - !Ref RDSSecurityGroup
-      Tags:
-        - Key: Name
-          Value: caspr-database
-
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -146,7 +116,7 @@ Resources:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref SubnetC
 
-  RDSSubnetGroup:
+  AuroraSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupName: caspr-database-subnet-group
@@ -159,7 +129,7 @@ Resources:
         - Key: Name
           Value: caspr-database-subnet-group
 
-  RDSSecurityGroup:
+  AuroraSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: caspr-database-sg
@@ -167,8 +137,8 @@ Resources:
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 5432
-          ToPort: 5432
+          FromPort: 3306
+          ToPort: 3306
           SourceSecurityGroupId: !Ref LambdaSecurityGroup
       Tags:
         - Key: Name
@@ -208,3 +178,13 @@ Outputs:
     Value: !Ref SubnetC
     Export:
       Name: CasprSubnetC
+  AuroraSecurityGroup:
+    Description: Security Group for Aurora which is imported in serverless.yml
+    Value: !Ref AuroraSecurityGroup
+    Export:
+      Name: CasprAuroraSecurityGroup
+  AuroraSubnetGroup:
+    Description: Subnet Group for aurora which contains three private subnet (one in each AZ)
+    Value: !Ref AuroraSubnetGroup
+    Export:
+      Name: CasprAuroraSubnetGroup

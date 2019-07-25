@@ -2,15 +2,24 @@ const crypto = require("crypto-js");
 const dateFormat = require("dateformat");
 const axios = require("axios");
 
-const host = 'od2fc2gk50.execute-api.eu-west-1.amazonaws.com';
+const host = process.argv[2] === 'prod' ?
+  'jacwuy85g4.execute-api.eu-west-1.amazonaws.com':
+  'jacwuy85g4.execute-api.eu-west-1.amazonaws.com';
 const region = 'eu-west-1';
-const path = '/staging/migrations';
+const path = `/${process.argv[2]}/migrations`;
 const access_key = process.env.AWS_ACCESS_KEY_ID;
 const secret_key =  process.env.AWS_SECRET_ACCESS_KEY;
 if (!secret_key || !access_key){
   throw new Error('Please provide your AWS credentials in environment variables')
 }
-const request_body = JSON.stringify({});
+let request_body = JSON.stringify({
+  action: 'migrate'
+});
+if (process.argv[3] && process.argv[3]==='down') {
+  request_body = JSON.stringify({
+    action: 'down'
+  });
+}
 
 
 const service = 'execute-api';

@@ -1,7 +1,14 @@
 const axios = require("axios");
 
 const url = 'http://0.0.0.0:4000/migrations';
-const request_body = JSON.stringify({});
+let request_body = JSON.stringify({
+  action: 'migrate'
+});
+if (process.argv[2] && process.argv[2]==='down') {
+  request_body = JSON.stringify({
+    action: 'down'
+  });
+}
 
 
 

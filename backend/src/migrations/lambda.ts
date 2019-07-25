@@ -1,18 +1,14 @@
 import { Handler } from 'aws-lambda';
 import Umzug from 'umzug';
-import configObject from '../../config/config.json';
 import { Sequelize } from 'sequelize-typescript';
 
-const env = process.env.NODE_ENV;
-const config = configObject[env];
-
 const sequelize = new Sequelize({
-  dialect: config.dialect,
-  host: env === 'development' ? 'postgresql' : config.host,
-  port: 5432,
-  username: config.username,
-  password: config.password,
-  database: config.database,
+  dialect: 'mysql',
+  host: process.env.DB_HOST,
+  port: 3306,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 const umzug = new Umzug({
@@ -49,6 +45,39 @@ const migrate = async () => {
   }
 };
 
-export const handler: Handler = () => {
-  return migrate();
+const revert = async () => {
+  try {
+    // tslint:disable-next-line:no-console
+    console.log('Reverting...');
+    const revertedMigrations = await umzug.down();
+    // tslint:disable-next-line:no-console
+    console.log('RevertedMigrations:', revertedMigrations);
+    return {
+      body: JSON.stringify({
+        revertedMigrations: revertedMigrations.map(executedMigration => executedMigration.path),
+      }),
+      statusCode: 200,
+    };
+  } catch (e) {
+    // tslint:disable-next-line:no-console
+    console.log('Error', e);
+    return {
+      body: JSON.stringify(e),
+      statusCode: 500,
+    };
+  }
+};
+
+export const handler: Handler = event => {
+  const body = JSON.parse(event.body);
+  if (body.action === 'migrate') {
+    return migrate();
+  } else if (body.action === 'down') {
+    return revert();
+  } else {
+    return Promise.resolve({
+      body: JSON.stringify('Bad request'),
+      statusCode: 400,
+    });
+  }
 };

@@ -1,39 +1,35 @@
-import { Client } from 'pg';
-import configObject from '../../../config/config.json';
 import { GraphQlResponse, WSSubscriptionContext } from '../type';
 import { sendToConnection } from '../utils/send-message-to-connection';
 import { formatGraphQlSubscriptionPayload } from '../utils/format-graphql-subscription-payload';
-
-const env = process.env.NODE_ENV;
-const config = configObject[env];
+import mysql from 'mysql2/promise';
 
 export const publisher = async (triggerName: string, payload: any): Promise<void> => {
-  const client = new Client({
-    host: env === 'development' ? 'postgresql' : config.host,
-    port: 5432,
-    user: config.username,
-    password: config.password,
-    database: config.database,
+  const connection = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
-  await client.connect();
 
-  const query = {
-    text:
-      'SELECT "id", "operationId", "connectionId", "connectionEndpoint", "operation", "triggerName" ' +
-      'FROM subscription.subscription ' +
-      'WHERE "triggerName" = $1 ',
-    values: [triggerName],
-  };
+  const query = `
+    SELECT \`id\`, \`operationId\`, \`connectionId\`, \`connectionEndpoint\`, \`operation\`, \`triggerName\`
+    FROM \`${process.env.DB_NAME}\`.\`subscription\`
+    WHERE \`triggerName\` = ?
+    `;
+  const values = [triggerName];
+
   let subscriptions: WSSubscriptionContext[] = [];
   try {
-    const result = await client.query(query);
-    subscriptions = result.rows;
+    const [rows, fields] = await connection.execute(query, values);
+    subscriptions = rows as WSSubscriptionContext[];
   } catch (err) {
     // tslint:disable-next-line:no-console
     console.log(err.stack);
     throw Error('Fail to load subscriptions');
   }
-  await client.end();
+  await connection.end();
+
   const promises = subscriptions.map(async subscription => {
     const operation = JSON.parse(subscription.operation);
 

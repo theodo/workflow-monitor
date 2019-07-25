@@ -1,30 +1,24 @@
-import { Client } from 'pg';
-import configObject from '../../../config/config.json';
-
-const env = process.env.NODE_ENV;
-const config = configObject[env];
+import mysql from 'mysql2/promise';
 
 export const unsubscriber = async (connectionId: string): Promise<void> => {
-  const client = new Client({
-    host: env === 'development' ? 'postgresql' : config.host,
-    port: 5432,
-    user: config.username,
-    password: config.password,
-    database: config.database,
+  const connection = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
-  await client.connect();
 
-  const query = {
-    text: 'DELETE FROM subscription.subscription WHERE "connectionId" = $1 ',
-    values: [connectionId],
-  };
+  const query = `DELETE FROM \`${process.env.DB_NAME}\`.\`subscription\` WHERE \`connectionId\` = ? `;
+  const values = [connectionId];
 
   try {
-    await client.query(query);
+    await connection.execute(query, values);
   } catch (err) {
     // tslint:disable-next-line:no-console
     console.log(err.stack);
+    throw Error('Fail to load subscriptions');
   }
-  await client.end();
+  await connection.end();
   return;
 };

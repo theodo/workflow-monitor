@@ -1,44 +1,44 @@
 'use strict';
 
 const SELECT_PROBLEM_CATEGORIES_PROJECT_ID = `
-SELECT "problemCategories".id, "problemCategories"."createdAt", "problemCategories"."description", "problemCategories"."updatedAt", "tickets"."projectId"
-FROM "problemCategories", "problems", "tasks", "tickets"
-WHERE "problemCategories".id = "problems"."problemCategoryId"
-AND "tasks".id = "problems"."taskId"
-AND "tickets".id = "tasks"."ticketId"
-GROUP BY "problemCategories".id, "tickets"."projectId"
+SELECT \`problemCategories\`.id, \`problemCategories\`.\`createdAt\`, \`problemCategories\`.\`description\`, \`problemCategories\`.\`updatedAt\`, \`tickets\`.\`projectId\`
+FROM \`problemCategories\`, \`problems\`, \`tasks\`, \`tickets\`
+WHERE \`problemCategories\`.id = \`problems\`.\`problemCategoryId\`
+AND \`tasks\`.id = \`problems\`.\`taskId\`
+AND \`tickets\`.id = \`tasks\`.\`ticketId\`
+GROUP BY \`problemCategories\`.id, \`tickets\`.\`projectId\`
 `;
 
 const SELECT_PROBLEM_AND_PROBLEM_CATEGORIES_PROJECT_ID = `
-SELECT "problems"."problemCategoryId", "problems".id as "problemId", "problems"."createdAt", "problems"."description", "problems"."taskId", "problems"."updatedAt", "tickets"."projectId"
-FROM "problemCategories", "problems", "tasks", "tickets"
-WHERE "problemCategories".id = "problems"."problemCategoryId"
-AND "tasks".id = "problems"."taskId"
-AND "tickets".id = "tasks"."ticketId"
+SELECT \`problems\`.\`problemCategoryId\`, \`problems\`.id as \`problemId\`, \`problems\`.\`createdAt\`, \`problems\`.\`description\`, \`problems\`.\`taskId\`, \`problems\`.\`updatedAt\`, \`tickets\`.\`projectId\`
+FROM \`problemCategories\`, \`problems\`, \`tasks\`, \`tickets\`
+WHERE \`problemCategories\`.id = \`problems\`.\`problemCategoryId\`
+AND \`tasks\`.id = \`problems\`.\`taskId\`
+AND \`tickets\`.id = \`tasks\`.\`ticketId\`
 `;
 
 const SELECT_PROBLEMS_WITHOUT_CATEGORIES = `
-SELECT * FROM "problems" WHERE "problems"."problemCategoryId" IS NULL
+SELECT * FROM \`problems\` WHERE \`problems\`.\`problemCategoryId\` IS NULL
 `;
 
 const DELETE_ALL_PROBLEM_CATEGORIES = `
-DELETE FROM "problemCategories"
+DELETE FROM \`problemCategories\`
 `;
 
 const DELETE_ALL_PROBLEMS = `
-DELETE FROM "problems"
+DELETE FROM \`problems\`
 `;
 
 const SELECT_PROBLEM_CATEGORY_DESCRIPTION_WITH_PROBLEM = `
-SELECT "problems".id, "problemCategories"."description" as "problemCategoryDescription", "problems"."createdAt", "problems"."description", "problems"."taskId", "problems"."updatedAt"
-FROM "problemCategories", "problems"
-WHERE "problems"."problemCategoryId" = "problemCategories".id
+SELECT \`problems\`.id, \`problemCategories\`.\`description\` as \`problemCategoryDescription\`, \`problems\`.\`createdAt\`, \`problems\`.\`description\`, \`problems\`.\`taskId\`, \`problems\`.\`updatedAt\`
+FROM \`problemCategories\`, \`problems\`
+WHERE \`problems\`.\`problemCategoryId\` = \`problemCategories\`.id
 `;
 
 const SELECT_PROBLEM_CATEGORY_DESCRIPTION = `
-SELECT "problemCategories"."description"
-FROM "problemCategories"
-GROUP BY "problemCategories"."description"
+SELECT \`problemCategories\`.\`description\`
+FROM \`problemCategories\`
+GROUP BY \`problemCategories\`.\`description\`
 `;
 
 module.exports = {
