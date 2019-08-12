@@ -19,7 +19,4 @@
     "url": "https://github.com/theodo/workflow-monitor/issues"
   },
   "homepage": "https://github.com/theodo/workflow-monitor#readme",
-  "dependencies": {
-    "eslint-config-react-app": "^4.0.1"
-  }
 }

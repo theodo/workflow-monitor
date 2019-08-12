@@ -29,7 +29,9 @@ export const handler: Handler = (event: any, context: Context) => {
     console.log('WarmUp - Lambda is warm!');
     return;
   }
-  if (!cachedServer) {
+  // server should be bootstrap every time while developing in local
+  // if not the changes are not effective
+  if (!cachedServer || process.env.IS_OFFLINE) {
     bootstrapServer().then(server => {
       cachedServer = server;
       return serverlessExpress.proxy(server, event, context);

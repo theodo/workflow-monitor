@@ -3,7 +3,7 @@ const dateFormat = require("dateformat");
 const axios = require("axios");
 
 const host = process.argv[2] === 'prod' ?
-  'jacwuy85g4.execute-api.eu-west-1.amazonaws.com':
+  'juc0yqw4v0.execute-api.eu-west-1.amazonaws.com':
   'jacwuy85g4.execute-api.eu-west-1.amazonaws.com';
 const region = 'eu-west-1';
 const path = `/${process.argv[2]}/migrations`;
