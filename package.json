@@ -4,7 +4,7 @@
   "description": "Monorepo for Caspr",
   "main": "docker-compose.yml",
   "scripts": {
-    "start": "docker-compose up",
+    "start": "UID=${UID} GID=${GID} docker-compose up",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:prod": "ansible-playbook -i devops/provisioning/hosts/prod devops/provisioning/deploy.yml",
     "deploy:staging": "ansible-playbook -i devops/provisioning/hosts/staging devops/provisioning/deploy.yml"
@@ -19,7 +19,4 @@
     "url": "https://github.com/theodo/workflow-monitor/issues"
   },
   "homepage": "https://github.com/theodo/workflow-monitor#readme",
-  "dependencies": {
-    "eslint-config-react-app": "^4.0.1"
-  }
 }

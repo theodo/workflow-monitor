@@ -1,15 +1,15 @@
 'use strict';
 
 const SELECT_TOTAL_REAL_AND_ESTIMATED_TIME_FROM_TASKS = `
-  SELECT "ticketId", SUM("estimatedTime") AS "totalEstimatedTime", SUM("realTime") AS "totalRealTime"
-  FROM "tasks"
-  GROUP BY "ticketId"
+  SELECT \`ticketId\`, SUM(\`estimatedTime\`) AS \`totalEstimatedTime\`, SUM(\`realTime\`) AS \`totalRealTime\`
+  FROM \`tasks\`
+  GROUP BY \`ticketId\`
 `;
 
 const UPDATE_TICKETS_WITH_REAL_AND_ESTIMATED_TIME = `
-  UPDATE "tickets"
-  SET "realTime"=:ticketRealTime, "estimatedTime"=:ticketEstimatedTime
-  WHERE "id"=:ticketId
+  UPDATE \`tickets\`
+  SET \`realTime\`=:ticketRealTime, \`estimatedTime\`=:ticketEstimatedTime
+  WHERE \`id\`=:ticketId
 `;
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
 
   down: queryInterface => {
     return queryInterface.sequelize.query(
-      'UPDATE "tickets" SET "realTime"=null, "estimatedTime"=null',
+      'UPDATE `tickets` SET `realTime`=null, `estimatedTime`=null',
     );
   },
 };

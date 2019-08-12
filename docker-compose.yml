@@ -1,25 +1,29 @@
 version: "2.0"
 
 services:
-  postgresql:
-    image: "postgres:9.6.6"
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password --secure-file-priv=""
     environment:
-      - POSTGRES_USER=caspr
-      - POSTGRES_PASSWORD=caspr
-      - POSTGRES_DB=caspr
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=caspr
+      - MYSQL_PASSWORD=caspr
+      - MYSQL_DATABASE=caspr
     ports:
-      - "5432:5432"
+      - "3306:3306"
   backend:
+    user: "${UID}:${GID}"
     build: ./backend
-    command: npm run start:dev
+    command: npm run start
     environment:
       - NODE_ENV=development
     volumes:
       - ./backend:/app
     ports:
       - "4000:4000"
+      - "4001:4001"
     depends_on:
-      - postgresql
+      - mysql
   react:
     build: ./web-client
     command: yarn start

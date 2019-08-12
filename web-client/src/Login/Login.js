@@ -38,7 +38,7 @@ class Login extends Component {
   }
   trelloAuthenticationSuccess() {
     axios
-      .post('/api/login', {
+      .post(process.env.REACT_APP_API_URL + '/login', {
         trelloToken: localStorage.getItem('trello_token'),
       })
       .then(response => {

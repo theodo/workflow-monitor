@@ -1,0 +1,116 @@
+service:
+  name: caspr
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  accountId: !Ref AWS::AccountId
+  serverless-offline:
+    host: 0.0.0.0
+    port: 4000
+    websocketPort: 4001
+  prod:
+    schedule: cron(0/4 5-18 ? * MON-FRI *)
+  staging:
+    schedule:
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: ${env:REGION}
+  stage: ${env:NODE_ENV}
+
+  vpc:
+    securityGroupIds:
+      - {"Fn::ImportValue": "CasprLambdaSecurityGroup"}
+    subnetIds:
+      - {"Fn::ImportValue": "CasprSubnetA"}
+      - {"Fn::ImportValue": "CasprSubnetB"}
+      - {"Fn::ImportValue": "CasprSubnetC"}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - execute-api:ManageConnections # To allow lambdas to send messages back to websocket
+      Resource:
+        'Fn::Join':
+          - ""
+          - - "arn:aws:execute-api:"
+            - { "Ref": "AWS::Region" }
+            - ':'
+            - { Ref: "AWS::AccountId" }
+            - ":*/${env:NODE_ENV}/POST/@connections/*"
+
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction # To allow warm-up lambdas to trigger the other lambdas
+      Resource:
+        'Fn::Join':
+          - ""
+          - - "arn:aws:lambda:"
+            - { "Ref": "AWS::Region" }
+            - ':'
+            - { Ref: "AWS::AccountId" }
+            - ":function:*"
+
+package:
+  include:
+    - src/**/*.graphql
+    - migrations
+
+functions:
+  api:
+    handler: src/nestjs/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
+  ws-default:
+    handler: src/ws-default/lambda.handler
+    events:
+      - websocket:
+          route: $default
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
+  ws-diconnect:
+    handler: src/ws-disconnect/lambda.handler
+    events:
+      - websocket:
+          route: $disconnect
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
+  migrations:
+    handler: src/migrations/lambda.handler
+    events:
+      - http:
+          method: post
+          path: /migrations
+          authorizer: aws_iam
+
+  aurora-ping:
+    handler: src/aurora-ping/lambda.handler
+    events:
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
+resources:
+  Resources:
+    Aurora:
+      Type: AWS::RDS::DBCluster
+      Properties:
+        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:DB_PASSWORD}
+        DatabaseName: ${env:DB_NAME}
+        Engine: aurora
+        EngineMode: serverless
+        DBSubnetGroupName: {"Fn::ImportValue": "CasprAuroraSubnetGroup"}
+        VpcSecurityGroupIds:
+          - {"Fn::ImportValue": "CasprAuroraSecurityGroup"}
+        Tags:
+          - Key: Name
+            Value: caspr-aurora-${env:NODE_ENV}

@@ -8,7 +8,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface
-      .removeColumn('tickets', 'trelloId')
+    return queryInterface.removeColumn('tickets', 'trelloId');
   },
 };

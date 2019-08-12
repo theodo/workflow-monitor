@@ -2,8 +2,10 @@ import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { WebSocketLink } from 'apollo-link-ws';
 import { onError } from 'apollo-link-error';
+import { WebSocketLink } from 'apollo-link-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
 
 const errorLink = onError(({ networkError }) => {
   if (networkError && networkError.statusCode === 403) {
@@ -13,7 +15,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: '/api/graphql',
+  uri: process.env.REACT_APP_API_URL + '/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -35,20 +37,27 @@ export const gqlClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
-const WS_API_URL = dev
-  ? 'ws://localhost:4000/graphql'
-  : `wss://${window.location.hostname}/api/graphql`;
+const WS_API_URL = process.env.REACT_APP_WS_URL;
 
-const wsLink = new WebSocketLink({
-  uri: WS_API_URL,
-  options: {
+const wsClient = new SubscriptionClient(
+  WS_API_URL,
+  {
     reconnect: true,
-    connectionParams: {
-      authToken: localStorage.getItem('jwt_token'),
+  },
+  null,
+  [],
+);
+
+wsClient.use([
+  {
+    applyMiddleware(operationOptions, next) {
+      operationOptions['Authorization'] = localStorage.getItem('jwt_token');
+      next();
     },
   },
-});
+]);
+
+const wsLink = new WebSocketLink(wsClient);
 
 export const subscriptionClient = new ApolloClient({
   link: authLink.concat(wsLink),

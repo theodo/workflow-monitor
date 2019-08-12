@@ -1,0 +1,7 @@
+{
+    "extends": "backend/tsconfig-temp.json",
+    "compilerOptions": {
+      "types": ["jest", "node"]
+    },
+    "include": ["**/*.spec.ts", "**/*.d.ts"]
+  }

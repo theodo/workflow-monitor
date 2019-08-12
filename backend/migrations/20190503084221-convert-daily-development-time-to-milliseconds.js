@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.sequelize.query(
-        'UPDATE projects set "dailyDevelopmentTime"="projects"."dailyDevelopmentTime"*1000;',
+        'UPDATE projects set `dailyDevelopmentTime` = `dailyDevelopmentTime` * 1000;',
       ),
       queryInterface.changeColumn('projects', 'dailyDevelopmentTime', {
         type: Sequelize.INTEGER,
@@ -16,7 +16,7 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.sequelize.query(
-        'UPDATE projects set "dailyDevelopmentTime"="projects"."dailyDevelopmentTime"/1000;',
+        'UPDATE projects set `dailyDevelopmentTime` = `dailyDevelopmentTime` / 1000;',
       ),
       queryInterface.changeColumn('projects', 'dailyDevelopmentTime', {
         type: Sequelize.INTEGER,

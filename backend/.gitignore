@@ -1,20 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.serverless/
+_warmup/
+.dist/
 
-# dependencies
-/node_modules
+.dynamodb/
 
-# testing
-/coverage
+config/config.json
 
-# env
+node_modules/
+
+.build/
+
 .env
-
-# compiled files
-/dist
-
-# misc
-.DS_Store
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+.env.staging
+.env.prod
