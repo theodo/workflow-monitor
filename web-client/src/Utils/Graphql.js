@@ -15,7 +15,7 @@ const errorLink = onError(({ networkError }) => {
 });
 
 const link = createHttpLink({
-  uri: dev ? 'api/graphql' : process.env.REACT_APP_API_URL + '/graphql',
+  uri: process.env.REACT_APP_API_URL + '/graphql',
 });
 
 const httpLink = errorLink.concat(link);
@@ -37,7 +37,7 @@ export const gqlClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const WS_API_URL = dev ? 'ws://localhost:4001' : process.env.REACT_APP_WS_URL;
+const WS_API_URL = process.env.REACT_APP_WS_URL;
 
 const wsClient = new SubscriptionClient(
   WS_API_URL,

@@ -5,8 +5,6 @@ import { login } from './LoginActions';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-const dev = process.env.NODE_ENV && process.env.NODE_ENV === 'development';
-
 const trelloAuthParams = {
   type: 'popup',
   name: 'Workflow Monitor',
@@ -40,7 +38,7 @@ class Login extends Component {
   }
   trelloAuthenticationSuccess() {
     axios
-      .post(dev ? 'api/login' : process.env.REACT_APP_API_URL + '/login', {
+      .post(process.env.REACT_APP_API_URL + '/login', {
         trelloToken: localStorage.getItem('trello_token'),
       })
       .then(response => {

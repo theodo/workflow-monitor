@@ -13,7 +13,7 @@
 .DS_Store
 .env.local
 .env.staging
-.env.production
+.env.prod
 
 npm-debug.log*
 yarn-debug.log*
