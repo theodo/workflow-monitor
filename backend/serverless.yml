@@ -2,8 +2,6 @@ service:
   name: caspr
 
 plugins:
-  - serverless-plugin-warmup-ts-bridge
-  - serverless-plugin-warmup
   - serverless-plugin-typescript
   - serverless-plugin-optimize
   - serverless-dotenv-plugin
@@ -15,10 +13,10 @@ custom:
     host: 0.0.0.0
     port: 4000
     websocketPort: 4001
-  warmup:
-    enabled: true
-    events:
-      - schedule: 'cron(0/4 6-21 ? * MON-FRI *)' # Run WarmUp every 4 minutes Mon-Fri between 6:00am and 8:55pm (UTC)
+  prod:
+    schedule: cron(0/4 5-18 ? * MON-FRI *)
+  staging:
+    schedule:
 
 provider:
   name: aws
@@ -71,29 +69,34 @@ functions:
       - http:
           method: any
           path: /{proxy+}
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
 
   ws-default:
     handler: src/ws-default/lambda.handler
     events:
       - websocket:
           route: $default
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
   ws-diconnect:
     handler: src/ws-disconnect/lambda.handler
     events:
       - websocket:
           route: $disconnect
-    warmup:
-      enabled: false
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
+
   migrations:
     handler: src/migrations/lambda.handler
-    stage: prod
     events:
       - http:
           method: post
           path: /migrations
           authorizer: aws_iam
-    warmup:
-      enabled: false
+
+  aurora-ping:
+    handler: src/aurora-ping/lambda.handler
+    events:
+      - schedule: ${self:custom.${env:NODE_ENV}.schedule}
 
 resources:
   Resources:
