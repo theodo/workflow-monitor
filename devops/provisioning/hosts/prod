@@ -1,2 +1,0 @@
-[prod]
-caspr.theo.do  ansible_ssh_user=ubuntu

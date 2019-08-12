@@ -4,6 +4,7 @@
 # then use serverless deploy to create the API GateWay and the lambdas
 
 Resources:
+  ## Backend ##
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -156,6 +157,39 @@ Resources:
       Tags:
         - Key: Name
           Value: caspr-lambda-sg
+
+  ## FrontEnd
+  FrontBucketProd:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${FrontBucketName}
+      Tags:
+        - Key: Project
+          Value: SplaneFront
+        - Key: Env
+          Value: !Ref Env
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      AccessControl: PublicRead
+      VersioningConfiguration:
+        Status: Enabled
+    S3PolicyFrontBucket:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref FrontBucket
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action: s3:GetObject
+              Resource:
+                Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref FrontBucket
+                    - '/*'
 
 Outputs:
   LambdaSecurityGroup:
