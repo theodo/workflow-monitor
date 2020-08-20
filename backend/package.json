@@ -35,7 +35,7 @@
     "@nestjs/typeorm": "^6.1.1",
     "@types/sequelize": "^4.28.2",
     "apollo-server-express": "^2.5.0",
-    "bcrypt": "^3.0.4",
+    "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.4",
     "dotenv-safe": "^6.1.0",
     "graphql": "^14.3.1",
