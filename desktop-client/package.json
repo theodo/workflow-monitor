@@ -65,6 +65,6 @@
     "subscriptions-transport-ws": "^0.9.14",
     "uuid": "^3.3.2",
     "websocket": "^1.0.28",
-    "ws": "^6.0.0"
+    "ws": "^7.4.6"
   }
 }
